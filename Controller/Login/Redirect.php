@@ -11,10 +11,13 @@ use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;
+
+
+
+use Vipps\Login\Model\ConfigInterface;
 
 /**
  * Class Redirect
@@ -33,9 +36,9 @@ class Redirect extends \Magento\Framework\App\Action\Action
     private $sessionManager;
 
     /**
-     * @var ScopeConfigInterface
+     * @var ConfigInterface
      */
-    private $scopeConfig;
+    private $config;
 
     /**
      * Redirect constructor.
@@ -43,18 +46,18 @@ class Redirect extends \Magento\Framework\App\Action\Action
      * @param Context $context
      * @param CustomerRegistry $customerRegistry
      * @param SessionManagerInterface $sessionManager
-     * @param ScopeConfigInterface $scopeConfig
+     * @param ConfigInterface $config
      */
     public function __construct(
         Context $context,
         CustomerRegistry $customerRegistry,
         SessionManagerInterface $sessionManager,
-        ScopeConfigInterface $scopeConfig
+        ConfigInterface $config
     ) {
         parent::__construct($context);
         $this->customerRegistry = $customerRegistry;
         $this->sessionManager = $sessionManager;
-        $this->scopeConfig = $scopeConfig;
+        $this->config = $config;
     }
 
     /**
@@ -63,8 +66,9 @@ class Redirect extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         $code = $this->getRequest()->getParam('code');
-        $clientId = $this->scopeConfig->getValue('payment/vipps/login_client_id');
-        $clientSecret = $this->scopeConfig->getValue('payment/vipps/login_client_secret');
+
+        $clientId = $this->config->getLoginClientId();
+        $clientSecret = $this->config->getLoginClientSecret();
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL,"https://apitest.vipps.no/access-management-1.0/access/oauth2/token");

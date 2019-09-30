@@ -1,11 +1,6 @@
 <?php
-/**
- *  Copyright © Vaimo Norge AS. All rights reserved.
- *  See LICENSE.txt for license details.
- */
 namespace Vipps\Login\Model;
 
-use Magento\Payment\Gateway\ConfigInterface;
 use Vipps\Login\Model\Adminhtml\Source\Environment;
 
 /**
@@ -47,7 +42,7 @@ class UrlResolver
      */
     public function getBaseUrl()
     {
-        $env = $this->config->getValue('environment');
+        $env = $this->config->getLoginEnvironment();
         return $env === Environment::ENVIRONMENT_DEVELOP ? self::$developBaseUrl : self::$productionBaseUrl;
     }
 
