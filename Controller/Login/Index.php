@@ -22,7 +22,7 @@ class Index extends \Magento\Framework\App\Action\Action
         $url .= '&response_type=code';
         $url .= '&scope=openid address name email phoneNumber birthDate';
         $url .= '&state=4ea61978-504f-4f58-90c0-866efc79e001';
-        $url .= '&redirect_uri=http://devbox.vaimo.test/norway-vipps/vipps/login/redirect';
+        $url .= '&redirect_uri=https://test-norway-vipps.vaimo.com/vipps/login/redirect';
 
         return $this->getResponse()->setRedirect($url)->sendResponse();
     }
