@@ -96,7 +96,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
             return $this->_redirect('/');
         } catch (\Throwable $t) {
-            echo 'An error occurred!' . $t->getMessage();
+            return 'An error occurred!' . $t->getMessage();
         }
     }
 
