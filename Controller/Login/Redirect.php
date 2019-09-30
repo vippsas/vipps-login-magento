@@ -85,7 +85,6 @@ class Redirect extends \Magento\Framework\App\Action\Action
         curl_close ($ch);
 
         $tokenData = json_decode($content, true);
-        $accessToken = $tokenData['access_token'];
         $idToken = $tokenData['id_token'];
 
         try {
