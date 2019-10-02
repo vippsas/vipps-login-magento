@@ -12,12 +12,12 @@ class UrlResolver
     /**
      * @var string
      */
-    private static $productionBaseUrl = 'https://api.vipps.no';
+    private static $productionBaseUrl = 'https://api.vipps.no/access-management-1.0/access';
 
     /**
      * @var string
      */
-    private static $developBaseUrl = 'https://apitest.vipps.no';
+    private static $developBaseUrl = 'https://apitest.vipps.no/access-management-1.0/access';
 
     /**
      * @var ConfigInterface
@@ -48,6 +48,6 @@ class UrlResolver
 
     public function getUrl($url)
     {
-        return $this->getBaseUrl() . $url;
+        return $this->getBaseUrl() . '/' . $url;
     }
 }
