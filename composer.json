@@ -2,7 +2,8 @@
     "name": "vipps/module-login",
     "description": "N/A",
     "require": {
-        "magento/framework": "101.0.*"
+        "magento/framework": "101.0.*",
+        "firebase/php-jwt": "*"
     },
     "type": "magento2-module",
     "version": "100.0.0",
