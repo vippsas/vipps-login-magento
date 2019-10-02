@@ -51,7 +51,7 @@ class Index extends Action
         $params = [
             'client_id='. $this->config->getLoginClientId(),
             'response_type=code',
-            'scope=' . 'openid email phoneNumber',
+            'scope=' . 'openid address name email phoneNumber birthDate',
             'state=060d51ca-1712-429c-8552-534ee0bb8ebb',
             'redirect_uri=' .  'https://test-norway-vipps.vaimo.com/vipps/login/redirect'
 
