@@ -3,22 +3,41 @@
 
     <preference for="Vipps\Login\Model\ConfigInterface" type="Vipps\Login\Model\Config\Config"/>
 
-
     <type name="Vipps\Login\Controller\Login\Redirect">
         <arguments>
             <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="openIDtokenProvider" xsi:type="object">Vipps\Login\Model\OpenIDTokenProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Verification">
+        <arguments>
+            <argument name="openIDtokenProvider" xsi:type="object">Vipps\Login\Model\OpenIDTokenProvider</argument>
         </arguments>
     </type>
 
     <type name="Vipps\Login\Gateway\Command\TokenCommand">
         <arguments>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
     </type>
 
     <type name="Vipps\Login\Gateway\Validator\TokenValidator">
         <arguments>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Model\OpenIDTokenProvider">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Form\Verification">
+        <arguments>
+            <argument name="openIDtokenProvider" xsi:type="object">Vipps\Login\Model\OpenIDTokenProvider</argument>
         </arguments>
     </type>
 

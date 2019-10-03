@@ -22,6 +22,7 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\Session\SessionManagerInterface;
 use Vipps\Login\Gateway\Command\TokenCommand;
 use Vipps\Login\Model\Customer\TrustedAccountsLocator;
+use Vipps\Login\Model\TokenProviderInterface;
 
 /**
  * Class Redirect
@@ -50,6 +51,11 @@ class Redirect extends Action
     private $trustedAccountsLocator;
 
     /**
+     * @var TokenProviderInterface
+     */
+    private $openIDtokenProvider;
+
+    /**
      * Redirect constructor.
      *
      * @param Context $context
@@ -57,19 +63,22 @@ class Redirect extends Action
      * @param SessionManagerInterface $sessionManager
      * @param TokenCommand $tokenCommand
      * @param TrustedAccountsLocator $trustedAccountsLocator
+     * @param TokenProviderInterface $openIDtokenProvider
      */
     public function __construct(
         Context $context,
         CustomerRegistry $customerRegistry,
         SessionManagerInterface $sessionManager,
         TokenCommand $tokenCommand,
-        TrustedAccountsLocator $trustedAccountsLocator
+        TrustedAccountsLocator $trustedAccountsLocator,
+        TokenProviderInterface $openIDtokenProvider
     ) {
         parent::__construct($context);
         $this->customerRegistry = $customerRegistry;
         $this->sessionManager = $sessionManager;
         $this->tokenCommand = $tokenCommand;
         $this->trustedAccountsLocator = $trustedAccountsLocator;
+        $this->openIDtokenProvider = $openIDtokenProvider;
     }
 
     /**
@@ -78,10 +87,12 @@ class Redirect extends Action
      */
     public function execute()
     {
-        $result = $this->tokenCommand->execute();
+        $code = $this->_request->getParam('code');
+        $this->tokenCommand->execute($code);
 
         try {
-            $list = $this->trustedAccountsLocator->getList($result->phone_number);
+            $idToken = $this->openIDtokenProvider->get();
+            $list = $this->trustedAccountsLocator->getList($idToken->phone_number);
             if ($list->getTotalCount() > 0) {
                 $customerData = $list->getItems()[0];
                 $customer = $this->customerRegistry->retrieveByEmail($customerData->getEmail());
@@ -89,7 +100,7 @@ class Redirect extends Action
 
                 return $this->_redirect('/');
             } else {
-                return $this->_redirect('/');
+                return $this->_redirect('vipps/login/verification');
             }
         } catch (\Throwable $t) {
             return 'An error occurred!' . $t->getMessage();
