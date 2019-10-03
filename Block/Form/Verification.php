@@ -1,9 +1,12 @@
 <?php
 namespace Vipps\Login\Block\Form;
 
-use Magento\Framework\View\Element\Template;
-use Vipps\Login\Model\TokenProviderInterface;
 use Magento\Framework\UrlInterface;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Customer\Model\Form;
+use Vipps\Login\Model\TokenProviderInterface;
 
 /**
  * Class Verification
@@ -12,11 +15,6 @@ use Magento\Framework\UrlInterface;
 class Verification extends Template
 {
     /**
-     * @var \Magento\Customer\Model\Url
-     */
-    protected $_customerUrl;
-
-    /**
      * @var TokenProviderInterface
      */
     private $openIDtokenProvider;
@@ -24,23 +22,23 @@ class Verification extends Template
     /**
      * @var UrlInterface
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Customer\Model\Url $customerUrl
+     * Verification constructor.
+     *
+     * @param Context $context
+     * @param TokenProviderInterface $openIDtokenProvider
+     * @param UrlInterface $urlBuilder
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Customer\Model\Url $customerUrl,
+        Context $context,
         TokenProviderInterface $openIDtokenProvider,
         UrlInterface $urlBuilder,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->_isScopePrivate = false;
-        $this->_customerUrl = $customerUrl;
         $this->openIDtokenProvider = $openIDtokenProvider;
         $this->urlBuilder = $urlBuilder;
     }
@@ -65,15 +63,10 @@ class Verification extends Template
     }
 
     /**
-     * Retrieve password forgotten url
+     * Get current user email.
      *
-     * @return string
+     * @return mixed
      */
-    public function getForgotPasswordUrl()
-    {
-        return $this->_customerUrl->getForgotPasswordUrl();
-    }
-
     public function getEmail()
     {
         $idToken = $this->openIDtokenProvider->get();
@@ -88,8 +81,8 @@ class Verification extends Template
     public function isAutocompleteDisabled()
     {
         return (bool)!$this->_scopeConfig->getValue(
-            \Magento\Customer\Model\Form::XML_PATH_ENABLE_AUTOCOMPLETE,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            Form::XML_PATH_ENABLE_AUTOCOMPLETE,
+            ScopeInterface::SCOPE_STORE
         );
     }
 }
