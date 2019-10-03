@@ -25,6 +25,7 @@ use Vipps\Login\Api\Data\UserInfoInterface;
  */
 interface VippsAccountManagementInterface
 {
+
     public function link(UserInfoInterface $userInfo, CustomerInterface $customer);
 
     public function unlink();

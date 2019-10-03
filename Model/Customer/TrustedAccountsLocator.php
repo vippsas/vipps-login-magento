@@ -62,14 +62,13 @@ class TrustedAccountsLocator
     }
 
     /**
-     * @param $phone
+     * @param string $phone
      *
      * @return VippsCustomerSearchResultsInterface
      * @throws LocalizedException
      */
     public function getList($phone)
     {
-        //todo add support for multiple websites
         $this->searchCriteriaBuilder->addFilter('telephone', $phone);
         $this->searchCriteriaBuilder->addFilter('linked', true);
         $this->searchCriteriaBuilder->addFilter(
