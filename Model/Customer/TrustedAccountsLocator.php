@@ -16,10 +16,11 @@
 
 namespace Vipps\Login\Model\Customer;
 
-use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Customer\Api\Data\CustomerSearchResultsInterface;
 use Magento\Framework\Exception\LocalizedException;
+use Vipps\Login\Api\Data\VippsCustomerSearchResultsInterface;
+use Vipps\Login\Api\VippsCustomerRepositoryInterface;
+use Vipps\Login\Model\ResourceModel\VippsCustomerRepository;
 
 /**
  * Class TrustedAccountsLocator
@@ -33,36 +34,36 @@ class TrustedAccountsLocator
     private $searchCriteriaBuilder;
 
     /**
-     * @var CustomerRepositoryInterface
+     * @var VippsCustomerRepository
      */
-    private $customerRepository;
+    private $vippsCustomerRepository;
 
     /**
      * TrustedAccountsLocator constructor.
      *
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param CustomerRepositoryInterface $customerRepository
+     * @param VippsCustomerRepository $customerRepository
      */
     public function __construct(
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        CustomerRepositoryInterface $customerRepository
+        VippsCustomerRepositoryInterface $vippsCustomerRepository
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
-        $this->customerRepository = $customerRepository;
+        $this->vippsCustomerRepository = $vippsCustomerRepository;
     }
 
     /**
-     * @param $phone
+     * @param string $phone
      *
-     * @return CustomerSearchResultsInterface
+     * @return VippsCustomerSearchResultsInterface
      * @throws LocalizedException
      */
     public function getList($phone)
     {
-        $this->searchCriteriaBuilder->addFilter('vipps_telephone', $phone);
-        $this->searchCriteriaBuilder->addFilter('vipps_linked', true);
+        $this->searchCriteriaBuilder->addFilter('telephone', $phone);
+        $this->searchCriteriaBuilder->addFilter('linked', true);
 
         $searchCriteria = $this->searchCriteriaBuilder->create();
-        return $this->customerRepository->getList($searchCriteria);
+        return $this->vippsCustomerRepository->getList($searchCriteria);
     }
 }
