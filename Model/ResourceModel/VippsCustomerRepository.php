@@ -90,6 +90,7 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
             VippsCustomerInterface::class
         );
 
+        /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
         $vippsCustomer = $this->modelFactory->create(['data' => $modelData]);
         $vippsCustomer->save();
     }

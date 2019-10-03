@@ -16,14 +16,15 @@
 namespace Vipps\Login\Model\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
-use Magento\Framework\Api\ExtensionAttributesFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\State\InputMismatchException;
+use Vipps\Login\Api\Data\VippsCustomerInterface;
+use Vipps\Login\Api\Data\VippsCustomerInterfaceFactory;
+use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 
 /**
  * Class Creator
@@ -47,9 +48,14 @@ class Creator
     private $customerRepository;
 
     /**
-     * @var ExtensionAttributesFactory
+     * @var VippsCustomerInterfaceFactory
      */
-    private $extensionAttributesFactory;
+    private $vippsCustomerFactory;
+
+    /**
+     * @var VippsCustomerRepositoryInterface
+     */
+    private $vippsCustomerRepository;
 
     /**
      * Creator constructor.
@@ -57,18 +63,19 @@ class Creator
      * @param StoreManagerInterface $storeManager
      * @param CustomerInterfaceFactory $customerFactory
      * @param CustomerRepositoryInterface $customerRepository
-     * @param ExtensionAttributesFactory $extensionAttributesFactory
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         CustomerInterfaceFactory $customerFactory,
         CustomerRepositoryInterface $customerRepository,
-        ExtensionAttributesFactory $extensionAttributesFactory
+        VippsCustomerInterfaceFactory $vippsCustomerFactory,
+        VippsCustomerRepositoryInterface $vippsCustomerRepository
     ) {
         $this->storeManager = $storeManager;
         $this->customerFactory = $customerFactory;
         $this->customerRepository = $customerRepository;
-        $this->extensionAttributesFactory = $extensionAttributesFactory;
+        $this->vippsCustomerFactory = $vippsCustomerFactory;
+        $this->vippsCustomerRepository = $vippsCustomerRepository;
     }
 
     /**
@@ -87,14 +94,17 @@ class Creator
         $customer->setFirstname($userInfo->getName());
         $customer->setLastname($userInfo->getFamilyName());
 
-        $extensionAttributes = $customer->getExtensionAttributes() ??
-            $this->extensionAttributesFactory->create(CustomerInterface::class);
+        $newCustomer = $this->customerRepository->save($customer);
 
-        $extensionAttributes->setVippsTelephone($userInfo->getPhoneNumber());
-        $extensionAttributes->setVippsLinked(true);
+        /** @var VippsCustomerInterface $vippsCustomer */
+        $vippsCustomer = $this->vippsCustomerFactory->create();
 
-        $customer->setExtensionAttributes($extensionAttributes);
+        $vippsCustomer->setCustomerEntityId($newCustomer->getId());
+        $vippsCustomer->setEmail($newCustomer->getEmail());
+        $vippsCustomer->setTelephone($userInfo->getPhoneNumber());
+        $vippsCustomer->setLinked(true);
 
-        $this->customerRepository->save($customer);
+        $this->vippsCustomerRepository->save($vippsCustomer);
+
     }
 }

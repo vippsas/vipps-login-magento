@@ -25,6 +25,9 @@ class InstallSchema implements InstallSchemaInterface
         $installer = $setup;
         $installer->startSetup();
 
+        $vippsCustomerEntityTableName = $installer->getConnection()->getTableName('vipps_customer_entity');
+        $customerEntityTableName = $installer->getConnection()->getTableName('customer_entity');
+
         $table = $installer->getConnection()->newTable(
             $installer->getTable('vipps_customer_entity')
         )->addColumn(
@@ -58,11 +61,24 @@ class InstallSchema implements InstallSchemaInterface
             ['unsigned' => true, 'nullable' => false, 'default' => '1'],
             'Is Active'
         )->addIndex(
-            $installer->getIdxName('vipps_customer_entity', ['telephone']),
+            $installer->getIdxName(
+                'vipps_customer_entity',
+                ['customer_entity_id'],
+                AdapterInterface::INDEX_TYPE_UNIQUE
+            ),
+            ['customer_entity_id'],
+            ['type' => AdapterInterface::INDEX_TYPE_UNIQUE]
+        )->addIndex(
+            $installer->getIdxName($vippsCustomerEntityTableName, ['telephone']),
             ['telephone']
         )->addForeignKey(
-            $installer->getFkName('vipps_customer_entity', 'entity_id', 'customer_entity', 'entity_id'),
-            'entity_id',
+            $installer->getFkName(
+                $vippsCustomerEntityTableName,
+                'customer_entity_id',
+                $customerEntityTableName,
+                'entity_id'
+            ),
+            'customer_entity_id',
             $installer->getTable('customer_entity'),
             'entity_id',
             Table::ACTION_CASCADE

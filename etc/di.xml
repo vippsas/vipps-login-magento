@@ -20,9 +20,4 @@
     <preference for="Vipps\Login\Api\VippsCustomerRepositoryInterface" type="Vipps\Login\Model\ResourceModel\VippsCustomerRepository"/>
     <preference for="Vipps\Login\Api\Data\VippsCustomerInterface" type="Vipps\Login\Model\Data\VippsCustomer"/>
     <preference for="Vipps\Login\Api\Data\VippsCustomerSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
-
-    <type name="Magento\Customer\Api\CustomerRepositoryInterface">
-        <plugin name="Vipps\Login\Plugin\Customer\Model\CustomerPlugin"
-                type="Vipps\Login\Plugin\Customer\Model\CustomerPlugin"/>
-    </type>
 </config>
