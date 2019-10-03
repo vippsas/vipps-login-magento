@@ -92,13 +92,15 @@ class Redirect extends Action
 
         try {
             $idToken = $this->openIDtokenProvider->get();
-            $list = $this->trustedAccountsLocator->getList($idToken->phone_number);
-            if ($list->getTotalCount() > 0) {
-                $customerData = $list->getItems()[0];
+            $trustedAccounts = $this->trustedAccountsLocator->getList($idToken->phone_number);
+
+            if ($trustedAccounts->getTotalCount() > 0) {
+                $customerData = $trustedAccounts->getItems()[0];
                 $customer = $this->customerRegistry->retrieveByEmail($customerData->getEmail());
                 $this->sessionManager->setCustomerAsLoggedIn($customer);
 
                 return $this->_redirect('/');
+
             } else {
                 return $this->_redirect('vipps/login/verification');
             }

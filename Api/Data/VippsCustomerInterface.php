@@ -48,6 +48,18 @@ interface VippsCustomerInterface extends CustomAttributesDataInterface
     public function setCustomerEntityId($value);
 
     /**
+     * @return int
+     */
+    public function getWebsiteId();
+
+    /**
+     * @param int $value
+     *
+     * @return $this
+     */
+    public function setWebsiteId($value);
+
+    /**
      * @return string
      */
     public function getEmail();

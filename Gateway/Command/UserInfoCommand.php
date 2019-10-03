@@ -16,9 +16,13 @@
 
 namespace Vipps\Login\Gateway\Command;
 
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\Serialize\SerializerInterface;
+use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\UserInfoInterfaceFactory;
+use Vipps\Login\Model\TokenProviderInterface;
+use Vipps\Login\Model\UrlResolver;
 
 /**
  * Class UserInfoCommand
@@ -42,34 +46,56 @@ class UserInfoCommand
     private $userInfoFactory;
 
     /**
+     * @var UrlResolver
+     */
+    private $urlResolver;
+
+    /**
+     * @var TokenProviderInterface
+     */
+    private $accessTokenProvider;
+
+    /**
      * UserInfoCommand constructor.
      *
      * @param SerializerInterface $serializer
      * @param ClientFactory $httpClientFactory
      * @param UserInfoInterfaceFactory $userInfoFactory
+     * @param UrlResolver $urlResolver
+     * @param TokenProviderInterface $accessTokenProvider
      */
     public function __construct(
         SerializerInterface $serializer,
         ClientFactory $httpClientFactory,
-        UserInfoInterfaceFactory $userInfoFactory
+        UserInfoInterfaceFactory $userInfoFactory,
+        UrlResolver $urlResolver,
+        TokenProviderInterface $accessTokenProvider
     ) {
         $this->serializer = $serializer;
         $this->httpClientFactory = $httpClientFactory;
         $this->userInfoFactory = $userInfoFactory;
+        $this->urlResolver = $urlResolver;
+        $this->accessTokenProvider = $accessTokenProvider;
     }
 
     /**
-     * @param $accessToken
-     *
      * @return UserInfoInterface
+     * @throws \Exception
      */
-    public function execute($accessToken)
+    public function execute()
     {
+        $accessToken = $this->accessTokenProvider->get();
+
         $httpClient = $this->httpClientFactory->create();
         $httpClient->addHeader('Authorization', 'Bearer ' . $accessToken);
-        $httpClient->get('https://apitest.vipps.no/access-management-1.0/access/userinfo');
+        $httpClient->get($this->urlResolver->getUrl('userinfo'));
+
+        if ($httpClient->getStatus() !== 200) {
+            throw new \Exception("Error");
+        }
 
         $userInfoData = $this->serializer->unserialize($httpClient->getBody());
+
         return $this->userInfoFactory->create(['data' => $userInfoData]);
     }
 }

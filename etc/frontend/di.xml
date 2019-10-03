@@ -16,10 +16,26 @@
         </arguments>
     </type>
 
+    <type name="Vipps\Login\Controller\Login\VerifyAjax">
+        <arguments>
+<!--
+            <argument name="openIDtokenProvider" xsi:type="object">Vipps\Login\Model\OpenIDTokenProvider</argument>
+-->
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+        </arguments>
+    </type>
+
     <type name="Vipps\Login\Gateway\Command\TokenCommand">
         <arguments>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
             <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Gateway\Command\UserInfoCommand">
+        <arguments>
+            <argument name="accessTokenProvider" xsi:type="object">Vipps\Login\Model\AccessTokenProvider</argument>
         </arguments>
     </type>
 

@@ -61,6 +61,24 @@ class VippsCustomer extends AbstractExtensibleObject implements VippsCustomerInt
     }
 
     /**
+     * @param int $value
+     *
+     * @return VippsCustomerInterface
+     */
+    public function setWebsiteId($value)
+    {
+        return $this->setData('website_id', $value);
+    }
+
+    /**
+     * @return int
+     */
+    public function getWebsiteId()
+    {
+        return $this->_get('website_id');
+    }
+
+    /**
      * @return mixed|string|null
      */
     public function getEmail()

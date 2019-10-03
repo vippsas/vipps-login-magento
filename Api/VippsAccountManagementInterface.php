@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  * Copyright 2018 Vipps
  *
@@ -14,11 +13,19 @@
  *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  *  IN THE SOFTWARE.
  */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-    <preference for="Vipps\Login\Api\Data\UserInfoInterface" type="Vipps\Login\Model\Data\UserInfo"/>
-    <preference for="Vipps\Login\Api\VippsCustomerRepositoryInterface" type="Vipps\Login\Model\ResourceModel\VippsCustomerRepository"/>
-    <preference for="Vipps\Login\Api\VippsAccountManagementInterface" type="Vipps\Login\Model\VippsAccountManagement"/>
-    <preference for="Vipps\Login\Api\Data\VippsCustomerInterface" type="Vipps\Login\Model\Data\VippsCustomer"/>
-    <preference for="Vipps\Login\Api\Data\VippsCustomerSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
-</config>
+
+namespace Vipps\Login\Api;
+
+use Magento\Customer\Api\Data\CustomerInterface;
+use Vipps\Login\Api\Data\UserInfoInterface;
+
+/**
+ * Interface VippsAccountManagementInterface
+ * @package Vipps\Login\Api
+ */
+interface VippsAccountManagementInterface
+{
+    public function link(UserInfoInterface $userInfo, CustomerInterface $customer);
+
+    public function unlink();
+}

@@ -16,6 +16,7 @@
 namespace Vipps\Login\Model\Customer;
 
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
@@ -63,6 +64,8 @@ class Creator
      * @param StoreManagerInterface $storeManager
      * @param CustomerInterfaceFactory $customerFactory
      * @param CustomerRepositoryInterface $customerRepository
+     * @param VippsCustomerInterfaceFactory $vippsCustomerFactory
+     * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      */
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -87,6 +90,7 @@ class Creator
      */
     public function create(UserInfoInterface $userInfo)
     {
+        /** @var CustomerInterface $customer */
         $customer = $this->customerFactory->create();
         $customer->setWebsiteId($this->storeManager->getWebsite()->getWebsiteId());
 
@@ -100,11 +104,13 @@ class Creator
         $vippsCustomer = $this->vippsCustomerFactory->create();
 
         $vippsCustomer->setCustomerEntityId($newCustomer->getId());
+        $vippsCustomer->setWebsiteId($this->storeManager->getWebsite()->getWebsiteId());
         $vippsCustomer->setEmail($newCustomer->getEmail());
         $vippsCustomer->setTelephone($userInfo->getPhoneNumber());
         $vippsCustomer->setLinked(true);
 
         $this->vippsCustomerRepository->save($vippsCustomer);
-
     }
+
+
 }

@@ -7,11 +7,8 @@ use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\Session\SessionManagerInterface;
 use Vipps\Login\Model\ConfigInterface;
 use Vipps\Login\Model\UrlResolver;
-
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Customer\Model\Session as CustomerSession;
-
-
 use Firebase\JWT\JWT;
 use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;

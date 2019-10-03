@@ -43,34 +43,32 @@ class InstallSchema implements InstallSchemaInterface
             ['unsigned' => true, 'nullable' => false],
             'Customer Entity Id'
         )->addColumn(
+            'website_id',
+            Table::TYPE_SMALLINT,
+            null,
+            ['unsigned' => true],
+            'Website Id'
+        )->addColumn(
             'email',
             Table::TYPE_TEXT,
             255,
-            [],
+            ['nullable' => false],
             'Email'
         )->addColumn(
             'telephone',
             Table::TYPE_TEXT,
             255,
-            [],
+            ['nullable' => false],
             'Vipps Telephone'
         )->addColumn(
             'linked',
             Table::TYPE_SMALLINT,
             null,
-            ['unsigned' => true, 'nullable' => false, 'default' => '1'],
+            ['unsigned' => true, 'nullable' => false, 'default' => '0'],
             'Is Active'
         )->addIndex(
-            $installer->getIdxName(
-                'vipps_customer_entity',
-                ['customer_entity_id'],
-                AdapterInterface::INDEX_TYPE_UNIQUE
-            ),
-            ['customer_entity_id'],
-            ['type' => AdapterInterface::INDEX_TYPE_UNIQUE]
-        )->addIndex(
-            $installer->getIdxName($vippsCustomerEntityTableName, ['telephone']),
-            ['telephone']
+            $installer->getIdxName($vippsCustomerEntityTableName, ['telephone', 'website_id', 'linked']),
+            ['telephone', 'website_id', 'linked']
         )->addForeignKey(
             $installer->getFkName(
                 $vippsCustomerEntityTableName,

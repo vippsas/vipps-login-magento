@@ -18,6 +18,7 @@ namespace Vipps\Login\Model\Customer;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Store\Model\StoreManagerInterface;
 use Vipps\Login\Api\Data\VippsCustomerSearchResultsInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Model\ResourceModel\VippsCustomerRepository;
@@ -28,6 +29,11 @@ use Vipps\Login\Model\ResourceModel\VippsCustomerRepository;
  */
 class TrustedAccountsLocator
 {
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
     /**
      * @var SearchCriteriaBuilder
      */
@@ -41,27 +47,35 @@ class TrustedAccountsLocator
     /**
      * TrustedAccountsLocator constructor.
      *
+     * @param StoreManagerInterface $storeManager
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param VippsCustomerRepository $customerRepository
+     * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      */
     public function __construct(
+        StoreManagerInterface $storeManager,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         VippsCustomerRepositoryInterface $vippsCustomerRepository
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
+        $this->storeManager = $storeManager;
     }
 
     /**
-     * @param string $phone
+     * @param $phone
      *
      * @return VippsCustomerSearchResultsInterface
      * @throws LocalizedException
      */
     public function getList($phone)
     {
+        //todo add support for multiple websites
         $this->searchCriteriaBuilder->addFilter('telephone', $phone);
         $this->searchCriteriaBuilder->addFilter('linked', true);
+        $this->searchCriteriaBuilder->addFilter(
+            'website_id',
+            $this->storeManager->getWebsite()->getWebsiteId()
+        );
 
         $searchCriteria = $this->searchCriteriaBuilder->create();
         return $this->vippsCustomerRepository->getList($searchCriteria);
