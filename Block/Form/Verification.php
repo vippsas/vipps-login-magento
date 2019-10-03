@@ -2,6 +2,8 @@
 namespace Vipps\Login\Block\Form;
 
 use Magento\Framework\View\Element\Template;
+use Vipps\Login\Model\TokenProviderInterface;
+use Magento\Framework\UrlInterface;
 
 /**
  * Class Verification
@@ -10,36 +12,37 @@ use Magento\Framework\View\Element\Template;
 class Verification extends Template
 {
     /**
-     * @var int
-     */
-    private $_username = -1;
-
-    /**
-     * @var \Magento\Customer\Model\Session
-     */
-    protected $_customerSession;
-
-    /**
      * @var \Magento\Customer\Model\Url
      */
     protected $_customerUrl;
 
     /**
+     * @var TokenProviderInterface
+     */
+    private $openIDtokenProvider;
+
+    /**
+     * @var UrlInterface
+     */
+    protected $urlBuilder;
+
+    /**
      * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Customer\Model\Session $customerSession
      * @param \Magento\Customer\Model\Url $customerUrl
      * @param array $data
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Customer\Model\Session $customerSession,
         \Magento\Customer\Model\Url $customerUrl,
+        TokenProviderInterface $openIDtokenProvider,
+        UrlInterface $urlBuilder,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->_isScopePrivate = false;
         $this->_customerUrl = $customerUrl;
-        $this->_customerSession = $customerSession;
+        $this->openIDtokenProvider = $openIDtokenProvider;
+        $this->urlBuilder = $urlBuilder;
     }
 
     /**
@@ -56,9 +59,9 @@ class Verification extends Template
      *
      * @return string
      */
-    public function getPostActionUrl()
+    public function getAjaxLoginUrl()
     {
-        return $this->_customerUrl->getLoginPostUrl();
+        return $this->urlBuilder->getUrl('customer/ajax/login');
     }
 
     /**
@@ -71,17 +74,10 @@ class Verification extends Template
         return $this->_customerUrl->getForgotPasswordUrl();
     }
 
-    /**
-     * Retrieve username for form field
-     *
-     * @return string
-     */
-    public function getUsername()
+    public function getEmail()
     {
-        if (-1 === $this->_username) {
-            $this->_username = $this->_customerSession->getUsername(true);
-        }
-        return $this->_username;
+        $idToken = $this->openIDtokenProvider->get();
+        return $idToken->email;
     }
 
     /**
