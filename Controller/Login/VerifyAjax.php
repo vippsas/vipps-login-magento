@@ -137,12 +137,6 @@ class VerifyAjax extends Action
             return $resultRaw->setHttpResponseCode($httpBadRequestCode);
         }
 
-        try {
-            $userInfo = $this->userInfoCommand->execute();
-        } catch (\Throwable $e) {
-            return $resultRaw->setHttpResponseCode($httpBadRequestCode);
-        }
-
         $response = [
             'errors' => false,
             'message' => __('Login successful.')
@@ -161,6 +155,12 @@ class VerifyAjax extends Action
             if (!$this->scopeConfig->getValue('customer/startup/redirect_dashboard') && $redirectRoute) {
                 $response['redirectUrl'] = $this->_redirect->success($redirectRoute);
                 $this->accountRedirect->clearRedirectCookie();
+            }
+
+            try {
+                $userInfo = $this->userInfoCommand->execute();
+            } catch (\Throwable $e) {
+                return $resultRaw->setHttpResponseCode($httpBadRequestCode);
             }
 
             $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
