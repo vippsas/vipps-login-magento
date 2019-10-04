@@ -57,4 +57,10 @@
         </arguments>
     </type>
 
+    <type name="Vipps\Login\Model\StateKey">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
 </config>

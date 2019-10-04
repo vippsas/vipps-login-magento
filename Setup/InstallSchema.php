@@ -69,6 +69,14 @@ class InstallSchema implements InstallSchemaInterface
         )->addIndex(
             $installer->getIdxName($vippsCustomerEntityTableName, ['telephone', 'website_id', 'linked']),
             ['telephone', 'website_id', 'linked']
+        )->addIndex(
+            $installer->getIdxName(
+                'vipps_customer_entity',
+                ['customer_entity_id'],
+                AdapterInterface::INDEX_TYPE_UNIQUE
+            ),
+            ['customer_entity_id'],
+            ['type' => AdapterInterface::INDEX_TYPE_UNIQUE]
         )->addForeignKey(
             $installer->getFkName(
                 $vippsCustomerEntityTableName,

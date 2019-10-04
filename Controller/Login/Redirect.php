@@ -22,6 +22,7 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\Session\SessionManagerInterface;
 use Vipps\Login\Gateway\Command\TokenCommand;
 use Vipps\Login\Model\Customer\TrustedAccountsLocator;
+use Vipps\Login\Model\StateKey;
 use Vipps\Login\Model\TokenProviderInterface;
 
 /**
@@ -56,6 +57,11 @@ class Redirect extends Action
     private $openIDtokenProvider;
 
     /**
+     * @var StateKey
+     */
+    private $stateKey;
+
+    /**
      * Redirect constructor.
      *
      * @param Context $context
@@ -64,6 +70,7 @@ class Redirect extends Action
      * @param TokenCommand $tokenCommand
      * @param TrustedAccountsLocator $trustedAccountsLocator
      * @param TokenProviderInterface $openIDtokenProvider
+     * @param StateKey $stateKey
      */
     public function __construct(
         Context $context,
@@ -71,7 +78,8 @@ class Redirect extends Action
         SessionManagerInterface $sessionManager,
         TokenCommand $tokenCommand,
         TrustedAccountsLocator $trustedAccountsLocator,
-        TokenProviderInterface $openIDtokenProvider
+        TokenProviderInterface $openIDtokenProvider,
+        StateKey $stateKey
     ) {
         parent::__construct($context);
         $this->customerRegistry = $customerRegistry;
@@ -79,6 +87,7 @@ class Redirect extends Action
         $this->tokenCommand = $tokenCommand;
         $this->trustedAccountsLocator = $trustedAccountsLocator;
         $this->openIDtokenProvider = $openIDtokenProvider;
+        $this->stateKey = $stateKey;
     }
 
     /**
@@ -87,10 +96,18 @@ class Redirect extends Action
      */
     public function execute()
     {
+        $state = $this->_request->getParam('state');
+        if (!$this->stateKey->isValid($state)) {
+            $resultRedirect = $this->resultRedirectFactory->create();
+            $resultRedirect->setUrl('/');
+            return $resultRedirect;
+        }
+
         $code = $this->_request->getParam('code');
         $this->tokenCommand->execute($code);
 
         try {
+            $redirectUrl = '/';
             $idToken = $this->openIDtokenProvider->get();
             $trustedAccounts = $this->trustedAccountsLocator->getList($idToken->phone_number);
 
@@ -98,12 +115,14 @@ class Redirect extends Action
                 $customerData = $trustedAccounts->getItems()[0];
                 $customer = $this->customerRegistry->retrieveByEmail($customerData->getEmail());
                 $this->sessionManager->setCustomerAsLoggedIn($customer);
-
-                return $this->_redirect('/');
-
             } else {
-                return $this->_redirect('vipps/login/verification');
+                $redirectUrl = 'vipps/login/verification';
             }
+
+            $resultRedirect = $this->resultRedirectFactory->create();
+            $resultRedirect->setUrl($redirectUrl);
+            return $resultRedirect;
+
         } catch (\Throwable $t) {
             return 'An error occurred!' . $t->getMessage();
         }
