@@ -16,6 +16,9 @@
 
 namespace Vipps\Login\Api;
 
+use Magento\Customer\Api\Data\CustomerInterface;
+use Vipps\Login\Api\Data\VippsCustomerInterface;
+
 /**
  * VippsCustomer CRUD interface.
  * @api
@@ -41,4 +44,11 @@ interface VippsCustomerRepositoryInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria);
+
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return VippsCustomerInterface
+     */
+    public function getByCustomer(CustomerInterface $customer);
 }

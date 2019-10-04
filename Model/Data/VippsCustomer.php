@@ -113,4 +113,40 @@ class VippsCustomer extends AbstractExtensibleObject implements VippsCustomerInt
     {
         return $this->setData('linked', $value);
     }
+
+    /**
+     * @return string
+     */
+    public function getConfirmationKey()
+    {
+        return $this->_get('confirmation_key');
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return VippsCustomerInterface
+     */
+    public function setConfirmationKey($value)
+    {
+        return $this->setData('confirmation_key', $value);
+    }
+
+    /**
+     * @return int
+     */
+    public function getConfirmationExp()
+    {
+        return $this->_get('confirmation_exp');
+    }
+
+    /**
+     * @param int $value
+     *
+     * @return VippsCustomerInterface
+     */
+    public function setConfirmationExp($value)
+    {
+        return $this->setData('confirmation_exp', $value);
+    }
 }
