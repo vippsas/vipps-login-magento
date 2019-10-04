@@ -121,6 +121,20 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
     }
 
     /**
+     * @param int $id
+     *
+     * @return VippsCustomerInterface
+     */
+    public function getById($id)
+    {
+        /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
+        $vippsCustomer = $this->modelFactory->create();
+        $vippsCustomer->load($id);
+
+        return $vippsCustomer->getDataModel();
+    }
+
+    /**
      * @param CustomerInterface $customer
      *
      * @return VippsCustomerInterface

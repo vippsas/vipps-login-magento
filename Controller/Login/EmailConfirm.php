@@ -15,7 +15,13 @@
  */
 namespace Vipps\Login\Controller\Login;
 
+use Vipps\Login\Model\VippsAccountManagement;
+use Magento\Customer\Model\CustomerRegistry;
+use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\Message\ManagerInterface;
 
 /**
  * Class EmailConfirm
@@ -23,8 +29,64 @@ use Magento\Framework\App\Action\Action;
  */
 class EmailConfirm extends Action
 {
+    /**
+     * @var VippsAccountManagement
+     */
+    private $vippsAccountManagement;
+
+    /**
+     * @var SessionManagerInterface|Session
+     */
+    private $sessionManager;
+
+    /**
+     * @var CustomerRegistry
+     */
+    private $customerRegistry;
+
+    /**
+     * EmailConfirm constructor.
+     *
+     * @param Context $context
+     * @param VippsAccountManagement $vippsAccountManagement
+     * @param SessionManagerInterface $sessionManager
+     * @param CustomerRegistry $customerRegistry
+     * @param ManagerInterface $messageManager
+     */
+    public function __construct(
+        Context $context,
+        VippsAccountManagement $vippsAccountManagement,
+        SessionManagerInterface $sessionManager,
+        CustomerRegistry $customerRegistry,
+        ManagerInterface $messageManager
+    ) {
+        parent::__construct($context);
+        $this->vippsAccountManagement = $vippsAccountManagement;
+        $this->sessionManager = $sessionManager;
+        $this->customerRegistry = $customerRegistry;
+        $this->messageManager = $messageManager;
+    }
+
+    /**
+     * @return \Magento\Framework\Controller\Result\Redirect
+     */
     public function execute()
     {
-        // TODO: Implement execute() method.
+        $id = (int)$this->getRequest()->getParam('id');
+        $key = $this->getRequest()->getParam('key');
+
+        $redirect = $this->resultRedirectFactory->create();
+        try {
+            $vippsCustomer = $this->vippsAccountManagement->confirm($id, $key);
+            if ($vippsCustomer) {
+                $customer = $this->customerRegistry->retrieveByEmail($vippsCustomer->getEmail());
+                $this->sessionManager->setCustomerAsLoggedIn($customer);
+                $this->messageManager->addSuccessMessage(__('Your account was successfully confirmed.'));
+                return $redirect->setPath('customer/account');
+            }
+        } catch (\Exception $e) {
+            $this->messageManager->addErrorMessage(__('An error occurred during email confirmation.'));
+        }
+        return $redirect->setPath('/');
     }
 }

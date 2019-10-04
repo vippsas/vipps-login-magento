@@ -10,6 +10,12 @@
         </arguments>
     </type>
 
+    <type name="Vipps\Login\Controller\Login\EmailConfirm">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
     <type name="Vipps\Login\Controller\Login\Verification">
         <arguments>
             <argument name="openIDtokenProvider" xsi:type="object">Vipps\Login\Model\OpenIDTokenProvider</argument>

@@ -74,7 +74,7 @@ class VippsAccountManagement
             throw new InvalidTransitionException(__('Account already confirmed'));
         }
 
-        $vippsCustomer = $this->createPair($userInfo, $customer);
+        $vippsCustomer = $this->getPair($userInfo, $customer);
         $vippsCustomer->setConfirmationKey($this->mathRand->getUniqueHash());
         $vippsCustomer->setConfirmationExp(time() + 3600);
 
@@ -82,6 +82,27 @@ class VippsAccountManagement
 
         // send email
         $this->emailNotification->resendConfirmation($vippsCustomer, $customer);
+    }
+
+    /**
+     * @param $id
+     * @param $key
+     *
+     * @return VippsCustomerInterface|null
+     * @throws InputException
+     * @throws InputMismatchException
+     * @throws LocalizedException
+     */
+    public function confirm($id, $key)
+    {
+        $vippsCustomer = $this->vippsCustomerRepository->getById($id);
+        if ($key === $vippsCustomer->getConfirmationKey() && $vippsCustomer->getConfirmationExp() > time()) {
+            $vippsCustomer->setLinked(true);
+            $vippsCustomer->setConfirmationKey(null);
+            $vippsCustomer->setConfirmationExp(null);
+            return $this->vippsCustomerRepository->save($vippsCustomer);
+        }
+        return null;
     }
 
     /**
@@ -96,7 +117,7 @@ class VippsAccountManagement
      */
     public function link(UserInfoInterface $userInfo, CustomerInterface $customer)
     {
-        $vippsCustomer = $this->createPair($userInfo, $customer);
+        $vippsCustomer = $this->getPair($userInfo, $customer);
         $vippsCustomer->setLinked(true);
         $this->vippsCustomerRepository->save($vippsCustomer);
     }
@@ -115,7 +136,7 @@ class VippsAccountManagement
      * @throws InputMismatchException
      * @throws LocalizedException
      */
-    public function createPair(UserInfoInterface $userInfo, CustomerInterface $customer)
+    public function getPair(UserInfoInterface $userInfo, CustomerInterface $customer)
     {
         $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
         if (!$vippsCustomer->getEntityId()) {

@@ -73,7 +73,7 @@ class EmailConfirmation extends Action
     }
 
     /**
-     *
+     * @return \Magento\Framework\Controller\Result\Json
      */
     public function execute()
     {

@@ -46,6 +46,13 @@ interface VippsCustomerRepositoryInterface
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria);
 
     /**
+     * @param int $id
+     *
+     * @return VippsCustomerInterface
+     */
+    public function getById($id);
+
+    /**
      * @param CustomerInterface $customer
      *
      * @return VippsCustomerInterface
