@@ -60,7 +60,21 @@ class InstallSchema implements InstallSchemaInterface
             null,
             ['unsigned' => true, 'nullable' => false, 'default' => '1'],
             'Is Active'
-        )->addIndex(
+        )->addColumn(
+            'confirmation_key',
+            Table::TYPE_TEXT,
+            255,
+            [],
+            'Confirmation Key'
+        )
+        ->addColumn(
+            'confirmation_exp',
+            Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true, 'nullable' => true],
+            'Confirmation Expiration Time'
+        )
+        ->addIndex(
             $installer->getIdxName(
                 'vipps_customer_entity',
                 ['customer_entity_id'],

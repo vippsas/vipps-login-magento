@@ -82,4 +82,28 @@ interface VippsCustomerInterface extends CustomAttributesDataInterface
      * @return $this
      */
     public function setLinked($value);
+
+    /**
+     * @return string
+     */
+    public function getConfirmationKey();
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setConfirmationKey($value);
+
+    /**
+     * @return int
+     */
+    public function getConfirmationExp();
+
+    /**
+     * @param int $value
+     *
+     * @return $this
+     */
+    public function setConfirmationExp($value);
 }
