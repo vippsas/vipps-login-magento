@@ -90,7 +90,7 @@ class TokenCommand
         $httpClient->post($this->apiEndpoints->getTokenEndpoint(), [
             'grant_type' => 'authorization_code',
             'code' => $code,
-            'redirect_uri' => trim($this->url->getUrl('vipps/login/redirect'))
+            'redirect_uri' => trim($this->url->getUrl('vipps/login/redirect'), '/')
         ]);
 
         try {

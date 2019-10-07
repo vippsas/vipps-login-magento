@@ -71,7 +71,7 @@ class Index extends Action
             'response_type=code',
             'scope=' . 'openid address name email phoneNumber birthDate',
             'state=' . $this->stateKey->generate(),
-            'redirect_uri=' .  trim($this->url->getUrl('vipps/login/redirect'))
+            'redirect_uri=' .  trim($this->url->getUrl('vipps/login/redirect'), '/')
 
         ];
 
