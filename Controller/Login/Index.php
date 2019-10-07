@@ -7,6 +7,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\UrlInterface;
 use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
 use Vipps\Login\Model\StateKey;
@@ -33,23 +34,31 @@ class Index extends Action
     private $stateKey;
 
     /**
+     * @var UrlInterface
+     */
+    private $url;
+
+    /**
      * Index constructor.
      *
      * @param Context $context
      * @param ApiEndpointsInterface $apiEndpoints
      * @param ConfigInterface $config
      * @param StateKey $stateKey
+     * @param UrlInterface $url
      */
     public function __construct(
         Context $context,
         ApiEndpointsInterface $apiEndpoints,
         ConfigInterface $config,
-        StateKey $stateKey
+        StateKey $stateKey,
+        UrlInterface $url
     ) {
         parent::__construct($context);
         $this->config = $config;
         $this->apiEndpoints = $apiEndpoints;
         $this->stateKey = $stateKey;
+        $this->url = $url;
     }
 
     /**
@@ -62,7 +71,7 @@ class Index extends Action
             'response_type=code',
             'scope=' . 'openid address name email phoneNumber birthDate',
             'state=' . $this->stateKey->generate(),
-            'redirect_uri=' .  'https://test-norway-vipps.vaimo.com/vipps/login/redirect'
+            'redirect_uri=' .  trim($this->url->getUrl('vipps/login/redirect'))
 
         ];
 

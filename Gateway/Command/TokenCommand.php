@@ -4,6 +4,7 @@ namespace Vipps\Login\Gateway\Command;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
+use Magento\Framework\UrlInterface;
 use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
 use Magento\Framework\Serialize\SerializerInterface;
@@ -41,6 +42,10 @@ class TokenCommand
      * @var object
      */
     private $id_token;
+    /**
+     * @var UrlInterface
+     */
+    private $url;
 
     /**
      * TokenCommand constructor.
@@ -49,17 +54,20 @@ class TokenCommand
      * @param SerializerInterface $serializer
      * @param ApiEndpointsInterface $apiEndpoints
      * @param ClientFactory $httpClientFactory
+     * @param UrlInterface $url
      */
     public function __construct(
         ConfigInterface $config,
         SerializerInterface $serializer,
         ApiEndpointsInterface $apiEndpoints,
-        ClientFactory $httpClientFactory
+        ClientFactory $httpClientFactory,
+        UrlInterface $url
     ) {
         $this->config = $config;
         $this->httpClientFactory = $httpClientFactory;
         $this->apiEndpoints = $apiEndpoints;
         $this->serializer = $serializer;
+        $this->url = $url;
     }
 
     /**
@@ -82,7 +90,7 @@ class TokenCommand
         $httpClient->post($this->apiEndpoints->getTokenEndpoint(), [
             'grant_type' => 'authorization_code',
             'code' => $code,
-            'redirect_uri' => 'https://test-norway-vipps.vaimo.com/vipps/login/redirect'
+            'redirect_uri' => trim($this->url->getUrl('vipps/login/redirect'))
         ]);
 
         try {
@@ -94,6 +102,7 @@ class TokenCommand
         if (!$this->isValid($tokenData)) {
             throw new LocalizedException(__('Some error message'));
         }
+
         $tokenData['decoded_id_token'] = $this->id_token;
         return $tokenData;
     }

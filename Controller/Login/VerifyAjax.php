@@ -192,6 +192,11 @@ class VerifyAjax extends Action
         return $resultJson->setData($response);
     }
 
+    /**
+     * @param $credentials
+     *
+     * @return bool
+     */
     private function isValid($credentials)
     {
         if (!$credentials ||
