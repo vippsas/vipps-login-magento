@@ -18,6 +18,7 @@ namespace Vipps\Login\Model\Customer;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
+use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Store\Model\StoreManagerInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Magento\Framework\Exception\InputException;
@@ -84,6 +85,7 @@ class Creator
     /**
      * @param UserInfoInterface $userInfo
      *
+     * @return VippsCustomerInterface
      * @throws InputException
      * @throws InputMismatchException
      * @throws LocalizedException
@@ -98,7 +100,12 @@ class Creator
         $customer->setFirstname($userInfo->getName());
         $customer->setLastname($userInfo->getFamilyName());
 
-        $newCustomer = $this->customerRepository->save($customer);
+        try {
+            $newCustomer = $this->customerRepository->save($customer);
+        } catch(AlreadyExistsException $e) {
+            $newCustomer = $this->customerRepository->get($userInfo->getEmail());
+        }
+
 
         /** @var VippsCustomerInterface $vippsCustomer */
         $vippsCustomer = $this->vippsCustomerFactory->create();
@@ -109,8 +116,6 @@ class Creator
         $vippsCustomer->setTelephone($userInfo->getPhoneNumber());
         $vippsCustomer->setLinked(true);
 
-        $this->vippsCustomerRepository->save($vippsCustomer);
+        return $this->vippsCustomerRepository->save($vippsCustomer);
     }
-
-
 }

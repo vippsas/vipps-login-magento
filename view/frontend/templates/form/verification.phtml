@@ -3,6 +3,9 @@
 // @codingStandardsIgnoreFile
 
 /** @var \Vipps\Login\Block\Form\Verification $block */
+
+$emails = $block->getEmails();
+
 ?>
 <div class="block block-customer-login">
     <div class="block-content" aria-labelledby="block-customer-login-heading">
@@ -16,7 +19,7 @@
                 <div class="field note">
                     <?= $block->escapeHtml(sprintf(__("Looks, like your email %s has been already registered. Confirm your password or send confirmation link to your email."), $block->escapeHtmlAttr($block->getEmail()))) ?>
                 </div>
-                    <input type="hidden" name="username" value="<?= $block->escapeHtmlAttr($block->getEmail()) ?>" <?php if ($block->isAutocompleteDisabled()): ?> autocomplete="off"<?php endif; ?> id="email" type="email" class="input-text" title="<?= $block->escapeHtmlAttr(__('Email')) ?>" data-validate="{required:true, 'validate-email':true}">
+                    <input type="hidden" name="username" value="<?= $block->escapeHtmlAttr(current($emails)) ?>" <?php if ($block->isAutocompleteDisabled()): ?> autocomplete="off"<?php endif; ?> id="email" type="email" class="input-text" title="<?= $block->escapeHtmlAttr(__('Email')) ?>" data-validate="{required:true, 'validate-email':true}">
                 <div class="field password required">
                     <label for="pass" class="label"><span><?= $block->escapeHtml(__('Password')) ?></span></label>
                     <div class="control">

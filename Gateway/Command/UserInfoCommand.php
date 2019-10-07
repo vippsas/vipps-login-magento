@@ -16,13 +16,12 @@
 
 namespace Vipps\Login\Gateway\Command;
 
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\Serialize\SerializerInterface;
+use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\UserInfoInterfaceFactory;
 use Vipps\Login\Model\TokenProviderInterface;
-use Vipps\Login\Model\UrlResolver;
 
 /**
  * Class UserInfoCommand
@@ -46,9 +45,9 @@ class UserInfoCommand
     private $userInfoFactory;
 
     /**
-     * @var UrlResolver
+     * @var ApiEndpointsInterface
      */
-    private $urlResolver;
+    private $apiEndpoints;
 
     /**
      * @var TokenProviderInterface
@@ -61,20 +60,20 @@ class UserInfoCommand
      * @param SerializerInterface $serializer
      * @param ClientFactory $httpClientFactory
      * @param UserInfoInterfaceFactory $userInfoFactory
-     * @param UrlResolver $urlResolver
+     * @param ApiEndpointsInterface $apiEndpoints
      * @param TokenProviderInterface $accessTokenProvider
      */
     public function __construct(
         SerializerInterface $serializer,
         ClientFactory $httpClientFactory,
         UserInfoInterfaceFactory $userInfoFactory,
-        UrlResolver $urlResolver,
+        ApiEndpointsInterface $apiEndpoints,
         TokenProviderInterface $accessTokenProvider
     ) {
         $this->serializer = $serializer;
         $this->httpClientFactory = $httpClientFactory;
         $this->userInfoFactory = $userInfoFactory;
-        $this->urlResolver = $urlResolver;
+        $this->apiEndpoints = $apiEndpoints;
         $this->accessTokenProvider = $accessTokenProvider;
     }
 
@@ -88,9 +87,9 @@ class UserInfoCommand
 
         $httpClient = $this->httpClientFactory->create();
         $httpClient->addHeader('Authorization', 'Bearer ' . $accessToken);
-        $httpClient->get($this->urlResolver->getUrl('userinfo'));
+        $httpClient->get($this->apiEndpoints->getUserInfoEndpoint());
 
-        if ($httpClient->getStatus() !== 200) {
+        if ($httpClient->getStatus() != 200) {
             throw new \Exception("Error");
         }
 

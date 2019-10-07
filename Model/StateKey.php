@@ -5,8 +5,8 @@ namespace Vipps\Login\Model;
 use Magento\Framework\Session\SessionManagerInterface;
 
 /**
- * Class UrlResolver
- * @package Vipps\Payment\Model
+ * Class StateKey
+ * @package Vipps\Login\Model
  */
 class StateKey
 {
@@ -49,6 +49,6 @@ class StateKey
      */
     public function isValid($state): bool
     {
-        return $state === $this->sessionManager->getData('vipps_url_state');
+        return $state == $this->sessionManager->getData('vipps_url_state');
     }
 }

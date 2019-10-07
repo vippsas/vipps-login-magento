@@ -133,7 +133,7 @@ class VerifyAjax extends Action
             return $resultRaw->setHttpResponseCode($httpBadRequestCode);
         }
 
-        if (!$credentials || $this->getRequest()->getMethod() !== 'POST' || !$this->getRequest()->isXmlHttpRequest()) {
+        if (!$this->isValid($credentials)) {
             return $resultRaw->setHttpResponseCode($httpBadRequestCode);
         }
 
@@ -148,6 +148,12 @@ class VerifyAjax extends Action
                 $credentials['password']
             );
 
+            try {
+                $userInfo = $this->userInfoCommand->execute();
+            } catch (\Throwable $e) {
+                return $resultRaw->setHttpResponseCode($httpBadRequestCode);
+            }
+
             $this->customerSession->setCustomerDataAsLoggedIn($magentoCustomer);
             $this->customerSession->regenerateId();
 
@@ -155,12 +161,6 @@ class VerifyAjax extends Action
             if (!$this->scopeConfig->getValue('customer/startup/redirect_dashboard') && $redirectRoute) {
                 $response['redirectUrl'] = $this->_redirect->success($redirectRoute);
                 $this->accountRedirect->clearRedirectCookie();
-            }
-
-            try {
-                $userInfo = $this->userInfoCommand->execute();
-            } catch (\Throwable $e) {
-                return $resultRaw->setHttpResponseCode($httpBadRequestCode);
             }
 
             $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
@@ -190,5 +190,19 @@ class VerifyAjax extends Action
         /** @var Json $resultJson */
         $resultJson = $this->resultJsonFactory->create();
         return $resultJson->setData($response);
+    }
+
+    private function isValid($credentials)
+    {
+        if (!$credentials ||
+            !array_key_exists('username', $credentials) ||
+            !array_key_exists('password', $credentials) ||
+            $this->getRequest()->getMethod() !== 'POST' ||
+            !$this->getRequest()->isXmlHttpRequest()
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -21,4 +21,6 @@
     <preference for="Vipps\Login\Api\VippsAccountManagementInterface" type="Vipps\Login\Model\VippsAccountManagement"/>
     <preference for="Vipps\Login\Api\Data\VippsCustomerInterface" type="Vipps\Login\Model\Data\VippsCustomer"/>
     <preference for="Vipps\Login\Api\Data\VippsCustomerSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+    <preference for="Vipps\Login\Api\ApiEndpointsInterface" type="Vipps\Login\Model\ApiEndpoints" />
+    <preference for="Vipps\Login\Model\ConfigInterface" type="Vipps\Login\Model\Config\Config"/>
 </config>

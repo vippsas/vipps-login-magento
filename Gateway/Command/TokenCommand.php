@@ -4,11 +4,9 @@ namespace Vipps\Login\Gateway\Command;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
-use Magento\Framework\Session\SessionManagerInterface;
+use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
-use Vipps\Login\Model\UrlResolver;
 use Magento\Framework\Serialize\SerializerInterface;
-use Magento\Customer\Model\Session as CustomerSession;
 use Firebase\JWT\JWT;
 use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;
@@ -20,16 +18,6 @@ use phpseclib\Math\BigInteger;
 class TokenCommand
 {
     /**
-     * @var string
-     */
-    const WELL_KNOWN_JWKS_JSON_URL = '.well-known/jwks.json';
-
-    /**
-     * @var string
-     */
-    const OAUTH_2_0_TOKEN_URL = 'oauth2/token';
-
-    /**
      * @var ClientFactory
      */
     private $httpClientFactory;
@@ -40,19 +28,14 @@ class TokenCommand
     private $config;
 
     /**
-     * @var UrlResolver
+     * @var ApiEndpointsInterface
      */
-    private $urlResolver;
+    private $apiEndpoints;
 
     /**
      * @var SerializerInterface
      */
     private $serializer;
-
-    /**
-     * @var CustomerSession
-     */
-    private $customerSession;
 
     /**
      * @var object
@@ -64,28 +47,27 @@ class TokenCommand
      *
      * @param ConfigInterface $config
      * @param SerializerInterface $serializer
-     * @param UrlResolver $urlResolver
+     * @param ApiEndpointsInterface $apiEndpoints
      * @param ClientFactory $httpClientFactory
-     * @param SessionManagerInterface $customerSession
      */
     public function __construct(
         ConfigInterface $config,
         SerializerInterface $serializer,
-        UrlResolver $urlResolver,
-        ClientFactory $httpClientFactory,
-        SessionManagerInterface $customerSession
+        ApiEndpointsInterface $apiEndpoints,
+        ClientFactory $httpClientFactory
     ) {
         $this->config = $config;
         $this->httpClientFactory = $httpClientFactory;
-        $this->urlResolver = $urlResolver;
+        $this->apiEndpoints = $apiEndpoints;
         $this->serializer = $serializer;
-        $this->customerSession = $customerSession;
     }
 
     /**
      * Method to get access and ID tokens from vipps login API.
      *
      * @param $code
+     *
+     * @return array|bool|float|int|null|string
      * @throws LocalizedException
      */
     public function execute($code)
@@ -97,7 +79,7 @@ class TokenCommand
         $httpClient->addHeader('Content-Type', 'application/x-www-form-urlencoded');
         $httpClient->setCredentials($clientId, $clientSecret);
 
-        $httpClient->post($this->urlResolver->getUrl(self::OAUTH_2_0_TOKEN_URL), [
+        $httpClient->post($this->apiEndpoints->getTokenEndpoint(), [
             'grant_type' => 'authorization_code',
             'code' => $code,
             'redirect_uri' => 'https://test-norway-vipps.vaimo.com/vipps/login/redirect'
@@ -112,9 +94,8 @@ class TokenCommand
         if (!$this->isValid($tokenData)) {
             throw new LocalizedException(__('Some error message'));
         }
-
-        $this->customerSession->setData('id_token', $this->id_token);
-        $this->customerSession->setData('access_token', $tokenData['access_token']);
+        $tokenData['decoded_id_token'] = $this->id_token;
+        return $tokenData;
     }
 
     /**
@@ -144,7 +125,7 @@ class TokenCommand
     private function getPublicKey()
     {
         $httpClient = $this->httpClientFactory->create();
-        $httpClient->get($this->urlResolver->getUrl(self::WELL_KNOWN_JWKS_JSON_URL));
+        $httpClient->get($this->apiEndpoints->getJwksUri());
 
         try {
             $jwks = $this->serializer->unserialize($httpClient->getBody());

@@ -16,9 +16,12 @@
 
 namespace Vipps\Login\Model\Customer;
 
+use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Customer\Model\ResourceModel\Grid\CollectionFactory;
+use Magento\Customer\Model\ResourceModel\Grid\Collection;
 use Vipps\Login\Api\Data\VippsCustomerSearchResultsInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Model\ResourceModel\VippsCustomerRepository;
@@ -54,11 +57,13 @@ class TrustedAccountsLocator
     public function __construct(
         StoreManagerInterface $storeManager,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        VippsCustomerRepositoryInterface $vippsCustomerRepository
+        VippsCustomerRepositoryInterface $vippsCustomerRepository,
+        CollectionFactory $collectionFactory
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
         $this->storeManager = $storeManager;
+        $this->collectionFactory = $collectionFactory;
     }
 
     /**

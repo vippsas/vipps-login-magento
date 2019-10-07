@@ -80,7 +80,8 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
     /**
      * @param VippsCustomerInterface $customer
      *
-     * @return VippsCustomerInterface|void
+     * @return VippsCustomerInterface|\Vipps\Login\Model\VippsCustomer
+     * @throws \Exception
      */
     public function save(\Vipps\Login\Api\Data\VippsCustomerInterface $customer)
     {
@@ -93,6 +94,8 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
         /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
         $vippsCustomer = $this->modelFactory->create(['data' => $modelData]);
         $vippsCustomer->save();
+
+        return $vippsCustomer;
     }
 
     /**
