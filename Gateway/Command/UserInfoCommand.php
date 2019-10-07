@@ -19,6 +19,7 @@ namespace Vipps\Login\Gateway\Command;
 use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\Serialize\SerializerInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
+use Vipps\Login\Api\Data\UserInfoInterfaceFactory;
 use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\TokenProviderInterface;
 

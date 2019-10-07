@@ -20,6 +20,9 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Controller\Result\Redirect as MagentoRedirect;
+use Magento\Framework\App\ResponseInterface;
 use Vipps\Login\Gateway\Command\TokenCommand;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\AccountsProvider;
@@ -118,7 +121,7 @@ class Redirect extends Action
     }
 
     /**
-     * @return \Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\Result\Redirect|\Magento\Framework\Controller\ResultInterface
+     * @return ResponseInterface|MagentoRedirect|ResultInterface
      */
     public function execute()
     {

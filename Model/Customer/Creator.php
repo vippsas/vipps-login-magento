@@ -18,6 +18,7 @@ namespace Vipps\Login\Model\Customer;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
+use Magento\Framework\DB\Adapter\DuplicateException;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Store\Model\StoreManagerInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
@@ -106,7 +107,6 @@ class Creator
             $newCustomer = $this->customerRepository->get($userInfo->getEmail());
         }
 
-
         /** @var VippsCustomerInterface $vippsCustomer */
         $vippsCustomer = $this->vippsCustomerFactory->create();
 
@@ -116,6 +116,13 @@ class Creator
         $vippsCustomer->setTelephone($userInfo->getPhoneNumber());
         $vippsCustomer->setLinked(true);
 
-        return $this->vippsCustomerRepository->save($vippsCustomer);
+        try {
+            //todo ??
+            $this->vippsCustomerRepository->save($vippsCustomer);
+        } catch (AlreadyExistsException $e) {
+            throw new LocalizedException(__('Your account is not confirmed yet'));
+        }
+
+        return $vippsCustomer;
     }
 }

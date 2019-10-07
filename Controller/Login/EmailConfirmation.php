@@ -81,7 +81,7 @@ class EmailConfirmation extends Action
         if ($email) {
             try {
                 $customer = $this->customerRepository->get($email);
-                $userInfo = $this->userInfoCommand->execute('fake_access_token');//@todo set permanent value
+                $userInfo = $this->userInfoCommand->execute();
 
                 // send email to customer
                 $this->vippsAccountManagement->resendConfirmation($userInfo, $customer);
