@@ -1,11 +1,13 @@
 <?php
 namespace Vipps\Login\Block\Form;
 
+use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Customer\Model\Form;
+use Vipps\Login\Model\Customer\AccountsProvider;
 use Vipps\Login\Model\TokenProviderInterface;
 
 /**
@@ -25,22 +27,30 @@ class Verification extends Template
     private $urlBuilder;
 
     /**
+     * @var AccountsProvider
+     */
+    private $accountsProvider;
+
+    /**
      * Verification constructor.
      *
      * @param Context $context
      * @param TokenProviderInterface $openIDtokenProvider
      * @param UrlInterface $urlBuilder
+     * @param AccountsProvider $accountsProvider
      * @param array $data
      */
     public function __construct(
         Context $context,
         TokenProviderInterface $openIDtokenProvider,
         UrlInterface $urlBuilder,
+        AccountsProvider $accountsProvider,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->openIDtokenProvider = $openIDtokenProvider;
         $this->urlBuilder = $urlBuilder;
+        $this->accountsProvider = $accountsProvider;
     }
 
     /**
@@ -67,10 +77,22 @@ class Verification extends Template
      *
      * @return mixed
      */
-    public function getEmail()
+    public function getEmails()
     {
         $idToken = $this->openIDtokenProvider->get();
-        return $idToken->email;
+
+        $customers = $this->accountsProvider->retrieveByPhoneOrEmail(
+            $idToken->phone_number,
+            $idToken->email
+        );
+
+        $emails = [];
+        /** @var CustomerInterface $customer */
+        foreach ($customers as $customer) {
+            $emails[] = $customer->getEmail();
+        }
+
+        return $emails;
     }
 
     /**

@@ -7,8 +7,9 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\Action;
+use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
-use Vipps\Login\Model\UrlResolver;
+use Vipps\Login\Model\StateKey;
 
 /**
  * Class Index
@@ -22,25 +23,33 @@ class Index extends Action
     private $config;
 
     /**
-     * @var UrlResolver
+     * @var ApiEndpointsInterface
      */
-    private $urlResolver;
+    private $apiEndpoints;
+
+    /**
+     * @var StateKey
+     */
+    private $stateKey;
 
     /**
      * Index constructor.
      *
      * @param Context $context
-     * @param UrlResolver $urlResolver
+     * @param ApiEndpointsInterface $apiEndpoints
      * @param ConfigInterface $config
+     * @param StateKey $stateKey
      */
     public function __construct(
         Context $context,
-        UrlResolver $urlResolver,
-        ConfigInterface $config
+        ApiEndpointsInterface $apiEndpoints,
+        ConfigInterface $config,
+        StateKey $stateKey
     ) {
         parent::__construct($context);
         $this->config = $config;
-        $this->urlResolver = $urlResolver;
+        $this->apiEndpoints = $apiEndpoints;
+        $this->stateKey = $stateKey;
     }
 
     /**
@@ -52,12 +61,12 @@ class Index extends Action
             'client_id='. $this->config->getLoginClientId(),
             'response_type=code',
             'scope=' . 'openid address name email phoneNumber birthDate',
-            'state=060d51ca-1712-429c-8552-534ee0bb8ebb',
+            'state=' . $this->stateKey->generate(),
             'redirect_uri=' .  'https://test-norway-vipps.vaimo.com/vipps/login/redirect'
 
         ];
 
-        $vippsRedirectUrl = $this->urlResolver->getUrl('oauth2/auth')
+        $vippsRedirectUrl = $this->apiEndpoints->getAuthorizationEndpoint()
             . '?' . implode('&', $params);
 
         $resultRedirect = $this->resultRedirectFactory->create();

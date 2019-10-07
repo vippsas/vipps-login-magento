@@ -1,6 +1,6 @@
 define([
     'jquery',
-    'Magento_Customer/js/action/login',
+    'Vipps_Login/js/action/login',
     'Vipps_Login/js/model/full-screen-loader'
 ],function($, loginAction, fullScreenLoader) {
     $(document).ready(function() {

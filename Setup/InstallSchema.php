@@ -43,22 +43,28 @@ class InstallSchema implements InstallSchemaInterface
             ['unsigned' => true, 'nullable' => false],
             'Customer Entity Id'
         )->addColumn(
+            'website_id',
+            Table::TYPE_SMALLINT,
+            null,
+            ['unsigned' => true],
+            'Website Id'
+        )->addColumn(
             'email',
             Table::TYPE_TEXT,
             255,
-            [],
+            ['nullable' => false],
             'Email'
         )->addColumn(
             'telephone',
             Table::TYPE_TEXT,
             255,
-            [],
+            ['nullable' => false],
             'Vipps Telephone'
         )->addColumn(
             'linked',
             Table::TYPE_SMALLINT,
             null,
-            ['unsigned' => true, 'nullable' => false, 'default' => '1'],
+            ['unsigned' => true, 'nullable' => false, 'default' => '0'],
             'Is Active'
         )->addColumn(
             'confirmation_key',
@@ -75,6 +81,9 @@ class InstallSchema implements InstallSchemaInterface
             'Confirmation Expiration Time'
         )
         ->addIndex(
+            $installer->getIdxName($vippsCustomerEntityTableName, ['telephone', 'website_id', 'linked']),
+            ['telephone', 'website_id', 'linked']
+        )->addIndex(
             $installer->getIdxName(
                 'vipps_customer_entity',
                 ['customer_entity_id'],
@@ -82,9 +91,6 @@ class InstallSchema implements InstallSchemaInterface
             ),
             ['customer_entity_id'],
             ['type' => AdapterInterface::INDEX_TYPE_UNIQUE]
-        )->addIndex(
-            $installer->getIdxName($vippsCustomerEntityTableName, ['telephone']),
-            ['telephone']
         )->addForeignKey(
             $installer->getFkName(
                 $vippsCustomerEntityTableName,

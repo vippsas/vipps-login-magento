@@ -27,10 +27,10 @@ use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Model\ResourceModel\VippsCustomerRepository;
 
 /**
- * Class TrustedAccountsLocator
+ * Class AccountsProvider
  * @package Vipps\Login\Model\Customer
  */
-class TrustedAccountsLocator
+class AccountsProvider
 {
     /**
      * @var StoreManagerInterface
@@ -67,21 +67,24 @@ class TrustedAccountsLocator
     }
 
     /**
-     * @param string $phone
+     * @param $phone
+     * @param $email
      *
-     * @return VippsCustomerSearchResultsInterface
-     * @throws LocalizedException
+     * @return array
      */
-    public function getList($phone)
+    public function retrieveByPhoneOrEmail($phone, $email = null)
     {
-        $this->searchCriteriaBuilder->addFilter('telephone', $phone);
-        $this->searchCriteriaBuilder->addFilter('linked', true);
-        $this->searchCriteriaBuilder->addFilter(
-            'website_id',
-            $this->storeManager->getWebsite()->getWebsiteId()
+        /** @var Collection $collection */
+        $collection = $this->collectionFactory->create();
+
+        $collection->addFieldToFilter(
+            ['billing_telephone','email'],
+            [
+                ['eq' => $phone],
+                ['eq' => $email]
+            ]
         );
 
-        $searchCriteria = $this->searchCriteriaBuilder->create();
-        return $this->vippsCustomerRepository->getList($searchCriteria);
+        return $collection->getItems();
     }
 }

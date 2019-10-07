@@ -18,6 +18,9 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="Vipps\Login\Api\Data\UserInfoInterface" type="Vipps\Login\Model\Data\UserInfo"/>
     <preference for="Vipps\Login\Api\VippsCustomerRepositoryInterface" type="Vipps\Login\Model\ResourceModel\VippsCustomerRepository"/>
+    <preference for="Vipps\Login\Api\VippsAccountManagementInterface" type="Vipps\Login\Model\VippsAccountManagement"/>
     <preference for="Vipps\Login\Api\Data\VippsCustomerInterface" type="Vipps\Login\Model\Data\VippsCustomer"/>
     <preference for="Vipps\Login\Api\Data\VippsCustomerSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
+    <preference for="Vipps\Login\Api\ApiEndpointsInterface" type="Vipps\Login\Model\ApiEndpoints" />
+    <preference for="Vipps\Login\Model\ConfigInterface" type="Vipps\Login\Model\Config\Config"/>
 </config>
