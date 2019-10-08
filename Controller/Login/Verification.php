@@ -49,7 +49,7 @@ class Verification extends Action
      */
     public function execute()
     {
-        if (!$idToken = $this->openIDtokenProvider->get()) {
+        if (!$this->openIDtokenProvider->get()) {
             return $this->_redirect('noroute');
         }
 

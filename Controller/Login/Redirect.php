@@ -95,6 +95,7 @@ class Redirect extends Action
      * @param Creator $creator
      * @param StateKey $stateKey
      * @param AccountsProvider $accountsProvider
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,

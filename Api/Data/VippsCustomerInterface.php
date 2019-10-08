@@ -85,6 +85,7 @@ interface VippsCustomerInterface extends CustomAttributesDataInterface
 
     /**
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getLinked();
 

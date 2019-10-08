@@ -116,6 +116,7 @@ class VippsCustomer extends AbstractExtensibleObject implements VippsCustomerInt
 
     /**
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getLinked()
     {

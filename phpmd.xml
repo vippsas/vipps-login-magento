@@ -46,7 +46,11 @@
             <property name="minimum" value="8" />
         </properties>
     </rule>
-    <rule ref="rulesets/design.xml/CouplingBetweenObjects" />
+    <rule ref="rulesets/design.xml/CouplingBetweenObjects">
+        <properties>
+            <property name="minimum" value="20" />
+        </properties>
+    </rule>
 
     <!-- Naming Rules -->
     <rule ref="rulesets/naming.xml/ShortMethodName" />
