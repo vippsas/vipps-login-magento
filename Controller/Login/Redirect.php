@@ -34,6 +34,7 @@ use Vipps\Login\Model\TokenProviderInterface;
 /**
  * Class Redirect
  * @package Vipps\Login\Controller\Login
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Redirect extends Action
 {
