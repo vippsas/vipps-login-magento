@@ -1,4 +1,18 @@
 <?php
+/**
+ * Copyright 2018 Vipps
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ *  the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ *  and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *  TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ *  IN THE SOFTWARE.
+ */
 
 namespace Vipps\Login\Controller\Login;
 
@@ -18,6 +32,7 @@ use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\Result\Raw;
 use Vipps\Login\Api\VippsAccountManagementInterface;
+use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 
 /**
@@ -75,6 +90,11 @@ class VerifyAjax extends Action
     private $vippsAccountManagement;
 
     /**
+     * @var VippsAddressManagementInterface
+     */
+    private $vippsAddressManagement;
+
+    /**
      * VerifyAjax constructor.
      *
      * @param Context $context
@@ -87,6 +107,7 @@ class VerifyAjax extends Action
      * @param AccountRedirect $accountRedirect
      * @param ScopeConfigInterface $scopeConfig
      * @param VippsAccountManagementInterface $vippsAccountManagement
+     * @param VippsAddressManagementInterface $vippsAddressManagement
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -99,7 +120,8 @@ class VerifyAjax extends Action
         RawFactory $resultRawFactory,
         AccountRedirect $accountRedirect,
         ScopeConfigInterface $scopeConfig,
-        VippsAccountManagementInterface $vippsAccountManagement
+        VippsAccountManagementInterface $vippsAccountManagement,
+        VippsAddressManagementInterface $vippsAddressManagement
     ) {
         parent::__construct($context);
         $this->customerSession = $customerSession;
@@ -111,6 +133,7 @@ class VerifyAjax extends Action
         $this->accountRedirect = $accountRedirect;
         $this->scopeConfig = $scopeConfig;
         $this->vippsAccountManagement = $vippsAccountManagement;
+        $this->vippsAddressManagement = $vippsAddressManagement;
     }
 
     /**
@@ -164,7 +187,11 @@ class VerifyAjax extends Action
                 $this->accountRedirect->clearRedirectCookie();
             }
 
-            $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
+            $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
+
+            $vippsAddresses = $this->vippsAddressManagement->fetchAddresses($userInfo, $vippsCustomer);
+            //todo  merge
+
 
         } catch (EmailNotConfirmedException $e) {
             $response = [

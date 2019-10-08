@@ -143,16 +143,13 @@ class InstallSchema implements InstallSchemaInterface
     private function createVippsAddressTable(SchemaSetupInterface $installer)
     {
         $vippsCustomerAddressTable = $installer->getConnection()
-            ->getTableName('vipps_customer_address_entity');
+            ->getTableName('vipps_customer_address');
 
         $vippsCustomerEntityTable = $installer->getConnection()
             ->getTableName('vipps_customer_entity');
 
-        $customerAddressEntityTable = $installer->getConnection()
-            ->getTableName('customer_address_entity');
-
         $table = $installer->getConnection()->newTable(
-            $installer->getTable('vipps_customer_entity')
+            $vippsCustomerAddressTable
         )->addColumn(
             'entity_id',
             Table::TYPE_INTEGER,

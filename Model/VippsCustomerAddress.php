@@ -13,24 +13,24 @@
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE
  */
+namespace Vipps\Login\Model;
 
-namespace Vipps\Login\Model\Data;
-
-use Magento\Framework\Api\AbstractExtensibleObject;
+use Magento\Framework\Model\AbstractModel;
 use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
+use Vipps\Login\Model\ResourceModel\VippsCustomerAddress as VippsCustomerAddressResource;
 
 /**
  * Class VippsCustomerAddress
- * @package Vipps\Login\Model\Data
+ * @package Vipps\Login\Model
  */
-class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCustomerAddressInterface
+class VippsCustomerAddress extends AbstractModel implements VippsCustomerAddressInterface
 {
     /**
      * @return int
      */
     public function getEntityId()
     {
-        return $this->_get('entity_id');
+        return $this->getData('entity_id');
     }
 
     /**
@@ -48,7 +48,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getCustomerId()
     {
-        return $this->_get('vipps_customer_id');
+        return $this->getData('vipps_customer_id');
     }
 
     /**
@@ -66,7 +66,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getCustomerAddressId()
     {
-        return $this->_get('customer_address_id');
+        return $this->getData('customer_address_id');
     }
 
     /**
@@ -84,7 +84,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getCountry()
     {
-        return $this->_get('country');
+        return $this->getData('country');
     }
 
     /**
@@ -102,7 +102,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getStreetAddress()
     {
-        return $this->_get('street_address');
+        return $this->getData('street_address');
     }
 
     /**
@@ -120,7 +120,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getAddressType()
     {
-        return $this->_get('address_type');
+        return $this->getData('address_type');
     }
 
     /**
@@ -138,7 +138,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getFormatted()
     {
-        return $this->_get('formatted');
+        return $this->getData('formatted');
     }
 
     /**
@@ -156,7 +156,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getPostalCode()
     {
-        return $this->_get('postal_code');
+        return $this->getData('postal_code');
     }
 
     /**
@@ -174,7 +174,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getRegion()
     {
-        return $this->_get('region');
+        return $this->getData('region');
     }
 
     /**
@@ -192,7 +192,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getIsDefault()
     {
-        return $this->_get('is_default');
+        return $this->getData('is_default');
     }
 
     /**
@@ -210,7 +210,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getIsConverted()
     {
-        return $this->_get('is_converted');
+        return $this->getData('is_converted');
     }
 
     /**
@@ -221,5 +221,17 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
     public function setIsConverted($value)
     {
         return $this->setData('is_converted', $value);
+    }
+    
+    /**
+     * Init resource model and id field
+     *
+     * @return void
+     */
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->_init(VippsCustomerAddressResource::class);
+        $this->setIdFieldName('entity_id');
     }
 }

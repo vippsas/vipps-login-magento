@@ -24,6 +24,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect as MagentoRedirect;
 use Magento\Framework\App\ResponseInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
+use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\TokenCommand;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\AccountsProvider;
@@ -89,6 +90,11 @@ class Redirect extends Action
     private $vippsAccountManagement;
 
     /**
+     * @var VippsAddressManagementInterface
+     */
+    private $vippsAddressManagement;
+
+    /**
      * Redirect constructor.
      *
      * @param Context $context
@@ -102,6 +108,7 @@ class Redirect extends Action
      * @param StateKey $stateKey
      * @param AccountsProvider $accountsProvider
      * @param VippsAccountManagementInterface $vippsAccountManagement
+     * @param VippsAddressManagementInterface $vippsAddressManagement
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -115,7 +122,8 @@ class Redirect extends Action
         Creator $creator,
         StateKey $stateKey,
         AccountsProvider $accountsProvider,
-        VippsAccountManagementInterface $vippsAccountManagement
+        VippsAccountManagementInterface $vippsAccountManagement,
+        VippsAddressManagementInterface $vippsAddressManagement
     ) {
         parent::__construct($context);
         $this->customerRegistry = $customerRegistry;
@@ -128,6 +136,7 @@ class Redirect extends Action
         $this->userInfoCommand = $userInfoCommand;
         $this->creator = $creator;
         $this->vippsAccountManagement = $vippsAccountManagement;
+        $this->vippsAddressManagement = $vippsAddressManagement;
     }
 
     /**
@@ -168,7 +177,8 @@ class Redirect extends Action
 
             $userInfo = $this->userInfoCommand->execute();
             $customer = $this->creator->create($userInfo);
-            $this->vippsAccountManagement->link($userInfo, $customer);
+            $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $customer);
+            $this->vippsAddressManagement->fetchAddresses($userInfo, $vippsCustomer);
 
             $this->sessionManager
                 ->setCustomerAsLoggedIn($this->customerRegistry->retrieveByEmail($customer->getEmail()));
