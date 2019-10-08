@@ -24,7 +24,6 @@ use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
-use Vipps\Login\Model\VippsCustomerAddressFactory;
 
 /**
  * Class VippsCustomer
@@ -110,7 +109,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
                 $vippsCustomerAddress = $this->vippsCustomerAddressFactory->create();
                 $vippsCustomerAddress = $this->convertAddress($vippsCustomerAddress, $address);
                 $vippsCustomerAddress->setCustomerId($vippsCustomer->getEntityId());
-                if ($vippsCustomerAddress->getAddressType() == 'home') {
+                if ($vippsCustomerAddress->getAddressType() == VippsCustomerAddressInterface::ADDRESS_TYPE_HOME) {
                     $vippsCustomerAddress->setIsDefault(true);
                 }
                 $result[] = $this->vippsCustomerAddressRepository->save($vippsCustomerAddress);

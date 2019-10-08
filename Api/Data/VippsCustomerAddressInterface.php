@@ -23,6 +23,11 @@ namespace Vipps\Login\Api\Data;
 interface VippsCustomerAddressInterface
 {
     /**
+     * @var string
+     */
+    const ADDRESS_TYPE_HOME = 'home';
+
+    /**
      * @return int
      */
     public function getEntityId();
