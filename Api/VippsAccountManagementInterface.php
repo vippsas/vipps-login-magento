@@ -17,7 +17,12 @@
 namespace Vipps\Login\Api;
 
 use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\Exception\InputException;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\State\InputMismatchException;
+use Magento\Framework\Exception\State\InvalidTransitionException;
 use Vipps\Login\Api\Data\UserInfoInterface;
+use Vipps\Login\Api\Data\VippsCustomerInterface;
 
 /**
  * Interface VippsAccountManagementInterface
@@ -25,8 +30,49 @@ use Vipps\Login\Api\Data\UserInfoInterface;
  */
 interface VippsAccountManagementInterface
 {
+    /**
+     * @param UserInfoInterface $userInfo
+     * @param CustomerInterface $customer
+     *
+     * @throws InputException
+     * @throws InputMismatchException
+     * @throws InvalidTransitionException
+     * @throws LocalizedException
+     */
+    public function resendConfirmation(UserInfoInterface $userInfo, CustomerInterface $customer);
 
+    /**
+     * @param $id
+     * @param $key
+     *
+     * @return VippsCustomerInterface|null
+     * @throws InputException
+     * @throws InputMismatchException
+     * @throws LocalizedException
+     */
+    public function confirm($id, $key);
+
+    /**
+     * @param UserInfoInterface $userInfo
+     * @param CustomerInterface $customer
+     *
+     * @return VippsCustomerInterface
+     * @throws InputException
+     * @throws InputMismatchException
+     * @throws LocalizedException
+     */
     public function link(UserInfoInterface $userInfo, CustomerInterface $customer);
 
     public function unlink();
+
+    /**
+     * @param UserInfoInterface $userInfo
+     * @param CustomerInterface $customer
+     *
+     * @return VippsCustomerInterface
+     * @throws InputException
+     * @throws InputMismatchException
+     * @throws LocalizedException
+     */
+    public function getPair(UserInfoInterface $userInfo, CustomerInterface $customer);
 }

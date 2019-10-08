@@ -23,6 +23,7 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect as MagentoRedirect;
 use Magento\Framework\App\ResponseInterface;
+use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Gateway\Command\TokenCommand;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\AccountsProvider;
@@ -81,6 +82,10 @@ class Redirect extends Action
      * @var AccountsProvider
      */
     private $accountsProvider;
+    /**
+     * @var VippsAccountManagementInterface
+     */
+    private $vippsAccountManagement;
 
     /**
      * Redirect constructor.
@@ -95,6 +100,7 @@ class Redirect extends Action
      * @param Creator $creator
      * @param StateKey $stateKey
      * @param AccountsProvider $accountsProvider
+     * @param VippsAccountManagementInterface $vippsAccountManagement
      */
     public function __construct(
         Context $context,
@@ -106,7 +112,8 @@ class Redirect extends Action
         UserInfoCommand $userInfoCommand,
         Creator $creator,
         StateKey $stateKey,
-        AccountsProvider $accountsProvider
+        AccountsProvider $accountsProvider,
+        VippsAccountManagementInterface $vippsAccountManagement
     ) {
         parent::__construct($context);
         $this->customerRegistry = $customerRegistry;
@@ -118,6 +125,7 @@ class Redirect extends Action
         $this->accountsProvider = $accountsProvider;
         $this->userInfoCommand = $userInfoCommand;
         $this->creator = $creator;
+        $this->vippsAccountManagement = $vippsAccountManagement;
     }
 
     /**
@@ -156,13 +164,14 @@ class Redirect extends Action
                 return $resultRedirect;
             }
 
-            $vippsCustomer = $this->createCustomer();
-            $customer = $this->customerRegistry->retrieveByEmail($vippsCustomer->getEmail());
-            if ($customer) {
-                $this->sessionManager->setCustomerAsLoggedIn($customer);
-                $resultRedirect->setPath('customer/account');
-                return $resultRedirect;
-            }
+            $userInfo = $this->userInfoCommand->execute();
+            $customer = $this->creator->create($userInfo);
+            $this->vippsAccountManagement->link($userInfo, $customer);
+
+            $this->sessionManager
+                ->setCustomerAsLoggedIn($this->customerRegistry->retrieveByEmail($customer->getEmail()));
+            $resultRedirect->setPath('customer/account');
+            return $resultRedirect;
         } catch (\Throwable $t) {
             $resultRedirect->setPath('vipps/login/error');
             return $resultRedirect;
@@ -175,6 +184,7 @@ class Redirect extends Action
     private function storeToken($tokenData)
     {
         $this->sessionManager->setData('id_token', $tokenData['id_token']);
+        $this->sessionManager->setData('decoded_id_token', $tokenData['decoded_id_token']);
         $this->sessionManager->setData('access_token', $tokenData['access_token']);
     }
 
@@ -195,18 +205,5 @@ class Redirect extends Action
         }
 
         return null;
-    }
-
-    /**
-     * @return \Vipps\Login\Api\Data\VippsCustomerInterface
-     * @throws \Exception
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\State\InputMismatchException
-     */
-    private function createCustomer()
-    {
-        $userInfo = $this->userInfoCommand->execute();
-        return $this->creator->create($userInfo);
     }
 }

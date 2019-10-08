@@ -47,7 +47,7 @@
 
     <type name="Vipps\Login\Model\OpenIDTokenProvider">
         <arguments>
-            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
     </type>
 
