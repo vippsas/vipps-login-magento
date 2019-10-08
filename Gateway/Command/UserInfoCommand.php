@@ -50,47 +50,39 @@ class UserInfoCommand
     private $apiEndpoints;
 
     /**
-     * @var TokenProviderInterface
-     */
-    private $accessTokenProvider;
-
-    /**
      * UserInfoCommand constructor.
      *
      * @param SerializerInterface $serializer
      * @param ClientFactory $httpClientFactory
      * @param UserInfoInterfaceFactory $userInfoFactory
      * @param ApiEndpointsInterface $apiEndpoints
-     * @param TokenProviderInterface $accessTokenProvider
      */
     public function __construct(
         SerializerInterface $serializer,
         ClientFactory $httpClientFactory,
         UserInfoInterfaceFactory $userInfoFactory,
-        ApiEndpointsInterface $apiEndpoints,
-        TokenProviderInterface $accessTokenProvider
+        ApiEndpointsInterface $apiEndpoints
     ) {
         $this->serializer = $serializer;
         $this->httpClientFactory = $httpClientFactory;
         $this->userInfoFactory = $userInfoFactory;
         $this->apiEndpoints = $apiEndpoints;
-        $this->accessTokenProvider = $accessTokenProvider;
     }
 
     /**
+     * @param $accessToken
+     *
      * @return UserInfoInterface
      * @throws \Exception
      */
-    public function execute()
+    public function execute($accessToken)
     {
-        $accessToken = $this->accessTokenProvider->get();
-
         $httpClient = $this->httpClientFactory->create();
         $httpClient->addHeader('Authorization', 'Bearer ' . $accessToken);
         $httpClient->get($this->apiEndpoints->getUserInfoEndpoint());
 
         if ($httpClient->getStatus() != 200) {
-            throw new \Exception("Error");
+            throw new \Exception("An error occurred trying to fetch user info");
         }
 
         $userInfoData = $this->serializer->unserialize($httpClient->getBody());

@@ -69,22 +69,29 @@ class Verification extends Template
      */
     public function getAjaxLoginUrl()
     {
-        return $this->urlBuilder->getUrl('customer/ajax/login');
+        return $this->urlBuilder->getRouteUrl('vipps/login/verifyAjax');
     }
 
     /**
-     * Get current user email.
-     *
-     * @return mixed
+     * @return string
+     */
+    public function getAjaxEmailConfirmationUrl()
+    {
+        return $this->urlBuilder->getRouteUrl('vipps/login/emailConfirmation');
+    }
+
+    /**
+     * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getEmails()
     {
-        $idToken = $this->openIDtokenProvider->get();
+        $tokenPayload = $this->openIDtokenProvider->get();
 
-        $customers = $this->accountsProvider->retrieveByPhoneOrEmail(
-            $idToken->phone_number,
-            $idToken->email
-        );
+        $phone = $tokenPayload['phone_number'] ?? null;
+        $email = $tokenPayload['email'] ?? null;
+
+        $customers = $this->accountsProvider->get($phone, $email);
 
         $emails = [];
         /** @var CustomerInterface $customer */

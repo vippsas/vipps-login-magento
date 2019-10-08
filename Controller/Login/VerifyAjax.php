@@ -19,6 +19,7 @@ use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\Result\Raw;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
+use Vipps\Login\Model\AccessTokenProvider;
 
 /**
  * Verify Ajax controller
@@ -75,6 +76,11 @@ class VerifyAjax extends Action
     private $vippsAccountManagement;
 
     /**
+     * @var AccessTokenProvider
+     */
+    private $accessTokenProvider;
+
+    /**
      * VerifyAjax constructor.
      *
      * @param Context $context
@@ -87,7 +93,7 @@ class VerifyAjax extends Action
      * @param AccountRedirect $accountRedirect
      * @param ScopeConfigInterface $scopeConfig
      * @param VippsAccountManagementInterface $vippsAccountManagement
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @param AccessTokenProvider $accessTokenProvider
      */
     public function __construct(
         Context $context,
@@ -99,7 +105,8 @@ class VerifyAjax extends Action
         RawFactory $resultRawFactory,
         AccountRedirect $accountRedirect,
         ScopeConfigInterface $scopeConfig,
-        VippsAccountManagementInterface $vippsAccountManagement
+        VippsAccountManagementInterface $vippsAccountManagement,
+        AccessTokenProvider $accessTokenProvider
     ) {
         parent::__construct($context);
         $this->customerSession = $customerSession;
@@ -111,6 +118,7 @@ class VerifyAjax extends Action
         $this->accountRedirect = $accountRedirect;
         $this->scopeConfig = $scopeConfig;
         $this->vippsAccountManagement = $vippsAccountManagement;
+        $this->accessTokenProvider = $accessTokenProvider;
     }
 
     /**
@@ -150,7 +158,7 @@ class VerifyAjax extends Action
             );
 
             try {
-                $userInfo = $this->userInfoCommand->execute();
+                $userInfo = $this->userInfoCommand->execute($this->accessTokenProvider->get());
             } catch (\Throwable $e) {
                 return $resultRaw->setHttpResponseCode($httpBadRequestCode);
             }

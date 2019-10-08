@@ -13,63 +13,49 @@
  *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  *  IN THE SOFTWARE.
  */
-namespace Vipps\Login\Model;
+namespace Vipps\Login\Controller\Login\Redirect;
 
-use Magento\Framework\Math\Random;
-use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\ObjectManager\TMapFactory;
+use Vipps\Login\Controller\Login\Redirect\Action\ActionInterface;
 
-/**
- * Class StateKey
- * @package Vipps\Login\Model
- */
-class StateKey
+class ActionsPool
 {
     /**
-     * @var string
+     * @var array
      */
-    const DATA_KEY_STATE = 'vipps_url_state';
+    private $actions;
 
     /**
-     * @var SessionManagerInterface
-     */
-    private $sessionManager;
-
-    /**
-     * @var Random
-     */
-    private $mathRand;
-
-    /**
-     * StateKey constructor.
+     * ActionsPool constructor.
      *
-     * @param SessionManagerInterface $sessionManager
-     * @param Random $mathRand
+     * @param TMapFactory $tmapFactory
+     * @param array $actions
      */
     public function __construct(
-        SessionManagerInterface $sessionManager,
-        Random $mathRand
+        TMapFactory $tmapFactory,
+        array $actions = []
     ) {
-        $this->sessionManager = $sessionManager;
-        $this->mathRand = $mathRand;
+        $this->actions = $tmapFactory->create(
+            [
+                'array' => $actions,
+                'type' => ActionInterface::class
+            ]
+        );
     }
 
     /**
-     * @return string
-     */
-    public function generate()
-    {
-        $state = $this->mathRand->getUniqueHash();
-        $this->sessionManager->setData('vipps_login_url_state', $state);
-        return $state;
-    }
-
-    /**
-     * @param $state
+     * @param array $token
      *
      * @return bool
      */
-    public function isValid($state): bool
+    public function execute($token)
     {
-        return $state == $this->sessionManager->getData('vipps_login_url_state');
+        foreach ($this->actions as $action) {
+            $result = $action->execute($token);
+            if ($result) {
+                return $result;
+            }
+        }
+        return false;
     }
 }

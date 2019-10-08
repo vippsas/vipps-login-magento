@@ -50,7 +50,7 @@ class Verification extends Action
     public function execute()
     {
         if (!$this->openIDtokenProvider->get()) {
-            return $this->_redirect('noroute');
+            return $this->_redirect('customer/account/login');
         }
 
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);

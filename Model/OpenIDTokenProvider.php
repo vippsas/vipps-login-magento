@@ -34,6 +34,6 @@ class OpenIDTokenProvider implements TokenProviderInterface
      */
     public function get()
     {
-        return $this->customerSession->getData('decoded_id_token');
+        return $this->customerSession->getData('vipps_login_id_token_payload');
     }
 }
