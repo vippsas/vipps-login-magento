@@ -210,21 +210,16 @@ class ApiEndpoints implements ApiEndpointsInterface
      */
     private function applyDefaultSchema()
     {
+        $url = $this->isProdEnv() ? self::$productionBaseUrl : self::$developBaseUrl;
         $defaultAPISchema = [
-            ApiEndpointsInterface::ENDPOINT_ISSUER_KEY => self::$productionBaseUrl,
-            ApiEndpointsInterface::ENDPOINT_AUTHORIZATION_KEY => self::$productionBaseUrl . 'oauth2/auth',
-            ApiEndpointsInterface::ENDPOINT_TOKEN_KEY => self::$productionBaseUrl . 'oauth2/token',
-            ApiEndpointsInterface::ENDPOINT_JWKS_KEY => self::$productionBaseUrl . '.well-known/jwks.json',
-            ApiEndpointsInterface::ENDPOINT_USERINFO_KEY => self::$productionBaseUrl . 'userinfo',
-            ApiEndpointsInterface::ENDPOINT_REVOCATION_KEY => self::$productionBaseUrl . 'oauth2/revoke',
-            ApiEndpointsInterface::ENDPOINT_END_SESSION_KEY => self::$productionBaseUrl . 'oauth2/sessions/logout'
+            ApiEndpointsInterface::ENDPOINT_ISSUER_KEY => $url,
+            ApiEndpointsInterface::ENDPOINT_AUTHORIZATION_KEY => $url . 'oauth2/auth',
+            ApiEndpointsInterface::ENDPOINT_TOKEN_KEY => $url . 'oauth2/token',
+            ApiEndpointsInterface::ENDPOINT_JWKS_KEY => $url . '.well-known/jwks.json',
+            ApiEndpointsInterface::ENDPOINT_USERINFO_KEY => $url . 'userinfo',
+            ApiEndpointsInterface::ENDPOINT_REVOCATION_KEY => $url . 'oauth2/revoke',
+            ApiEndpointsInterface::ENDPOINT_END_SESSION_KEY => $url . 'oauth2/sessions/logout'
         ];
-
-        if (!$this->isProdEnv()) {
-            foreach ($defaultAPISchema as $key => &$endpointURL) {
-                $endpointURL = str_replace(self::$productionBaseUrl, self::$developBaseUrl, $endpointURL);
-            }
-        }
 
         $this->preLoadedCache = $defaultAPISchema;
         $this->saveToCache($defaultAPISchema);

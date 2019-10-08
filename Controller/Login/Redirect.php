@@ -35,6 +35,7 @@ use Vipps\Login\Model\TokenProviderInterface;
 /**
  * Class Redirect
  * @package Vipps\Login\Controller\Login
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Redirect extends Action
 {
@@ -101,6 +102,7 @@ class Redirect extends Action
      * @param StateKey $stateKey
      * @param AccountsProvider $accountsProvider
      * @param VippsAccountManagementInterface $vippsAccountManagement
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
