@@ -73,9 +73,9 @@ class TokenCommand
     /**
      * Method to get access and ID tokens from vipps login API.
      *
-     * @param $code
+     * @param string $code
      *
-     * @return array|bool|float|int|null|string
+     * @return array|bool|float|int|string|null
      * @throws LocalizedException
      */
     public function execute($code)
@@ -95,53 +95,39 @@ class TokenCommand
 
         try {
             $tokenData = $this->serializer->unserialize($httpClient->getBody());
-        } catch (\InvalidArgumentException $e) {
-            throw new LocalizedException(__('Some error message'));
-        }
 
-        if (!$this->isValid($tokenData)) {
-            throw new LocalizedException(__('Some error message'));
-        }
+            $payload = $this->getPayload($tokenData);
+            $tokenData['decoded_id_token'] = $payload;
 
-        $tokenData['decoded_id_token'] = $this->id_token;
-        return $tokenData;
+            return $tokenData;
+        } catch (\Throwable $t) {
+            throw new LocalizedException(__('An error occurred trying to get token'));
+        }
     }
 
     /**
      * @param $tokenData
      *
-     * @return bool
+     * @return object|null
      */
-    public function isValid($tokenData): bool
+    public function getPayload($tokenData)
     {
-        if (!array_key_exists('id_token', $tokenData)) {
-            return false;
+        if (array_key_exists('id_token', $tokenData)) {
+            $payload = JWT::decode($tokenData['id_token'], $this->getPublicKey(), ['RS256']);
+            return $payload;
         }
-
-        try {
-            $this->id_token = JWT::decode($tokenData['id_token'], $this->getPublicKey(), ['RS256']);
-
-        } catch (\Throwable $t) {
-            false;
-        }
-
-        return true;
+        return null;
     }
 
     /**
-     * @return string
+     * @return bool|string
      */
     private function getPublicKey()
     {
         $httpClient = $this->httpClientFactory->create();
         $httpClient->get($this->apiEndpoints->getJwksUri());
 
-        try {
-            $jwks = $this->serializer->unserialize($httpClient->getBody());
-        } catch (\InvalidArgumentException $e) {
-
-        }
-
+        $jwks = $this->serializer->unserialize($httpClient->getBody());
         $jwk = $jwks['keys'][0];
 
         $rsa = new RSA();
