@@ -20,6 +20,7 @@ use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
 use Magento\Framework\DB\Adapter\DuplicateException;
 use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Store\Model\StoreManagerInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Magento\Framework\Exception\InputException;
@@ -86,43 +87,26 @@ class Creator
     /**
      * @param UserInfoInterface $userInfo
      *
-     * @return VippsCustomerInterface
+     * @return CustomerInterface
      * @throws InputException
      * @throws InputMismatchException
      * @throws LocalizedException
+     * @throws NoSuchEntityException
      */
     public function create(UserInfoInterface $userInfo)
     {
-        /** @var CustomerInterface $customer */
-        $customer = $this->customerFactory->create();
-        $customer->setWebsiteId($this->storeManager->getWebsite()->getWebsiteId());
-
-        $customer->setEmail($userInfo->getEmail());
-        $customer->setFirstname($userInfo->getName());
-        $customer->setLastname($userInfo->getFamilyName());
-
         try {
-            $newCustomer = $this->customerRepository->save($customer);
+            /** @var CustomerInterface $customer */
+            $customer = $this->customerFactory->create();
+
+            $customer->setWebsiteId($this->storeManager->getWebsite()->getWebsiteId());
+            $customer->setEmail($userInfo->getEmail());
+            $customer->setFirstname($userInfo->getName());
+            $customer->setLastname($userInfo->getFamilyName());
+
+            return $this->customerRepository->save($customer);
         } catch(AlreadyExistsException $e) {
-            $newCustomer = $this->customerRepository->get($userInfo->getEmail());
+            return $this->customerRepository->get($userInfo->getEmail());
         }
-
-        /** @var VippsCustomerInterface $vippsCustomer */
-        $vippsCustomer = $this->vippsCustomerFactory->create();
-
-        $vippsCustomer->setCustomerEntityId($newCustomer->getId());
-        $vippsCustomer->setWebsiteId($this->storeManager->getWebsite()->getWebsiteId());
-        $vippsCustomer->setEmail($newCustomer->getEmail());
-        $vippsCustomer->setTelephone($userInfo->getPhoneNumber());
-        $vippsCustomer->setLinked(true);
-
-        try {
-            //todo ??
-            $this->vippsCustomerRepository->save($vippsCustomer);
-        } catch (AlreadyExistsException $e) {
-            throw new LocalizedException(__('Your account is not confirmed yet'));
-        }
-
-        return $vippsCustomer;
     }
 }

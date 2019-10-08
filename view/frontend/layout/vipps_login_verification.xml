@@ -8,7 +8,12 @@
         <referenceContainer name="content">
              <!--vipps.login.verification.form-->
             <container name="vipps.login.verification" label="Verification Login Container" htmlTag="div" htmlClass="login-container">
-                <block class="Vipps\Login\Block\Form\Verification" name="vipps_login_verification_from" template="Vipps_Login::form/verification.phtml">
+                <block
+                    class="Vipps\Login\Block\Form\Verification"
+                    name="vipps_login_verification_from"
+                    template="Vipps_Login::form/verification.phtml"
+                    cacheable="false"
+                >
                     <container name="form.additional.info" as="form_additional_info"/>
                 </block>
             </container>

@@ -7,6 +7,7 @@ use Magento\Framework\Math\Random;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterfaceFactory;
+use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
@@ -16,7 +17,7 @@ use Magento\Framework\Exception\State\InputMismatchException;
  * Class VippsCustomer
  * @package Vipps\Login\Model
  */
-class VippsAccountManagement
+class VippsAccountManagement implements VippsAccountManagementInterface
 {
     /**
      * @var VippsCustomerInterfaceFactory
@@ -106,11 +107,10 @@ class VippsAccountManagement
     }
 
     /**
-     * Link existing Magento Customer to vipps User.
-     *
      * @param UserInfoInterface $userInfo
      * @param CustomerInterface $customer
      *
+     * @return VippsCustomerInterface
      * @throws InputException
      * @throws InputMismatchException
      * @throws LocalizedException
@@ -119,7 +119,7 @@ class VippsAccountManagement
     {
         $vippsCustomer = $this->getPair($userInfo, $customer);
         $vippsCustomer->setLinked(true);
-        $this->vippsCustomerRepository->save($vippsCustomer);
+        return $this->vippsCustomerRepository->save($vippsCustomer);
     }
 
     public function unlink()
