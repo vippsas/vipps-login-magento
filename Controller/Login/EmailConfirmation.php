@@ -15,7 +15,7 @@
  */
 namespace Vipps\Login\Controller\Login;
 
-use Magento\Framework\Exception\AuthorizationException;
+use Magento\Framework\Exception\LocalizedException;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\AccessTokenProvider;
 use Vipps\Login\Model\VippsAccountManagement;
@@ -24,6 +24,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\State\InvalidTransitionException;
+use Magento\Framework\Exception\AuthorizationException;
 use Magento\Framework\Serialize\SerializerInterface;
 
 /**
@@ -111,13 +112,17 @@ class EmailConfirmation extends Action
                     ->setData(['success' => true, 'message' => __('Please check your email for confirmation key.')]);
             } catch (InvalidTransitionException $e) {
                 $errorMessage = __('This email does not require confirmation.');
+            } catch (AuthorizationException $e) {
+                $errorMessage = $e->getMessage();
+            } catch (LocalizedException $e) {
+                $errorMessage = $e->getMessage();
             } catch (\Exception $e) {
-                $errorMessage = __('An error occurred when trying to send email');
+                $errorMessage = __('An error occurred trying to send email');
             }
         }
 
         return $this->jsonFactory
             ->create()
-            ->setData(['error' => true, 'message' => $errorMessage ?? __('An error occurred during sending message')]);
+            ->setData(['error' => true, 'message' => $errorMessage ?? __('An error occurred trying to send email')]);
     }
 }
