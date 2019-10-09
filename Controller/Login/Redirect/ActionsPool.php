@@ -13,23 +13,49 @@
  *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  *  IN THE SOFTWARE.
  */
-namespace Vipps\Login\Model\ResourceModel\VippsCustomer;
+namespace Vipps\Login\Controller\Login\Redirect;
 
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use Magento\Framework\ObjectManager\TMapFactory;
+use Vipps\Login\Controller\Login\Redirect\Action\ActionInterface;
 
-/**
- * Class Collection
- * @package Vipps\Login\Model\ResourceModel\VippsCustomer
- */
-class Collection extends AbstractCollection
+class ActionsPool
 {
     /**
-     * Initialize resource model
-     *
-     * @return void
+     * @var array
      */
-    protected function _construct()
+    private $actions;
+
+    /**
+     * ActionsPool constructor.
+     *
+     * @param TMapFactory $tmapFactory
+     * @param array $actions
+     */
+    public function __construct(
+        TMapFactory $tmapFactory,
+        array $actions = []
+    ) {
+        $this->actions = $tmapFactory->create(
+            [
+                'array' => $actions,
+                'type' => ActionInterface::class
+            ]
+        );
+    }
+
+    /**
+     * @param array $token
+     *
+     * @return bool
+     */
+    public function execute($token)
     {
-        $this->_init(\Vipps\Login\Model\VippsCustomer::class, \Vipps\Login\Model\ResourceModel\VippsCustomer::class);
+        foreach ($this->actions as $action) {
+            $result = $action->execute($token);
+            if ($result) {
+                return $result;
+            }
+        }
+        return false;
     }
 }

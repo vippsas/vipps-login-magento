@@ -156,7 +156,7 @@ class VippsAccountManagement implements VippsAccountManagementInterface
         $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
         if (!$vippsCustomer->getEntityId()) {
             $vippsCustomer->setCustomerEntityId($customer->getId());
-            //$vippsCustomer->setWebsiteId($customer->getWebsiteId());
+            $vippsCustomer->setWebsiteId($customer->getWebsiteId());
             $vippsCustomer->setEmail($customer->getEmail());
             $vippsCustomer->setTelephone($userInfo->getPhoneNumber());
             return $this->vippsCustomerRepository->save($vippsCustomer);

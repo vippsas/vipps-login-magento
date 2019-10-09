@@ -14,13 +14,14 @@ define([
      * @param {*} isGlobal
      * @param {Object} messageContainer
      */
-    action = function (loginData, redirectUrl, isGlobal, messageContainer) {
+    action = function (loginData, postUrl, redirectUrl, isGlobal, messageContainer) {
         messageContainer = messageContainer || globalMessageList;
 
         return storage.post(
-            'vipps/login/verifyAjax',
+            postUrl,
             JSON.stringify(loginData),
-            isGlobal
+            isGlobal,
+            'json'
         ).done(function (response) {
             if (response.errors) {
                 messageContainer.addErrorMessage(response);
