@@ -13,6 +13,7 @@
  *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  *  IN THE SOFTWARE.
  */
+
 namespace Vipps\Login\Controller\Login;
 
 use Magento\Customer\Api\AccountManagementInterface;
@@ -31,6 +32,7 @@ use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\Result\Raw;
 use Vipps\Login\Api\VippsAccountManagementInterface;
+use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\AccessTokenProvider;
 
@@ -87,6 +89,11 @@ class PasswordConfirm extends Action
     private $vippsAccountManagement;
 
     /**
+     * @var VippsAddressManagementInterface
+     */
+    private $vippsAddressManagement;
+
+    /**
      * @var AccessTokenProvider
      */
     private $accessTokenProvider;
@@ -105,6 +112,8 @@ class PasswordConfirm extends Action
      * @param ScopeConfigInterface $scopeConfig
      * @param VippsAccountManagementInterface $vippsAccountManagement
      * @param AccessTokenProvider $accessTokenProvider
+     * @param VippsAddressManagementInterface $vippsAddressManagement
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
@@ -117,7 +126,8 @@ class PasswordConfirm extends Action
         AccountRedirect $accountRedirect,
         ScopeConfigInterface $scopeConfig,
         VippsAccountManagementInterface $vippsAccountManagement,
-        AccessTokenProvider $accessTokenProvider
+        AccessTokenProvider $accessTokenProvider,
+        VippsAddressManagementInterface $vippsAddressManagement
     ) {
         parent::__construct($context);
         $this->customerSession = $customerSession;
@@ -129,6 +139,7 @@ class PasswordConfirm extends Action
         $this->accountRedirect = $accountRedirect;
         $this->scopeConfig = $scopeConfig;
         $this->vippsAccountManagement = $vippsAccountManagement;
+        $this->vippsAddressManagement = $vippsAddressManagement;
         $this->accessTokenProvider = $accessTokenProvider;
     }
 
@@ -183,7 +194,11 @@ class PasswordConfirm extends Action
                 $this->accountRedirect->clearRedirectCookie();
             }
 
-            $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
+            $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
+
+            $vippsAddresses = $this->vippsAddressManagement->fetchAddresses($userInfo, $vippsCustomer);
+            //todo  merge
+
 
         } catch (EmailNotConfirmedException $e) {
             $response = [

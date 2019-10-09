@@ -15,11 +15,13 @@
  */
 namespace Vipps\Login\Api\Data;
 
+use Magento\Framework\Api\CustomAttributesDataInterface;
+
 /**
  * Interface UserInfoInterface
  * @package Vipps\Login\Api\Data
  */
-interface UserInfoInterface extends \Magento\Framework\Api\CustomAttributesDataInterface
+interface UserInfoInterface extends CustomAttributesDataInterface
 {
     /**
      * @var string
@@ -50,6 +52,11 @@ interface UserInfoInterface extends \Magento\Framework\Api\CustomAttributesDataI
      * @var string
      */
     const PHONE_NUMBER = 'phone_number';
+
+    /**
+     * @var string
+     */
+    const ADDRESS = 'address';
 
     /**
      * @return mixed
@@ -122,4 +129,16 @@ interface UserInfoInterface extends \Magento\Framework\Api\CustomAttributesDataI
      * @return mixed
      */
     public function setPhoneNumber($value);
+
+    /**
+     * @return mixed|[]
+     */
+    public function getAddress();
+
+    /**
+     * @param $value
+     *
+     * @return mixed
+     */
+    public function setAddress($value);
 }

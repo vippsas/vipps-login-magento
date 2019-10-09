@@ -156,4 +156,26 @@ class UserInfo extends AbstractExtensibleObject implements UserInfoInterface
     {
         return $this->setData(UserInfoInterface::PHONE_NUMBER, $value);
     }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return mixed|[]
+     */
+    public function getAddress()
+    {
+        return $this->_get(UserInfoInterface::ADDRESS);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param string $value
+     *
+     * @return mixed|UserInfo
+     */
+    public function setAddress($value)
+    {
+        return $this->setData(UserInfoInterface::ADDRESS, $value);
+    }
 }
