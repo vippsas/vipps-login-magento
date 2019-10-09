@@ -18,20 +18,21 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model\ResourceModel;
 
-use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Vipps\Login\Api\Data\VippsCustomerInterface;
-use Vipps\Login\Api\Data\VippsCustomerSearchResultsInterfaceFactory;
-use Vipps\Login\Api\VippsCustomerRepositoryInterface;
-use Vipps\Login\Model\ResourceModel\VippsCustomer\CollectionFactory;
-use Vipps\Login\Model\VippsCustomerFactory as ModelFactory;
+use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
+use Vipps\Login\Api\Data\VippsCustomerAddressSearchResultsInterface;
+use Vipps\Login\Api\Data\VippsCustomerAddressSearchResultsInterfaceFactory;
+use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
+use Vipps\Login\Model\ResourceModel\VippsCustomerAddress\Collection;
+use Vipps\Login\Model\ResourceModel\VippsCustomerAddress\CollectionFactory;
+use Vipps\Login\Model\VippsCustomerAddressFactory as ModelFactory;
 
 /**
- * Class VippsCustomerRepository
+ * Class VippsCustomerAddressRepository
  * @package Vipps\Login\Model\ResourceModel
  */
-class VippsCustomerRepository implements VippsCustomerRepositoryInterface
+class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryInterface
 {
     /**
      * @var CollectionProcessorInterface
@@ -39,7 +40,7 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
     private $collectionProcessor;
 
     /**
-     * @var VippsCustomerSearchResultsInterfaceFactory
+     * @var VippsCustomerAddressSearchResultsInterfaceFactory
      */
     private $searchResultsFactory;
 
@@ -54,100 +55,84 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
     private $extensibleDataObjectConverter;
 
     /**
+     * @var VippsCustomerAddress
+     */
+    private $resourceModel;
+
+    /**
      * @var ModelFactory
      */
     private $modelFactory;
 
     /**
-     * VippsCustomerRepository constructor.
+     * VippsCustomerAddressRepository constructor.
      *
      * @param CollectionProcessorInterface $collectionProcessor
-     * @param VippsCustomerSearchResultsInterfaceFactory $searchResultsFactory
+     * @param VippsCustomerAddressSearchResultsInterfaceFactory $searchResultsFactory
      * @param CollectionFactory $collectionFactory
      * @param ExtensibleDataObjectConverter $extensibleDataObjectConverter
+     * @param VippsCustomerAddress $resourceModel
      * @param ModelFactory $modelFactory
      */
     public function __construct(
         CollectionProcessorInterface $collectionProcessor,
-        VippsCustomerSearchResultsInterfaceFactory $searchResultsFactory,
+        VippsCustomerAddressSearchResultsInterfaceFactory $searchResultsFactory,
         CollectionFactory $collectionFactory,
         ExtensibleDataObjectConverter $extensibleDataObjectConverter,
+        VippsCustomerAddress $resourceModel,
         ModelFactory $modelFactory
     ) {
         $this->collectionProcessor = $collectionProcessor;
         $this->searchResultsFactory = $searchResultsFactory;
         $this->collectionFactory = $collectionFactory;
         $this->extensibleDataObjectConverter = $extensibleDataObjectConverter;
+        $this->resourceModel = $resourceModel;
         $this->modelFactory = $modelFactory;
     }
 
     /**
-     * @param VippsCustomerInterface $customer
+     * @param VippsCustomerAddressInterface $vippsCustomerAddress
      *
-     * @return VippsCustomerInterface
+     * @return mixed|VippsCustomerAddressInterface
      * @throws \Exception
+     * @throws \Magento\Framework\Exception\AlreadyExistsException
      */
-    public function save(\Vipps\Login\Api\Data\VippsCustomerInterface $customer)
+    public function save(\Vipps\Login\Api\Data\VippsCustomerAddressInterface $vippsCustomerAddress)
     {
         $modelData = $this->extensibleDataObjectConverter->toNestedArray(
-            $customer,
+            $vippsCustomerAddress,
             [],
-            VippsCustomerInterface::class
+            VippsCustomerAddressInterface::class
         );
 
-        /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
-        $vippsCustomer = $this->modelFactory->create(['data' => $modelData]);
-        $vippsCustomer->save();
-        return $vippsCustomer->getDataModel();
+        /** @var \Vipps\Login\Model\VippsCustomerAddress $vippsCustomer */
+        $vippsCustomerAddress = $this->modelFactory->create(['data' => $modelData]);
+
+        return $this->resourceModel->save($vippsCustomerAddress);
     }
 
     /**
      * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
      *
-     * @return \Vipps\Login\Api\Data\VippsCustomerSearchResultsInterface
+     * @return VippsCustomerAddressSearchResultsInterface
      */
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria)
     {
+        /** @var Collection $collection */
         $collection = $this->collectionFactory->create();
         $this->collectionProcessor->process($searchCriteria, $collection);
 
+        /** @var VippsCustomerAddressSearchResultsInterface $searchResults */
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setTotalCount($collection->getSize());
 
         $records = [];
-        /** @var \Vipps\Login\Model\VippsCustomer $model */
+        /** @var \Vipps\Login\Model\VippsCustomerAddress $model */
         foreach ($collection as $model) {
             $records[] = $model->getDataModel();
         }
         $searchResults->setItems($records);
+
         return $searchResults;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return VippsCustomerInterface
-     */
-    public function getById($id)
-    {
-        /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
-        $vippsCustomer = $this->modelFactory->create();
-        $vippsCustomer->load($id);
-
-        return $vippsCustomer->getDataModel();
-    }
-
-    /**
-     * @param CustomerInterface $customer
-     *
-     * @return VippsCustomerInterface
-     */
-    public function getByCustomer(CustomerInterface $customer)
-    {
-        /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
-        $vippsCustomer = $this->modelFactory->create();
-        $vippsCustomer->load($customer->getId(), 'customer_entity_id');
-
-        return $vippsCustomer->getDataModel();
     }
 }

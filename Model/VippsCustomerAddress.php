@@ -18,24 +18,26 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model;
 
+use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Data\Collection\AbstractDb;
 use Magento\Framework\Api\DataObjectHelper;
-use Vipps\Login\Api\Data\VippsCustomerInterface;
-use Vipps\Login\Api\Data\VippsCustomerInterfaceFactory;
+use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
+use Vipps\Login\Api\Data\VippsCustomerAddressInterfaceFactory;
+use Vipps\Login\Model\ResourceModel\VippsCustomerAddress as VippsCustomerAddressResource;
 
 /**
- * Class VippsCustomer
+ * Class VippsCustomerAddress
  * @package Vipps\Login\Model
  */
-class VippsCustomer extends \Magento\Framework\Model\AbstractModel
+class VippsCustomerAddress extends AbstractModel
 {
     /**
-     * @var VippsCustomerInterfaceFactory
+     * @var VippsCustomerAddressInterfaceFactory
      */
-    private $vippsCustomerFactory;
+    private $vippsCustomerAddressFactory;
 
     /**
      * @var DataObjectHelper
@@ -45,7 +47,7 @@ class VippsCustomer extends \Magento\Framework\Model\AbstractModel
     /**
      * VippsCustomer constructor.
      *
-     * @param VippsCustomerInterfaceFactory $vippsCustomerFactory
+     * @param VippsCustomerAddressInterfaceFactory $vippsCustomerAddressFactory
      * @param DataObjectHelper $dataObjectHelper
      * @param Context $context
      * @param Registry $registry
@@ -54,7 +56,7 @@ class VippsCustomer extends \Magento\Framework\Model\AbstractModel
      * @param array $data
      */
     public function __construct(
-        VippsCustomerInterfaceFactory $vippsCustomerFactory,
+        VippsCustomerAddressInterfaceFactory $vippsCustomerAddressFactory,
         DataObjectHelper $dataObjectHelper,
         Context $context,
         Registry $registry,
@@ -63,10 +65,9 @@ class VippsCustomer extends \Magento\Framework\Model\AbstractModel
         array $data = []
     ) {
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
-        $this->vippsCustomerFactory = $vippsCustomerFactory;
+        $this->vippsCustomerAddressFactory = $vippsCustomerAddressFactory;
         $this->dataObjectHelper = $dataObjectHelper;
     }
-
     /**
      * Init resource model and id field
      *
@@ -75,19 +76,19 @@ class VippsCustomer extends \Magento\Framework\Model\AbstractModel
     protected function _construct()
     {
         parent::_construct();
-        $this->_init(\Vipps\Login\Model\ResourceModel\VippsCustomer::class);
+        $this->_init(VippsCustomerAddressResource::class);
         $this->setIdFieldName('entity_id');
     }
 
     /**
-     * @return VippsCustomerInterface
+     * @return VippsCustomerAddressInterface
      */
     public function getDataModel()
     {
         $data = $this->getData();
 
-        $dataObject = $this->vippsCustomerFactory->create();
-        $this->dataObjectHelper->populateWithArray($dataObject, $data, VippsCustomerInterface::class);
+        $dataObject = $this->vippsCustomerAddressFactory->create();
+        $this->dataObjectHelper->populateWithArray($dataObject, $data, VippsCustomerAddressInterface::class);
 
         return $dataObject;
     }

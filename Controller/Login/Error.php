@@ -14,6 +14,8 @@
  *    IN THE SOFTWARE
  */
 
+declare(strict_types=1);
+
 namespace Vipps\Login\Controller\Login;
 
 use Magento\Framework\App\Action\Context;

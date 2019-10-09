@@ -16,23 +16,25 @@
 
 declare(strict_types=1);
 
-namespace Vipps\Login\Model\ResourceModel;
+namespace Vipps\Login\Model\ResourceModel\VippsCustomerAddress;
 
-use Magento\Framework\Model\ResourceModel\Db\VersionControl\AbstractDb;
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use Vipps\Login\Model\VippsCustomerAddress;
+use Vipps\Login\Model\ResourceModel\VippsCustomerAddress as VippsCustomerAddressResource;
 
 /**
- * Class VippsCustomer
- * @package Vipps\Login\Model\ResourceModel
+ * Class Collection
+ * @package Vipps\Login\Model\ResourceModel\VippsCustomerAddress
  */
-class VippsCustomer extends AbstractDb
+class Collection extends AbstractCollection
 {
     /**
-     * Resource initialization
+     * Initialize resource model
      *
      * @return void
      */
     protected function _construct()
     {
-        $this->_init('vipps_customer', 'entity_id');
+        $this->_init(VippsCustomerAddress::class, VippsCustomerAddressResource::class);
     }
 }

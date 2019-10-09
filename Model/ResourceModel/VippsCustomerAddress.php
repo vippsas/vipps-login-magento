@@ -21,10 +21,10 @@ namespace Vipps\Login\Model\ResourceModel;
 use Magento\Framework\Model\ResourceModel\Db\VersionControl\AbstractDb;
 
 /**
- * Class VippsCustomer
+ * Class VippsCustomerAddress
  * @package Vipps\Login\Model\ResourceModel
  */
-class VippsCustomer extends AbstractDb
+class VippsCustomerAddress extends AbstractDb
 {
     /**
      * Resource initialization
@@ -33,6 +33,6 @@ class VippsCustomer extends AbstractDb
      */
     protected function _construct()
     {
-        $this->_init('vipps_customer', 'entity_id');
+        $this->_init('vipps_customer_address', 'entity_id');
     }
 }
