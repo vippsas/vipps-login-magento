@@ -1,5 +1,18 @@
 <?php
-
+/**
+ * Copyright 2019 Vipps
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ *  the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ *  and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *  TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ *  IN THE SOFTWARE.
+ */
 namespace Vipps\Login\Controller\Login;
 
 use Magento\Customer\Api\AccountManagementInterface;
@@ -19,15 +32,14 @@ use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\Result\Raw;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
+use Vipps\Login\Model\AccessTokenProvider;
 
 /**
- * Verify Ajax controller
- *
- * @method \Magento\Framework\App\RequestInterface getRequest()
- * @method \Magento\Framework\App\Response\Http getResponse()
+ * Class PasswordConfirm
+ * @package Vipps\Login\Controller\Login
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class VerifyAjax extends Action
+class PasswordConfirm extends Action
 {
     /**
      * @var SessionManagerInterface|Session
@@ -75,7 +87,12 @@ class VerifyAjax extends Action
     private $vippsAccountManagement;
 
     /**
-     * VerifyAjax constructor.
+     * @var AccessTokenProvider
+     */
+    private $accessTokenProvider;
+
+    /**
+     * PasswordConfirm constructor.
      *
      * @param Context $context
      * @param UserInfoCommand $userInfoCommand
@@ -87,7 +104,7 @@ class VerifyAjax extends Action
      * @param AccountRedirect $accountRedirect
      * @param ScopeConfigInterface $scopeConfig
      * @param VippsAccountManagementInterface $vippsAccountManagement
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @param AccessTokenProvider $accessTokenProvider
      */
     public function __construct(
         Context $context,
@@ -99,7 +116,8 @@ class VerifyAjax extends Action
         RawFactory $resultRawFactory,
         AccountRedirect $accountRedirect,
         ScopeConfigInterface $scopeConfig,
-        VippsAccountManagementInterface $vippsAccountManagement
+        VippsAccountManagementInterface $vippsAccountManagement,
+        AccessTokenProvider $accessTokenProvider
     ) {
         parent::__construct($context);
         $this->customerSession = $customerSession;
@@ -111,6 +129,7 @@ class VerifyAjax extends Action
         $this->accountRedirect = $accountRedirect;
         $this->scopeConfig = $scopeConfig;
         $this->vippsAccountManagement = $vippsAccountManagement;
+        $this->accessTokenProvider = $accessTokenProvider;
     }
 
     /**
@@ -150,7 +169,7 @@ class VerifyAjax extends Action
             );
 
             try {
-                $userInfo = $this->userInfoCommand->execute();
+                $userInfo = $this->userInfoCommand->execute($this->accessTokenProvider->get());
             } catch (\Throwable $e) {
                 return $resultRaw->setHttpResponseCode($httpBadRequestCode);
             }

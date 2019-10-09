@@ -1,5 +1,5 @@
-<?xml version="1.0"?>
-<!--
+<?php
+
 /**
  * Copyright 2019 Vipps
  *
@@ -14,18 +14,13 @@
  *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  *  IN THE SOFTWARE.
  */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Api/etc/extension_attributes.xsd">
-    <extension_attributes for="Magento\Customer\Api\Data\CustomerInterface">
-        <attribute code="vipps_telephone" type="string" >
-            <join reference_table="vipps_customer_entity"
-                  join_on_field="entity_id"
-                  reference_field="customer_entity_id"
-            >
-                <field>telephone</field>
-                <field>linked</field>
-            </join>
-        </attribute>
-        <attribute code="vipps_linked" type="int" />
-    </extension_attributes>
-</config>
+namespace Vipps\Login\Controller\Login\Redirect\Action;
+
+/**
+ * Interface ActionInterface
+ * @package Vipps\Login\Controller\Login\Redirect\Action
+ */
+interface ActionInterface
+{
+    public function execute($token);
+}

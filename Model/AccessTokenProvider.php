@@ -38,6 +38,6 @@ class AccessTokenProvider implements TokenProviderInterface
      */
     public function get()
     {
-        return $this->customerSession->getData('access_token');
+        return $this->customerSession->getData('vipps_login_access_token');
     }
 }
