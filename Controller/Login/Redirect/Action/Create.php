@@ -25,6 +25,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Exception\State\InputMismatchException;
+use Magento\Framework\Exception\AuthorizationException;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Customer\Model\CustomerRegistry;
@@ -135,7 +136,7 @@ class Create implements ActionInterface
      * @throws InputMismatchException
      * @throws LocalizedException
      * @throws NoSuchEntityException
-     * @throws \Exception
+     * @throws AuthorizationException
      */
     private function createCustomer(array $token)
     {

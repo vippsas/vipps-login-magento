@@ -66,6 +66,7 @@ class Confirmation extends Action
     public function execute()
     {
         if (!$this->tokenPayloadProvider->get()) {
+            //@todo implement error handling
             return $this->_redirect('customer/account/login');
         }
 
