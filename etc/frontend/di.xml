@@ -75,4 +75,10 @@
         </arguments>
     </type>
 
+    <type name="Vipps\Login\Block\Account\Link">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
 </config>

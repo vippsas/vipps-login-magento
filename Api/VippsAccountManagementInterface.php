@@ -63,6 +63,21 @@ interface VippsAccountManagementInterface
      */
     public function link(UserInfoInterface $userInfo, CustomerInterface $customer);
 
+    /**
+     * Check if customer is already linked ti vipps account.
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return VippsCustomerInterface
+     * @throws InputException
+     * @throws InputMismatchException
+     * @throws LocalizedException
+     */
+    public function isLinked(CustomerInterface $customer);
+
+    /**
+     * @return mixed
+     */
     public function unlink();
 
     /**

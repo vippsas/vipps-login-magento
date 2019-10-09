@@ -15,6 +15,8 @@
  */
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Context;
@@ -157,6 +159,16 @@ class Redirect extends Action
             $tokenData = $this->tokenCommand->execute($code);
             $this->storeToken($tokenData);
 
+            if ($this->sessionManager->isLoggedIn()) {
+                /** @var Customer $customer */
+                $customer = $this->sessionManager->getCustomer();
+                $userInfo = $this->userInfoCommand->execute();
+                $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $customer->getDataModel());
+                $this->vippsAddressManagement->fetchAddresses($userInfo, $vippsCustomer);
+                $resultRedirect->setPath('customer/account');
+                return $resultRedirect;
+            }
+
             $customer = $this->getTrustedAccount($tokenData['decoded_id_token']->phone_number);
 
             if ($customer) {
@@ -178,7 +190,8 @@ class Redirect extends Action
             $userInfo = $this->userInfoCommand->execute();
             $customer = $this->creator->create($userInfo);
             $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $customer);
-            $this->vippsAddressManagement->fetchAddresses($userInfo, $vippsCustomer);
+            $adresses = $this->vippsAddressManagement->fetchAddresses($userInfo, $vippsCustomer);
+
 
             $this->sessionManager
                 ->setCustomerAsLoggedIn($this->customerRegistry->retrieveByEmail($customer->getEmail()));

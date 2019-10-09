@@ -38,7 +38,7 @@ class InstallSchema implements InstallSchemaInterface
 
         $this->createVippsCustomerTable($installer);
 
-        $this->createVippsAddressTable($installer);
+        $this->createVippsCustomerAddressTable($installer);
 
         $installer->endSetup();
     }
@@ -140,7 +140,7 @@ class InstallSchema implements InstallSchemaInterface
      *
      * @throws \Zend_Db_Exception
      */
-    private function createVippsAddressTable(SchemaSetupInterface $installer)
+    private function createVippsCustomerAddressTable(SchemaSetupInterface $installer)
     {
         $vippsCustomerAddressTable = $installer->getConnection()
             ->getTableName('vipps_customer_address');
