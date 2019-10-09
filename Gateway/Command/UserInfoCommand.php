@@ -71,9 +71,11 @@ class UserInfoCommand
     }
 
     /**
-     * @param $accessToken
+     * @param string $accessToken
      *
      * @return UserInfoInterface
+     * @throws AuthorizationException
+     * @throws LocalizedException
      * @throws \Exception
      */
     public function execute($accessToken)
