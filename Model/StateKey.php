@@ -1,7 +1,21 @@
 <?php
-
+/**
+ * Copyright 2019 Vipps
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ *  the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ *  and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *  TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ *  IN THE SOFTWARE.
+ */
 namespace Vipps\Login\Model;
 
+use Magento\Framework\Math\Random;
 use Magento\Framework\Session\SessionManagerInterface;
 
 /**
@@ -20,16 +34,23 @@ class StateKey
      */
     private $sessionManager;
 
+    /**
+     * @var Random
+     */
+    private $mathRand;
 
     /**
      * StateKey constructor.
      *
      * @param SessionManagerInterface $sessionManager
+     * @param Random $mathRand
      */
     public function __construct(
-        SessionManagerInterface $sessionManager
+        SessionManagerInterface $sessionManager,
+        Random $mathRand
     ) {
         $this->sessionManager = $sessionManager;
+        $this->mathRand = $mathRand;
     }
 
     /**
@@ -37,8 +58,8 @@ class StateKey
      */
     public function generate()
     {
-        $state = sha1(uniqid(rand(), true));
-        $this->sessionManager->setData('vipps_url_state', $state);
+        $state = $this->mathRand->getUniqueHash();
+        $this->sessionManager->setData('vipps_login_url_state', $state);
         return $state;
     }
 
@@ -49,6 +70,6 @@ class StateKey
      */
     public function isValid($state): bool
     {
-        return $state == $this->sessionManager->getData('vipps_url_state');
+        return $state == $this->sessionManager->getData('vipps_login_url_state');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -34,15 +34,14 @@ use Magento\Framework\Controller\Result\Raw;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
+use Vipps\Login\Model\AccessTokenProvider;
 
 /**
- * Verify Ajax controller
- *
- * @method \Magento\Framework\App\RequestInterface getRequest()
- * @method \Magento\Framework\App\Response\Http getResponse()
+ * Class PasswordConfirm
+ * @package Vipps\Login\Controller\Login
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class VerifyAjax extends Action
+class PasswordConfirm extends Action
 {
     /**
      * @var SessionManagerInterface|Session
@@ -95,7 +94,12 @@ class VerifyAjax extends Action
     private $vippsAddressManagement;
 
     /**
-     * VerifyAjax constructor.
+     * @var AccessTokenProvider
+     */
+    private $accessTokenProvider;
+
+    /**
+     * PasswordConfirm constructor.
      *
      * @param Context $context
      * @param UserInfoCommand $userInfoCommand
@@ -107,6 +111,7 @@ class VerifyAjax extends Action
      * @param AccountRedirect $accountRedirect
      * @param ScopeConfigInterface $scopeConfig
      * @param VippsAccountManagementInterface $vippsAccountManagement
+     * @param AccessTokenProvider $accessTokenProvider
      * @param VippsAddressManagementInterface $vippsAddressManagement
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -121,6 +126,7 @@ class VerifyAjax extends Action
         AccountRedirect $accountRedirect,
         ScopeConfigInterface $scopeConfig,
         VippsAccountManagementInterface $vippsAccountManagement,
+        AccessTokenProvider $accessTokenProvider,
         VippsAddressManagementInterface $vippsAddressManagement
     ) {
         parent::__construct($context);
@@ -134,6 +140,7 @@ class VerifyAjax extends Action
         $this->scopeConfig = $scopeConfig;
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->vippsAddressManagement = $vippsAddressManagement;
+        $this->accessTokenProvider = $accessTokenProvider;
     }
 
     /**
@@ -173,7 +180,7 @@ class VerifyAjax extends Action
             );
 
             try {
-                $userInfo = $this->userInfoCommand->execute();
+                $userInfo = $this->userInfoCommand->execute($this->accessTokenProvider->get());
             } catch (\Throwable $e) {
                 return $resultRaw->setHttpResponseCode($httpBadRequestCode);
             }

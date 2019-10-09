@@ -6,12 +6,12 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="content">
-             <!--vipps.login.verification.form-->
-            <container name="vipps.login.verification" label="Verification Login Container" htmlTag="div" htmlClass="login-container">
+             <!--vipps.login.confirmation.form-->
+            <container name="vipps.login.confirmation" label="Confirmation Login Container" htmlTag="div" htmlClass="login-container">
                 <block
-                    class="Vipps\Login\Block\Form\Verification"
-                    name="vipps_login_verification_from"
-                    template="Vipps_Login::form/verification.phtml"
+                    class="Vipps\Login\Block\Form\Confirmation"
+                    name="vipps_login_confirmation_from"
+                    template="Vipps_Login::form/confirmation.phtml"
                     cacheable="false"
                 >
                     <container name="form.additional.info" as="form_additional_info"/>

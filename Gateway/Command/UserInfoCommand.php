@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -16,12 +16,13 @@
 
 namespace Vipps\Login\Gateway\Command;
 
+use Magento\Framework\Exception\AuthorizationException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\Serialize\SerializerInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\UserInfoInterfaceFactory;
 use Vipps\Login\Api\ApiEndpointsInterface;
-use Vipps\Login\Model\TokenProviderInterface;
 
 /**
  * Class UserInfoCommand
@@ -50,51 +51,62 @@ class UserInfoCommand
     private $apiEndpoints;
 
     /**
-     * @var TokenProviderInterface
-     */
-    private $accessTokenProvider;
-
-    /**
      * UserInfoCommand constructor.
      *
      * @param SerializerInterface $serializer
      * @param ClientFactory $httpClientFactory
      * @param UserInfoInterfaceFactory $userInfoFactory
      * @param ApiEndpointsInterface $apiEndpoints
-     * @param TokenProviderInterface $accessTokenProvider
      */
     public function __construct(
         SerializerInterface $serializer,
         ClientFactory $httpClientFactory,
         UserInfoInterfaceFactory $userInfoFactory,
-        ApiEndpointsInterface $apiEndpoints,
-        TokenProviderInterface $accessTokenProvider
+        ApiEndpointsInterface $apiEndpoints
     ) {
         $this->serializer = $serializer;
         $this->httpClientFactory = $httpClientFactory;
         $this->userInfoFactory = $userInfoFactory;
         $this->apiEndpoints = $apiEndpoints;
-        $this->accessTokenProvider = $accessTokenProvider;
     }
 
     /**
+     * @param $accessToken
+     *
      * @return UserInfoInterface
      * @throws \Exception
      */
-    public function execute()
+    public function execute($accessToken)
     {
-        $accessToken = $this->accessTokenProvider->get();
-
         $httpClient = $this->httpClientFactory->create();
-        $httpClient->addHeader('Authorization', 'Bearer ' . $accessToken);
+        $httpClient->addHeader('Authorization', 'Bearer 1' . $accessToken);
         $httpClient->get($this->apiEndpoints->getUserInfoEndpoint());
 
-        if ($httpClient->getStatus() != 200) {
-            throw new \Exception("Error");
+        $status = $httpClient->getStatus();
+        $body = $this->serializer->unserialize($httpClient->getBody());
+
+        if (200 <= $status && 300 > $status) {
+            return $this->userInfoFactory->create(['data' => $body]);
         }
 
-        $userInfoData = $this->serializer->unserialize($httpClient->getBody());
+        if (400 <= $status && 500 > $status) {
+            switch ($status) {
+                case 401:
+                    $message = $body['error_description']
+                        ? __($body['error_description'])
+                        : __('%1 Unauthorized', $status);
+                    throw new AuthorizationException($message, null, $status);
+                    break;
+                default:
+                    $message = $body['error_description']
+                        ? __($body['error_description'])
+                        : __('%1 Bad Request', $status);
+                    throw new LocalizedException($message, null, $status);
+            }
+        }
 
-        return $this->userInfoFactory->create(['data' => $userInfoData]);
+        $message = $body['error_description'] ?? 'An error occurred trying to fetch user info';
+        // @todo add log error
+        throw new \Exception($message);
     }
 }

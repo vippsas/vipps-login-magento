@@ -11,15 +11,15 @@ use Vipps\Login\Model\Customer\AccountsProvider;
 use Vipps\Login\Model\TokenProviderInterface;
 
 /**
- * Class Verification
+ * Class Confirmation
  * @package Vipps\Login\Block\Form
  */
-class Verification extends Template
+class Confirmation extends Template
 {
     /**
      * @var TokenProviderInterface
      */
-    private $openIDtokenProvider;
+    private $tokenPayloadProvider;
 
     /**
      * @var UrlInterface
@@ -32,23 +32,23 @@ class Verification extends Template
     private $accountsProvider;
 
     /**
-     * Verification constructor.
+     * Confirmation constructor.
      *
      * @param Context $context
-     * @param TokenProviderInterface $openIDtokenProvider
+     * @param TokenProviderInterface $tokenPayloadProvider
      * @param UrlInterface $urlBuilder
      * @param AccountsProvider $accountsProvider
      * @param array $data
      */
     public function __construct(
         Context $context,
-        TokenProviderInterface $openIDtokenProvider,
+        TokenProviderInterface $tokenPayloadProvider,
         UrlInterface $urlBuilder,
         AccountsProvider $accountsProvider,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->openIDtokenProvider = $openIDtokenProvider;
+        $this->tokenPayloadProvider = $tokenPayloadProvider;
         $this->urlBuilder = $urlBuilder;
         $this->accountsProvider = $accountsProvider;
     }
@@ -69,22 +69,29 @@ class Verification extends Template
      */
     public function getAjaxLoginUrl()
     {
-        return $this->urlBuilder->getUrl('customer/ajax/login');
+        return $this->urlBuilder->getRouteUrl('vipps/login/passwordConfirm');
     }
 
     /**
-     * Get current user email.
-     *
-     * @return mixed
+     * @return string
+     */
+    public function getAjaxEmailConfirmationUrl()
+    {
+        return $this->urlBuilder->getRouteUrl('vipps/login/emailConfirmation');
+    }
+
+    /**
+     * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getEmails()
     {
-        $idToken = $this->openIDtokenProvider->get();
+        $tokenPayload = $this->tokenPayloadProvider->get();
 
-        $customers = $this->accountsProvider->retrieveByPhoneOrEmail(
-            $idToken->phone_number,
-            $idToken->email
-        );
+        $phone = $tokenPayload['phone_number'] ?? null;
+        $email = $tokenPayload['email'] ?? null;
+
+        $customers = $this->accountsProvider->get($phone, $email);
 
         $emails = [];
         /** @var CustomerInterface $customer */
