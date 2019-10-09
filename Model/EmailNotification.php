@@ -124,7 +124,7 @@ class EmailNotification
             ->setTemplateIdentifier('vipps_login_confirmation') //@todo use -> $this->scopeConfig->getValue($template, 'store', $storeId)
             ->setTemplateOptions(['area' => 'frontend', 'store' => $store->getId()])
             ->setTemplateVars($templateParams)
-            ->setFromByScope('support', $store)
+            ->setFrom('support', $store)
             ->addTo($customer->getEmail(), $customer->getFirstname() . ' ' . $customer->getLastname()) //@todo fix later
             ->getTransport();
 
