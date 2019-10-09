@@ -81,7 +81,7 @@ class UserInfoCommand
     public function execute($accessToken)
     {
         $httpClient = $this->httpClientFactory->create();
-        $httpClient->addHeader('Authorization', 'Bearer 1' . $accessToken);
+        $httpClient->addHeader('Authorization', 'Bearer ' . $accessToken);
         $httpClient->get($this->apiEndpoints->getUserInfoEndpoint());
 
         $status = $httpClient->getStatus();

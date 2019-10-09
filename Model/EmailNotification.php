@@ -23,6 +23,7 @@ use Magento\Framework\App\ScopeResolverInterface;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Exception\MailException;
+use Magento\Customer\Helper\View as CustomerViewHelper;
 
 /**
  * Class EmailNotification
@@ -61,6 +62,11 @@ class EmailNotification
     private $dataObjectFactory;
 
     /**
+     * @var CustomerViewHelper
+     */
+    private $customerViewHelper;
+
+    /**
      * EmailNotification constructor.
      *
      * @param ScopeConfigInterface $scopeConfig
@@ -68,19 +74,22 @@ class EmailNotification
      * @param ScopeResolverInterface $scopeResolver
      * @param TransportBuilder $transportBuilder
      * @param DataObjectFactory $dataObjectFactory
+     * @param CustomerViewHelper $customerViewHelper
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         DataObjectProcessor $dataObjectProcessor,
         ScopeResolverInterface $scopeResolver,
         TransportBuilder $transportBuilder,
-        DataObjectFactory $dataObjectFactory
+        DataObjectFactory $dataObjectFactory,
+        CustomerViewHelper $customerViewHelper
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->dataObjectProcessor = $dataObjectProcessor;
         $this->scopeResolver = $scopeResolver;
         $this->transportBuilder = $transportBuilder;
         $this->dataObjectFactory = $dataObjectFactory;
+        $this->customerViewHelper = $customerViewHelper;
     }
 
     /**
@@ -98,6 +107,8 @@ class EmailNotification
         $vippsCustomerEmailData = $this->dataObjectProcessor
             ->buildOutputDataArray($vippsCustomer, VippsCustomerInterface::class);
 
+        $customerEmailData['name'] = $this->customerViewHelper->getCustomerName($customer);
+
         $templateParams = [
             'customer' => $this->dataObjectFactory->create(['data' => $customerEmailData]),
             'vippsCustomer' => $this->dataObjectFactory->create(['data' => $vippsCustomerEmailData]),
@@ -110,7 +121,7 @@ class EmailNotification
             ->setTemplateIdentifier('vipps_login_confirmation') //@todo use -> $this->scopeConfig->getValue($template, 'store', $storeId)
             ->setTemplateOptions(['area' => 'frontend', 'store' => $store->getId()])
             ->setTemplateVars($templateParams)
-            ->setFromByScope('general', $store)
+            ->setFromByScope('support', $store)
             ->addTo($customer->getEmail(), $customer->getFirstname() . ' ' . $customer->getLastname()) //@todo fix later
             ->getTransport();
 
