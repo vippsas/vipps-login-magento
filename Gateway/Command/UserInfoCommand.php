@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -16,12 +16,13 @@
 
 namespace Vipps\Login\Gateway\Command;
 
+use Magento\Framework\Exception\AuthorizationException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\Serialize\SerializerInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\UserInfoInterfaceFactory;
 use Vipps\Login\Api\ApiEndpointsInterface;
-use Vipps\Login\Model\TokenProviderInterface;
 
 /**
  * Class UserInfoCommand
@@ -78,15 +79,34 @@ class UserInfoCommand
     public function execute($accessToken)
     {
         $httpClient = $this->httpClientFactory->create();
-        $httpClient->addHeader('Authorization', 'Bearer ' . $accessToken);
+        $httpClient->addHeader('Authorization', 'Bearer 1' . $accessToken);
         $httpClient->get($this->apiEndpoints->getUserInfoEndpoint());
 
-        if ($httpClient->getStatus() != 200) {
-            throw new \Exception("An error occurred trying to fetch user info");
+        $status = $httpClient->getStatus();
+        $body = $this->serializer->unserialize($httpClient->getBody());
+
+        if (200 <= $status && 300 > $status) {
+            return $this->userInfoFactory->create(['data' => $body]);
         }
 
-        $userInfoData = $this->serializer->unserialize($httpClient->getBody());
+        if (400 <= $status && 500 > $status) {
+            switch ($status) {
+                case 401:
+                    $message = $body['error_description']
+                        ? __($body['error_description'])
+                        : __('%1 Unauthorized', $status);
+                    throw new AuthorizationException($message, null, $status);
+                    break;
+                default:
+                    $message = $body['error_description']
+                        ? __($body['error_description'])
+                        : __('%1 Bad Request', $status);
+                    throw new LocalizedException($message, null, $status);
+            }
+        }
 
-        return $this->userInfoFactory->create(['data' => $userInfoData]);
+        $message = $body['error_description'] ?? 'An error occurred trying to fetch user info';
+        // @todo add log error
+        throw new \Exception($message);
     }
 }

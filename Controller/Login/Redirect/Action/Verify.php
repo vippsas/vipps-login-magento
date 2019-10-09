@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -75,7 +75,7 @@ class Verify implements ActionInterface
         $customers = $this->accountsProvider->get($phone, $email);
         if ($customers) {
             $redirect = $this->redirectFactory->create();
-            $redirect->setPath('vipps/login/verification');
+            $redirect->setPath('vipps/login/confirmation');
             return $redirect;
         }
         return false;

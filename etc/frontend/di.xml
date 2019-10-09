@@ -24,13 +24,13 @@
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Controller\Login\Verification">
+    <type name="Vipps\Login\Controller\Login\Confirmation">
         <arguments>
-            <argument name="openIDtokenProvider" xsi:type="object">Vipps\Login\Model\OpenIDTokenProvider</argument>
+            <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Controller\Login\VerifyAjax">
+    <type name="Vipps\Login\Controller\Login\PasswordConfirm">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
@@ -49,7 +49,7 @@
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Model\OpenIDTokenProvider">
+    <type name="Vipps\Login\Model\TokenPayloadProvider">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
@@ -61,9 +61,9 @@
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Block\Form\Verification">
+    <type name="Vipps\Login\Block\Form\Confirmation">
         <arguments>
-            <argument name="openIDtokenProvider" xsi:type="object">Vipps\Login\Model\OpenIDTokenProvider</argument>
+            <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
         </arguments>
     </type>
 

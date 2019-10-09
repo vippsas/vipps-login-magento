@@ -17,7 +17,7 @@ define([
 
             if ($(this).validation() && $(this).validation('isValid')) {
                 fullScreenLoader.startLoader();
-                loginAction(loginData, 'vipps/login/verifyAjax').always(function () {
+                loginAction(loginData, 'vipps/login/passwordConfirm').always(function () {
                     fullScreenLoader.stopLoader();
                 });
             }

@@ -6,11 +6,10 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Customer\Model\Session as CustomerSession;
 
 /**
- * Interface TokenProviderInterface
+ * Class TokenPayloadProvider
  * @package Vipps\Login\Model
- * @api
  */
-class OpenIDTokenProvider implements TokenProviderInterface
+class TokenPayloadProvider implements TokenProviderInterface
 {
     /**
      * @var CustomerSession
