@@ -122,6 +122,21 @@ class VippsAccountManagement implements VippsAccountManagementInterface
         return $this->vippsCustomerRepository->save($vippsCustomer);
     }
 
+    /**
+     * Check if customer is already linked ti vipps account.
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return bool|VippsCustomerInterface
+     */
+    public function isLinked(CustomerInterface $customer)
+    {
+        $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+
+        return $vippsCustomer->getEntityId() !== null;
+    }
+
+
     public function unlink()
     {
         // TODO: Implement unlink() method.
