@@ -1,228 +1,73 @@
 <?php
 /**
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *    documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ *    the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ *    and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ *    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ *    IN THE SOFTWARE
  */
+
+declare(strict_types=1);
+
 namespace Vipps\Login\Model;
 
 use Magento\Framework\Model\AbstractModel;
+use Magento\Framework\Model\Context;
+use Magento\Framework\Registry;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Data\Collection\AbstractDb;
+use Magento\Framework\Api\DataObjectHelper;
 use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
+use Vipps\Login\Api\Data\VippsCustomerAddressInterfaceFactory;
 use Vipps\Login\Model\ResourceModel\VippsCustomerAddress as VippsCustomerAddressResource;
 
 /**
  * Class VippsCustomerAddress
  * @package Vipps\Login\Model
  */
-class VippsCustomerAddress extends AbstractModel implements VippsCustomerAddressInterface
+class VippsCustomerAddress extends AbstractModel
 {
     /**
-     * @return int
+     * @var VippsCustomerAddressInterfaceFactory
      */
-    public function getEntityId()
-    {
-        return $this->getData('entity_id');
-    }
+    private $vippsCustomerAddressFactory;
 
     /**
-     * @param int $value
+     * @var DataObjectHelper
+     */
+    private $dataObjectHelper;
+
+    /**
+     * VippsCustomer constructor.
      *
-     * @return VippsCustomerAddressInterface
+     * @param VippsCustomerAddressInterfaceFactory $vippsCustomerAddressFactory
+     * @param DataObjectHelper $dataObjectHelper
+     * @param Context $context
+     * @param Registry $registry
+     * @param AbstractResource|null $resource
+     * @param AbstractDb|null $resourceCollection
+     * @param array $data
      */
-    public function setEntityId($value)
-    {
-        return $this->setData('entity_id', $value);
+    public function __construct(
+        VippsCustomerAddressInterfaceFactory $vippsCustomerAddressFactory,
+        DataObjectHelper $dataObjectHelper,
+        Context $context,
+        Registry $registry,
+        AbstractResource $resource = null,
+        AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
+        $this->vippsCustomerAddressFactory = $vippsCustomerAddressFactory;
+        $this->dataObjectHelper = $dataObjectHelper;
     }
-
-    /**
-     * @return int
-     */
-    public function getCustomerId()
-    {
-        return $this->getData('vipps_customer_id');
-    }
-
-    /**
-     * @param int $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setCustomerId($value)
-    {
-        return $this->setData('vipps_customer_id', $value);
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getCustomerAddressId()
-    {
-        return $this->getData('customer_address_id');
-    }
-
-    /**
-     * @param int $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setCustomerAddressId($value)
-    {
-        return $this->setData('customer_address_id', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getCountry()
-    {
-        return $this->getData('country');
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setCountry($value)
-    {
-        return $this->setData('country', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getStreetAddress()
-    {
-        return $this->getData('street_address');
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setStreetAddress($value)
-    {
-        return $this->setData('street_address', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getAddressType()
-    {
-        return $this->getData('address_type');
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setAddressType($value)
-    {
-        return $this->setData('address_type', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getFormatted()
-    {
-        return $this->getData('formatted');
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setFormatted($value)
-    {
-        return $this->setData('formatted', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getPostalCode()
-    {
-        return $this->getData('postal_code');
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setPostalCode($value)
-    {
-        return $this->setData('postal_code', $value);
-    }
-
-    /**
-     * @return string
-     */
-    public function getRegion()
-    {
-        return $this->getData('region');
-    }
-
-    /**
-     * @param string $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setRegion($value)
-    {
-        return $this->setData('region', $value);
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsDefault()
-    {
-        return $this->getData('is_default');
-    }
-
-    /**
-     * @param bool $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setIsDefault($value)
-    {
-        return $this->setData('is_default', $value);
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsConverted()
-    {
-        return $this->getData('is_converted');
-    }
-
-    /**
-     * @param bool $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setIsConverted($value)
-    {
-        return $this->setData('is_converted', $value);
-    }
-    
     /**
      * Init resource model and id field
      *
@@ -233,5 +78,18 @@ class VippsCustomerAddress extends AbstractModel implements VippsCustomerAddress
         parent::_construct();
         $this->_init(VippsCustomerAddressResource::class);
         $this->setIdFieldName('entity_id');
+    }
+
+    /**
+     * @return VippsCustomerAddressInterface
+     */
+    public function getDataModel()
+    {
+        $data = $this->getData();
+
+        $dataObject = $this->vippsCustomerAddressFactory->create();
+        $this->dataObjectHelper->populateWithArray($dataObject, $data, VippsCustomerAddressInterface::class);
+
+        return $dataObject;
     }
 }

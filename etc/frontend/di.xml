@@ -82,10 +82,23 @@
     <type name="Vipps\Login\Controller\Login\Redirect\ActionsPool">
         <arguments>
             <argument name="actions" xsi:type="array">
+                <item name="bind" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Bind</item>
                 <item name="login" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Login</item>
-                <item name="verify" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Verify</item>
+                <item name="confirm" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Confirm</item>
                 <item name="create" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Create</item>
             </argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Account\Link">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Redirect\Action\Bind">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
     </type>
 

@@ -28,7 +28,7 @@
 
     <preference for="Vipps\Login\Api\Data\VippsCustomerInterface" type="Vipps\Login\Model\Data\VippsCustomer"/>
 
-    <preference for="Vipps\Login\Api\Data\VippsCustomerAddressInterface" type="Vipps\Login\Model\VippsCustomerAddress"/>
+    <preference for="Vipps\Login\Api\Data\VippsCustomerAddressInterface" type="Vipps\Login\Model\Data\VippsCustomerAddress"/>
 
     <preference for="Vipps\Login\Api\Data\VippsCustomerSearchResultsInterface" type="Magento\Framework\Api\SearchResults" />
 

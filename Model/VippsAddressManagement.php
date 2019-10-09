@@ -1,18 +1,20 @@
 <?php
 /**
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *    documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ *    the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ *    and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ *    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ *    IN THE SOFTWARE
  */
+
+declare(strict_types=1);
 
 namespace Vipps\Login\Model;
 
@@ -21,6 +23,7 @@ use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Math\Random;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
+use Vipps\Login\Api\Data\VippsCustomerAddressInterfaceFactory;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
@@ -47,20 +50,20 @@ class VippsAddressManagement implements VippsAddressManagementInterface
     private $searchCriteriaBuilder;
 
     /**
-     * @var VippsCustomerAddressFactory
+     * @var VippsCustomerAddressInterfaceFactory
      */
     private $vippsCustomerAddressFactory;
 
     /**
      * VippsAddressManagement constructor.
      *
-     * @param VippsCustomerAddressFactory $vippsCustomerAddressFactory
+     * @param VippsCustomerAddressInterfaceFactory $vippsCustomerAddressFactory
      * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param Random $mathRand
      */
     public function __construct(
-        VippsCustomerAddressFactory $vippsCustomerAddressFactory,
+        VippsCustomerAddressInterfaceFactory $vippsCustomerAddressFactory,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
         Random $mathRand
@@ -105,10 +108,10 @@ class VippsAddressManagement implements VippsAddressManagementInterface
             }
         } else {
             foreach ($newVippsAddresses as $address) {
-                /** @var VippsCustomerAddress $vippsCustomerAddress */
+                /** @var VippsCustomerAddressInterface $vippsCustomerAddress */
                 $vippsCustomerAddress = $this->vippsCustomerAddressFactory->create();
                 $vippsCustomerAddress = $this->convertAddress($vippsCustomerAddress, $address);
-                $vippsCustomerAddress->setCustomerId($vippsCustomer->getEntityId());
+                $vippsCustomerAddress->setVippsCustomerId($vippsCustomer->getEntityId());
                 if ($vippsCustomerAddress->getAddressType() == VippsCustomerAddressInterface::ADDRESS_TYPE_HOME) {
                     $vippsCustomerAddress->setIsDefault(true);
                 }

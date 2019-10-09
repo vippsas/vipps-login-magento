@@ -15,12 +15,14 @@
  */
 namespace Vipps\Login\Api\Data;
 
+use Magento\Framework\Api\CustomAttributesDataInterface;
+
 /**
  * Interface VippsCustomerAddressInterface
  * @package Vipps\Login\Api\Data
  * @api
  */
-interface VippsCustomerAddressInterface
+interface VippsCustomerAddressInterface extends CustomAttributesDataInterface
 {
     /**
      * @var string
@@ -42,14 +44,14 @@ interface VippsCustomerAddressInterface
     /**
      * @return int
      */
-    public function getCustomerId();
+    public function getVippsCustomerId();
 
     /**
      * @param int $value
      *
      * @return $this
      */
-    public function setCustomerId($value);
+    public function setVippsCustomerId($value);
 
     /**
      * @return int

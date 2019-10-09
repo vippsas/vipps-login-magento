@@ -18,8 +18,7 @@
 
 /** @var \Vipps\Login\Block\Account\Link $block */
 
-$isLinked = $block->isLinked();
-if (!$isLinked) {
+if (!$block->isLinked()) {
     echo $block->getChildHtml();
 }
 ?>
