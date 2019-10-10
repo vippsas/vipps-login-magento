@@ -4,7 +4,17 @@
     <type name="Vipps\Login\Controller\Login\Redirect">
         <arguments>
             <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
-            <argument name="openIDtokenProvider" xsi:type="object">Vipps\Login\Model\OpenIDTokenProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Redirect\Action\Login">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="Vipps\Login\Controller\Login\Redirect\Action\Create">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
     </type>
 
@@ -14,13 +24,13 @@
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Controller\Login\Verification">
+    <type name="Vipps\Login\Controller\Login\Confirmation">
         <arguments>
-            <argument name="openIDtokenProvider" xsi:type="object">Vipps\Login\Model\OpenIDTokenProvider</argument>
+            <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Controller\Login\VerifyAjax">
+    <type name="Vipps\Login\Controller\Login\PasswordConfirm">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
@@ -33,19 +43,13 @@
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Gateway\Command\UserInfoCommand">
-        <arguments>
-            <argument name="accessTokenProvider" xsi:type="object">Vipps\Login\Model\AccessTokenProvider</argument>
-        </arguments>
-    </type>
-
     <type name="Vipps\Login\Gateway\Validator\TokenValidator">
         <arguments>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Model\OpenIDTokenProvider">
+    <type name="Vipps\Login\Model\TokenPayloadProvider">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
@@ -57,9 +61,9 @@
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Block\Form\Verification">
+    <type name="Vipps\Login\Block\Form\Confirmation">
         <arguments>
-            <argument name="openIDtokenProvider" xsi:type="object">Vipps\Login\Model\OpenIDTokenProvider</argument>
+            <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
         </arguments>
     </type>
 
@@ -72,6 +76,29 @@
     <type name="Vipps\Login\Model\ApiEndpoints">
         <arguments>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Redirect\ActionsPool">
+        <arguments>
+            <argument name="actions" xsi:type="array">
+                <item name="bind" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Bind</item>
+                <item name="login" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Login</item>
+                <item name="confirm" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Confirm</item>
+                <item name="create" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Create</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Account\Link">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Redirect\Action\Bind">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
     </type>
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -63,6 +63,21 @@ interface VippsAccountManagementInterface
      */
     public function link(UserInfoInterface $userInfo, CustomerInterface $customer);
 
+    /**
+     * Check if customer is already linked ti vipps account.
+     *
+     * @param CustomerInterface $customer
+     *
+     * @return bool
+     * @throws InputException
+     * @throws InputMismatchException
+     * @throws LocalizedException
+     */
+    public function isLinked(CustomerInterface $customer);
+
+    /**
+     * @return mixed
+     */
     public function unlink();
 
     /**

@@ -1,4 +1,20 @@
 <?php
+/**
+ * Copyright 2019 Vipps
+ *
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *    documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ *    the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ *    and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ *    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ *    IN THE SOFTWARE
+ */
+
+declare(strict_types=1);
 
 namespace Vipps\Login\Gateway\Command;
 
@@ -38,10 +54,6 @@ class TokenCommand
      */
     private $serializer;
 
-    /**
-     * @var object
-     */
-    private $id_token;
     /**
      * @var UrlInterface
      */
@@ -94,27 +106,28 @@ class TokenCommand
         ]);
 
         try {
-            $tokenData = $this->serializer->unserialize($httpClient->getBody());
+            $token = $this->serializer->unserialize($httpClient->getBody());
+            $payload = $this->getPayload($token);
 
-            $payload = $this->getPayload($tokenData);
-            $tokenData['decoded_id_token'] = $payload;
-
-            return $tokenData;
-        } catch (\Throwable $t) {
-            throw new LocalizedException(__('An error occurred trying to get token'));
+            $token['id_token_payload'] = $payload;
+            return $token;
+        } catch (\Exception $e) {
+            throw new LocalizedException(__('An error occurred trying to get token'), $e);
         }
     }
 
     /**
-     * @param $tokenData
+     * @param $token
      *
-     * @return object|null
+     * @return array|bool|float|int|string|null
      */
-    public function getPayload($tokenData)
+    public function getPayload($token)
     {
-        if (array_key_exists('id_token', $tokenData)) {
-            $payload = JWT::decode($tokenData['id_token'], $this->getPublicKey(), ['RS256']);
-            return $payload;
+        if (array_key_exists('id_token', $token)) {
+            $payload = JWT::decode($token['id_token'], $this->getPublicKey(), ['RS256']);
+
+            //encode and decode again to convert strClass to array
+            return $this->serializer->unserialize($this->serializer->serialize($payload));
         }
         return null;
     }

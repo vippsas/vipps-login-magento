@@ -1,18 +1,21 @@
 <?php
 /**
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- *  documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- *  the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- *  and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *    documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ *    the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ *    and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- *  TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
- *  THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- *  CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- *  IN THE SOFTWARE.
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ *    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ *    IN THE SOFTWARE
  */
+
+declare(strict_types=1);
+
 namespace Vipps\Login\Model;
 
 use Magento\Framework\DataObjectFactory;
@@ -23,6 +26,7 @@ use Magento\Framework\App\ScopeResolverInterface;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Exception\MailException;
+use Magento\Customer\Helper\View as CustomerViewHelper;
 
 /**
  * Class EmailNotification
@@ -61,6 +65,11 @@ class EmailNotification
     private $dataObjectFactory;
 
     /**
+     * @var CustomerViewHelper
+     */
+    private $customerViewHelper;
+
+    /**
      * EmailNotification constructor.
      *
      * @param ScopeConfigInterface $scopeConfig
@@ -68,19 +77,22 @@ class EmailNotification
      * @param ScopeResolverInterface $scopeResolver
      * @param TransportBuilder $transportBuilder
      * @param DataObjectFactory $dataObjectFactory
+     * @param CustomerViewHelper $customerViewHelper
      */
     public function __construct(
         ScopeConfigInterface $scopeConfig,
         DataObjectProcessor $dataObjectProcessor,
         ScopeResolverInterface $scopeResolver,
         TransportBuilder $transportBuilder,
-        DataObjectFactory $dataObjectFactory
+        DataObjectFactory $dataObjectFactory,
+        CustomerViewHelper $customerViewHelper
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->dataObjectProcessor = $dataObjectProcessor;
         $this->scopeResolver = $scopeResolver;
         $this->transportBuilder = $transportBuilder;
         $this->dataObjectFactory = $dataObjectFactory;
+        $this->customerViewHelper = $customerViewHelper;
     }
 
     /**
@@ -98,6 +110,8 @@ class EmailNotification
         $vippsCustomerEmailData = $this->dataObjectProcessor
             ->buildOutputDataArray($vippsCustomer, VippsCustomerInterface::class);
 
+        $customerEmailData['name'] = $this->customerViewHelper->getCustomerName($customer);
+
         $templateParams = [
             'customer' => $this->dataObjectFactory->create(['data' => $customerEmailData]),
             'vippsCustomer' => $this->dataObjectFactory->create(['data' => $vippsCustomerEmailData]),
@@ -110,7 +124,7 @@ class EmailNotification
             ->setTemplateIdentifier('vipps_login_confirmation') //@todo use -> $this->scopeConfig->getValue($template, 'store', $storeId)
             ->setTemplateOptions(['area' => 'frontend', 'store' => $store->getId()])
             ->setTemplateVars($templateParams)
-            ->setFromByScope('general', $store)
+            ->setFrom('support', $store)
             ->addTo($customer->getEmail(), $customer->getFirstname() . ' ' . $customer->getLastname()) //@todo fix later
             ->getTransport();
 

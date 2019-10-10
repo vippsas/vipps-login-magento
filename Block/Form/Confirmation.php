@@ -1,4 +1,21 @@
 <?php
+/**
+ * Copyright 2019 Vipps
+ *
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *    documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ *    the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ *    and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ *    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ *    IN THE SOFTWARE
+ */
+
+declare(strict_types=1);
+
 namespace Vipps\Login\Block\Form;
 
 use Magento\Customer\Api\Data\CustomerInterface;
@@ -11,15 +28,15 @@ use Vipps\Login\Model\Customer\AccountsProvider;
 use Vipps\Login\Model\TokenProviderInterface;
 
 /**
- * Class Verification
+ * Class Confirmation
  * @package Vipps\Login\Block\Form
  */
-class Verification extends Template
+class Confirmation extends Template
 {
     /**
      * @var TokenProviderInterface
      */
-    private $openIDtokenProvider;
+    private $tokenPayloadProvider;
 
     /**
      * @var UrlInterface
@@ -32,23 +49,23 @@ class Verification extends Template
     private $accountsProvider;
 
     /**
-     * Verification constructor.
+     * Confirmation constructor.
      *
      * @param Context $context
-     * @param TokenProviderInterface $openIDtokenProvider
+     * @param TokenProviderInterface $tokenPayloadProvider
      * @param UrlInterface $urlBuilder
      * @param AccountsProvider $accountsProvider
      * @param array $data
      */
     public function __construct(
         Context $context,
-        TokenProviderInterface $openIDtokenProvider,
+        TokenProviderInterface $tokenPayloadProvider,
         UrlInterface $urlBuilder,
         AccountsProvider $accountsProvider,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->openIDtokenProvider = $openIDtokenProvider;
+        $this->tokenPayloadProvider = $tokenPayloadProvider;
         $this->urlBuilder = $urlBuilder;
         $this->accountsProvider = $accountsProvider;
     }
@@ -69,22 +86,29 @@ class Verification extends Template
      */
     public function getAjaxLoginUrl()
     {
-        return $this->urlBuilder->getUrl('customer/ajax/login');
+        return $this->urlBuilder->getRouteUrl('vipps/login/passwordConfirm');
     }
 
     /**
-     * Get current user email.
-     *
-     * @return mixed
+     * @return string
+     */
+    public function getAjaxEmailConfirmationUrl()
+    {
+        return $this->urlBuilder->getRouteUrl('vipps/login/emailConfirmation');
+    }
+
+    /**
+     * @return array
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getEmails()
     {
-        $idToken = $this->openIDtokenProvider->get();
+        $tokenPayload = $this->tokenPayloadProvider->get();
 
-        $customers = $this->accountsProvider->retrieveByPhoneOrEmail(
-            $idToken->phone_number,
-            $idToken->email
-        );
+        $phone = $tokenPayload['phone_number'] ?? null;
+        $email = $tokenPayload['email'] ?? null;
+
+        $customers = $this->accountsProvider->get($phone, $email);
 
         $emails = [];
         /** @var CustomerInterface $customer */
