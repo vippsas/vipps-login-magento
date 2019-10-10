@@ -1,0 +1,49 @@
+@vippsColor: #ff5b24;
+
+
+& when (@media-common = true) {
+    .login-vipps {
+        margin-top: 10px;
+
+        .icon-vipps {
+            background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
+            display: inline-block;
+            background-size: 55px 14px;
+            padding-left: 62px;
+            height: 15px;
+        }
+
+        .vipps-btn {
+            display: flex;
+            background: @vippsColor;
+            padding: 15px 25px;
+            border-radius: 25px;
+            border: 0;
+
+            span {
+                margin-left: 10px;
+            }
+
+            &:hover,
+            &:focus,
+            &:active {
+                background: lighten(@vippsColor, 10%);
+                border: 0;
+            }
+        }
+    }
+
+    .login-vipps-holder {
+        display: flex;
+        flex-flow: column wrap;
+        align-items: center;
+        margin-bottom: 20px;
+        min-height: 300px;
+        justify-content: space-between;
+
+        &-text {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    }
+}
