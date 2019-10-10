@@ -21,6 +21,7 @@ namespace Vipps\Login\Controller\Login\Redirect\Action;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
@@ -58,6 +59,11 @@ class Bind implements ActionInterface
     private $userInfoCommand;
 
     /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
+
+    /**
      * Bind constructor.
      *
      * @param RedirectFactory $redirectFactory
@@ -65,19 +71,22 @@ class Bind implements ActionInterface
      * @param VippsAccountManagementInterface $vippsAccountManagement
      * @param SessionManagerInterface $customerSession
      * @param UserInfoCommand $userInfoCommand
+     * @param ManagerInterface $messageManager
      */
     public function __construct(
         RedirectFactory $redirectFactory,
         VippsAddressManagementInterface $vippsAddressManagement,
         VippsAccountManagementInterface $vippsAccountManagement,
         SessionManagerInterface $customerSession,
-        UserInfoCommand $userInfoCommand
+        UserInfoCommand $userInfoCommand,
+        ManagerInterface $messageManager
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->vippsAddressManagement = $vippsAddressManagement;
         $this->customerSession = $customerSession;
         $this->userInfoCommand = $userInfoCommand;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -89,15 +98,29 @@ class Bind implements ActionInterface
     public function execute($token)
     {
         if ($this->customerSession->isLoggedIn()) {
-            /** @var Customer $customer */
-            $customer = $this->customerSession->getCustomer();
-            $userInfo = $this->userInfoCommand->execute($token['access_token']);
-            $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $customer->getDataModel());
-            $this->vippsAddressManagement->fetchAddresses($userInfo, $vippsCustomer);
 
             $resultRedirect = $this->redirectFactory->create();
-            $resultRedirect->setPath('customer/account');
+            try {
+                /** @var Customer $customer */
+                $customerModel = $this->customerSession->getCustomer();
+                $customer = $customerModel->getDataModel();
+                $userInfo = $this->userInfoCommand->execute($token['access_token']);
+                $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $customer);
+
+                $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer);
+
+                $this->messageManager->addSuccessMessage(__('Your account was successfully linked.'));
+                $resultRedirect->setPath('customer/account');
+                return $resultRedirect;
+            } catch (\Throwable $e) {
+                $this->messageManager->addErrorMessage(
+                    __('An error occurred during linking accounts. Please, try again later.')
+                );
+                $resultRedirect->setPath('customer/account');
+            }
+
             return $resultRedirect;
+
         }
         
         return false;

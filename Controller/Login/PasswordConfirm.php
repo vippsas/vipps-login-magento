@@ -199,10 +199,7 @@ class PasswordConfirm extends Action
 
             $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
 
-            $vippsAddresses = $this->vippsAddressManagement->fetchAddresses($userInfo, $vippsCustomer);
-            //todo  merge
-
-
+            $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $magentoCustomer);
         } catch (EmailNotConfirmedException $e) {
             $response = [
                 'errors' => true,

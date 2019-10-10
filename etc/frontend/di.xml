@@ -24,6 +24,12 @@
         </arguments>
     </type>
 
+    <type name="Vipps\Login\Controller\Login\Unlink">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
     <type name="Vipps\Login\Controller\Login\Confirmation">
         <arguments>
             <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
@@ -91,6 +97,12 @@
     </type>
 
     <type name="Vipps\Login\Block\Account\Link">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Account\VippsAddress">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>

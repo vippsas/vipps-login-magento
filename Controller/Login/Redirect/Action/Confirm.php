@@ -79,6 +79,7 @@ class Confirm implements ActionInterface
             $redirect->setPath('vipps/login/confirmation');
             return $redirect;
         }
+
         return false;
     }
 }

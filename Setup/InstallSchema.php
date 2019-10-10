@@ -217,6 +217,12 @@ class InstallSchema implements InstallSchemaInterface
             null,
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],
             'Is Vipps Address converted to Magento Address'
+        )->addColumn(
+            'was_changed',
+            Table::TYPE_SMALLINT,
+            null,
+            ['unsigned' => true, 'nullable' => false, 'default' => '0'],
+            'Is Vipps Address converted to Magento Address'
         )->addForeignKey(
             $installer->getFkName(
                 $vippsCustomerAddressTable,

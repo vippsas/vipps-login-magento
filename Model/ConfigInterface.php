@@ -28,9 +28,20 @@ interface ConfigInterface
 
     const VIPPS_LOGIN_ENVIRONMENT = 'vipps/login/environment';
 
+    const VIPPS_LOGIN_DEBUG = 'vipps/login/debug';
+
     public function getLoginClientId($storeId = null);
 
     public function getLoginClientSecret($storeId = null);
 
     public function getLoginEnvironment($storeId = null);
+
+    /**
+     * Check if debug mode is enabled.
+     *
+     * @param int|null $storeId
+     *
+     * @return bool
+     */
+    public function isDebug($storeId = null);
 }

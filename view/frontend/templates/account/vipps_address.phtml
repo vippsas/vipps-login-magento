@@ -1,0 +1,44 @@
+<?php
+/**
+ * Copyright 2019 Vipps
+ *
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *    documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ *    the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ *    and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ *    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ *    IN THE SOFTWARE
+ */
+
+// @codingStandardsIgnoreFile
+
+/** @var \Vipps\Login\Block\Account\VippsAddress $block */
+?>
+<?php if ($vippsAddresses = $block->getVippsAddresses()): ?>
+    <div class="block block-addresses-list">
+        <div class="block-title"><strong><?= $block->escapeHtml(__('Vipps Address Entries')) ?></strong></div>
+        <div class="block-content">
+            <ol class="items addresses">
+                <?php foreach ($vippsAddresses as $address): ?>
+                    <li class="item">
+                        <address>
+                            <?= $address->getAddressType() ?><br />
+                            <?= $address->getStreetAddress() ?><br />
+                            <?= $address->getRegion() ?><br />
+                            <?= $address->getPostalCode() ?><br />
+                            <?= $address->getCountry() ?><br />
+                        </address>
+<!--                        <div class="item actions">
+                            <a class="action edit" href="<?/*= $block->escapeUrl($block->getUrl('customer/address/edit', ['id' => $_address->getId()])) */?>"><span><?/*= $block->escapeHtml(__('Edit Address')) */?></span></a>
+                            <a class="action delete" href="#" role="delete-address" data-address="<?/*= $block->escapeHtmlAttr($_address->getId()) */?>"><span><?/*= $block->escapeHtml(__('Delete Address')) */?></span></a>
+                        </div>-->
+                    </li>
+                <?php endforeach; ?>
+            </ol>
+        </div>
+    </div>
+<?php endif ?>
