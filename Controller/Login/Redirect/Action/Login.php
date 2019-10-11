@@ -111,9 +111,9 @@ class Login implements ActionInterface
         if ($customer) {
             $redirect = $this->redirectFactory->create();
             try {
-                $this->sessionManager->setCustomerAsLoggedIn($customer);
-
                 $userInfo = $this->userInfoCommand->execute($token['access_token']);
+
+                $this->sessionManager->setCustomerAsLoggedIn($customer);
 
                 $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
                 $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
