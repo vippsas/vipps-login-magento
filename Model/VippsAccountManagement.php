@@ -25,6 +25,7 @@ use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterfaceFactory;
 use Vipps\Login\Api\VippsAccountManagementInterface;
+use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
@@ -57,16 +58,23 @@ class VippsAccountManagement implements VippsAccountManagementInterface
     private $mathRand;
 
     /**
+     * @var VippsCustomerAddressRepositoryInterface
+     */
+    private $vippsCustomerAddressRepository;
+
+    /**
      * VippsAccountManagement constructor.
      *
      * @param VippsCustomerInterfaceFactory $vippsCustomerFactory
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
+     * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      * @param EmailNotification $emailNotification
      * @param Random $mathRand
      */
     public function __construct(
         VippsCustomerInterfaceFactory $vippsCustomerFactory,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
+        VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
         EmailNotification $emailNotification,
         Random $mathRand
     ) {
@@ -74,6 +82,7 @@ class VippsAccountManagement implements VippsAccountManagementInterface
         $this->vippsCustomerRepository = $vippsCustomerRepository;
         $this->emailNotification = $emailNotification;
         $this->mathRand = $mathRand;
+        $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
     }
 
     /**
@@ -120,6 +129,7 @@ class VippsAccountManagement implements VippsAccountManagementInterface
             $vippsCustomer->setConfirmationExp(null);
             return $this->vippsCustomerRepository->save($vippsCustomer);
         }
+
         return null;
     }
 
@@ -136,11 +146,12 @@ class VippsAccountManagement implements VippsAccountManagementInterface
     {
         $vippsCustomer = $this->getPair($userInfo, $customer);
         $vippsCustomer->setLinked(true);
+
         return $this->vippsCustomerRepository->save($vippsCustomer);
     }
 
     /**
-     * Check if customer is already linked ti vipps account.
+     * Check if customer is already linked to vipps account.
      *
      * @param CustomerInterface $customer
      *
@@ -150,13 +161,23 @@ class VippsAccountManagement implements VippsAccountManagementInterface
     {
         $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
 
-        return $vippsCustomer->getEntityId() !== null;
+        return $vippsCustomer->getLinked();
     }
 
-
-    public function unlink()
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return mixed|VippsCustomerInterface
+     * @throws InputException
+     * @throws InputMismatchException
+     * @throws LocalizedException
+     */
+    public function unlink(CustomerInterface $customer)
     {
-        // TODO: Implement unlink() method.
+        $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+        $vippsCustomer->setLinked(false);
+
+        return $this->vippsCustomerRepository->save($vippsCustomer);
     }
 
     /**
@@ -178,6 +199,20 @@ class VippsAccountManagement implements VippsAccountManagementInterface
             $vippsCustomer->setTelephone($userInfo->getPhoneNumber());
             return $this->vippsCustomerRepository->save($vippsCustomer);
         }
+
         return $vippsCustomer;
+    }
+
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return \Vipps\Login\Api\Data\VippsCustomerAddressInterface[]
+     */
+    public function getAddresses(CustomerInterface $customer)
+    {
+        $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+        $result = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
+
+        return $result->getItems();
     }
 }

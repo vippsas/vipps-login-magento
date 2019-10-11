@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  ~ Copyright 2018 Vipps
+  ~ Copyright 2019 Vipps
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
   ~ documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -13,11 +13,11 @@
   ~ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
   ~ IN THE SOFTWARE
   -->
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd" label="Customer My Account (All Pages)" design_abstraction="custom">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="customer_account"/>
     <body>
-        <attribute name="class" value="account"/>
-        <referenceContainer name="sidebar.main">
-            <block class="Vipps\Login\Block\Account\Link" name="vipps_login_links" template="Vipps_Login::account/link.phtml" cacheable="false"/>
+        <referenceContainer name="content">
+            <block class="Vipps\Login\Block\Account\VippsAddress" name="vipps_address" template="Vipps_Login::account/vipps_address.phtml" cacheable="false" after="-"/>
         </referenceContainer>
     </body>
 </page>

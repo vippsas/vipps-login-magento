@@ -34,6 +34,7 @@ use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\Result\Raw;
+use Magento\Framework\UrlInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
@@ -100,6 +101,10 @@ class PasswordConfirm extends Action
      * @var AccessTokenProvider
      */
     private $accessTokenProvider;
+    /**
+     * @var UrlInterface
+     */
+    private $url;
 
     /**
      * PasswordConfirm constructor.
@@ -130,6 +135,7 @@ class PasswordConfirm extends Action
         ScopeConfigInterface $scopeConfig,
         VippsAccountManagementInterface $vippsAccountManagement,
         AccessTokenProvider $accessTokenProvider,
+        UrlInterface $url,
         VippsAddressManagementInterface $vippsAddressManagement
     ) {
         parent::__construct($context);
@@ -144,6 +150,7 @@ class PasswordConfirm extends Action
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->vippsAddressManagement = $vippsAddressManagement;
         $this->accessTokenProvider = $accessTokenProvider;
+        $this->url = $url;
     }
 
     /**
@@ -192,17 +199,14 @@ class PasswordConfirm extends Action
             $this->customerSession->regenerateId();
 
             $redirectRoute = $this->accountRedirect->getRedirectCookie();
-            if (!$this->scopeConfig->getValue('customer/startup/redirect_dashboard') && $redirectRoute) {
-                $response['redirectUrl'] = $this->_redirect->success($redirectRoute);
+           // if (!$this->scopeConfig->getValue('customer/startup/redirect_dashboard') && $redirectRoute) {
+                $response['redirectUrl'] = $this->url->getUrl('customer/account');
                 $this->accountRedirect->clearRedirectCookie();
-            }
+           // }
 
             $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
 
-            $vippsAddresses = $this->vippsAddressManagement->fetchAddresses($userInfo, $vippsCustomer);
-            //todo  merge
-
-
+            $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $magentoCustomer);
         } catch (EmailNotConfirmedException $e) {
             $response = [
                 'errors' => true,

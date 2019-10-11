@@ -162,4 +162,17 @@ interface VippsCustomerAddressInterface extends CustomAttributesDataInterface
      * @return $this
      */
     public function setIsConverted($value);
+
+    /**
+     * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
+     */
+    public function getWasChanged();
+
+    /**
+     * @param bool $value
+     *
+     * @return $this
+     */
+    public function setWasChanged($value);
 }

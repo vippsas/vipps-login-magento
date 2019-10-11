@@ -107,6 +107,7 @@ class Redirect extends Action
             }
         } catch (\Throwable $t) {
             // @todo put error into log
+            $exception = $t;
         }
 
         $resultRedirect->setPath('vipps/login/error');
