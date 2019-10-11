@@ -201,7 +201,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         bool $hasDefault
     ) {
         if ($vippsAddress->getIsConverted() && $vippsAddress->getCustomerAddressId()) {
-            return true;
+            return false;
         }
 
         /** @var AddressInterface $magentoAddress */
@@ -239,6 +239,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
 
 
         $vippsAddress->setCustomerAddressId($magentoAddress->getId());
+        $vippsAddress->setIsConverted(true);
         $this->vippsCustomerAddressRepository->save($vippsAddress);
 
         return $magentoAddress;
@@ -281,22 +282,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      */
     public function areTheSame(VippsCustomerAddressInterface $vippsAddress, AddressInterface $magentoAddress)
     {
-        if (strtolower($vippsAddress->getCountry()) != strtolower($magentoAddress->getCountryId())) {
-            return false;
-        }
-
-        if (strtolower($vippsAddress->getRegion()) != strtolower($magentoAddress->getRegion())) {
-            return false;
-        }
-
-        if (
-            filter_var($vippsAddress->getPostalCode(), FILTER_SANITIZE_NUMBER_INT) !=
-            filter_var($magentoAddress->getPostcode(), FILTER_SANITIZE_NUMBER_INT)
-        ) {
-            return false;
-        }
-
-        return true;
+       return false;
     }
 
     /**
@@ -358,7 +344,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
     private function hasDefault(array $magentoAddresses)
     {
         foreach ($magentoAddresses as $address) {
-            if ($address->isDefaultShipping() or $address->isDefaultBilling()) {
+            if ($address->isDefaultShipping() || $address->isDefaultBilling()) {
                 return true;
             }
         }
