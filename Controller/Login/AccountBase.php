@@ -16,57 +16,56 @@
 
 declare(strict_types=1);
 
-namespace Vipps\Login\Block\Account;
+namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Action\Action;
+use Magento\Framework\App\Action\Context;
 use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Framework\View\Element\Template;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Exception\NotFoundException;
 use Magento\Customer\Model\Session;
-use Vipps\Login\Api\VippsAccountManagementInterface;
 
 /**
- * Class Button
- * @package Vipps\Login\Block\Form\Login
+ * Customers newsletter subscription controller
  */
-class Link extends Template
+abstract class AccountBase extends Action
 {
     /**
-     * @var VippsAccountManagementInterface
-     */
-    private $vippsAccountManagement;
-
-    /**
+     * Customer session
+     *
      * @var SessionManagerInterface|Session
      */
-    private $customerSession;
+    protected $customerSession;
 
     /**
-     * Link constructor.
+     * AccountBase constructor.
      *
-     * @param VippsAccountManagementInterface $vippsAccountManagement
+     * @param Context $context
      * @param SessionManagerInterface $customerSession
-     * @param Template\Context $context
-     * @param array $data
      */
     public function __construct(
-        VippsAccountManagementInterface $vippsAccountManagement,
-        SessionManagerInterface $customerSession,
-        Template\Context $context,
-        array $data = []
+        Context $context,
+        SessionManagerInterface $customerSession
     ) {
-        parent::__construct($context, $data);
-        $this->vippsAccountManagement = $vippsAccountManagement;
+        parent::__construct($context);
         $this->customerSession = $customerSession;
     }
 
     /**
-     * @return bool
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\State\InputMismatchException
+     * Check customer authentication for some actions
+     *
+     * @param RequestInterface $request
+     *
+     * @return ResponseInterface
+     * @throws NotFoundException
      */
-    public function isLinked()
+    public function dispatch(RequestInterface $request)
     {
-        $customer = $this->customerSession->getCustomer();
-        return $this->vippsAccountManagement->isLinked($customer->getDataModel());
+        if (!$this->customerSession->authenticate()) {
+            $this->_actionFlag->set('', 'no-dispatch', true);
+        }
+
+        return parent::dispatch($request);
     }
 }

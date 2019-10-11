@@ -171,4 +171,22 @@ class VippsCustomer extends AbstractExtensibleObject implements VippsCustomerInt
     {
         return $this->setData('confirmation_exp', $value);
     }
+
+    /**
+     * @return int
+     */
+    public function getAutoSyncAddress()
+    {
+        return $this->_get('auto_sync_address');
+    }
+
+    /**
+     * @param int $value
+     *
+     * @return VippsCustomerInterface
+     */
+    public function setAutoSyncAddress($value)
+    {
+        return $this->setData('auto_sync_address', $value);
+    }
 }
