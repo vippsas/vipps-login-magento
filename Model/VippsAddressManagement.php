@@ -317,19 +317,19 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      */
     private function isVippsAddressChanged(VippsCustomerAddressInterface $vippsAddress, array $addressArr)
     {
-        if (strtolower($vippsAddress->getCountry()) != strtolower($addressArr['country'])) {
+        if (strcasecmp($vippsAddress->getCountry(), $addressArr['country']) !== 0) {
             return true;
         }
 
-        if (strtolower($vippsAddress->getStreetAddress()) != strtolower($addressArr['street_address'])) {
+        if (strcasecmp($vippsAddress->getStreetAddress(), $addressArr['street_address']) !== 0) {
             return true;
         }
 
-        if (strtolower($vippsAddress->getPostalCode()) != strtolower($addressArr['postal_code'])) {
+        if (strcasecmp($vippsAddress->getPostalCode(), $addressArr['postal_code']) !== 0) {
             return true;
         }
 
-        if (strtolower($vippsAddress->getRegion()) != strtolower($addressArr['region'])) {
+        if (strcasecmp($vippsAddress->getRegion(), $addressArr['region']) !== 0) {
             return true;
         }
 

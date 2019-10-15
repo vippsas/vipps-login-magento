@@ -97,32 +97,30 @@ class Bind implements ActionInterface
      */
     public function execute($token)
     {
-        if ($this->customerSession->isLoggedIn()) {
-
-            $resultRedirect = $this->redirectFactory->create();
-            try {
-                /** @var Customer $customer */
-                $customerModel = $this->customerSession->getCustomer();
-                $customer = $customerModel->getDataModel();
-                $userInfo = $this->userInfoCommand->execute($token['access_token']);
-                $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $customer);
-
-                $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer);
-
-                $this->messageManager->addSuccessMessage(__('Your account was successfully linked.'));
-                $resultRedirect->setPath('customer/account');
-                return $resultRedirect;
-            } catch (\Throwable $e) {
-                $this->messageManager->addErrorMessage(
-                    __('An error occurred during linking accounts. Please, try again later.')
-                );
-                $resultRedirect->setPath('customer/account');
-            }
-
-            return $resultRedirect;
-
+        if (!$this->customerSession->isLoggedIn()) {
+            return false;
         }
-        
-        return false;
+
+        $resultRedirect = $this->redirectFactory->create();
+        try {
+            /** @var Customer $customer */
+            $customerModel = $this->customerSession->getCustomer();
+            $customer = $customerModel->getDataModel();
+            $userInfo = $this->userInfoCommand->execute($token['access_token']);
+            $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $customer);
+
+            $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer);
+
+            $this->messageManager->addSuccessMessage(__('Your account was successfully linked.'));
+            $resultRedirect->setPath('customer/account');
+            return $resultRedirect;
+        } catch (\Throwable $e) {
+            $this->messageManager->addErrorMessage(
+                __('An error occurred during linking accounts. Please, try again later.')
+            );
+            $resultRedirect->setPath('customer/account');
+        }
+
+        return $resultRedirect;
     }
 }
