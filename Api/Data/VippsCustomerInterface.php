@@ -119,4 +119,16 @@ interface VippsCustomerInterface extends CustomAttributesDataInterface
      * @return $this
      */
     public function setConfirmationExp($value);
+
+    /**
+     * @return int
+     */
+    public function getAutoSyncAddress();
+
+    /**
+     * @param int $value
+     *
+     * @return $this
+     */
+    public function setAutoSyncAddress($value);
 }
