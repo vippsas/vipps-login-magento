@@ -116,7 +116,7 @@ class Bind implements ActionInterface
             return $resultRedirect;
         } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(
-                __('An error occurred during linking accounts. Please, try again later.')
+                __('An error occurred during linking accounts.')
             );
             $resultRedirect->setPath('customer/account');
         }
