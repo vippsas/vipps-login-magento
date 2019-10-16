@@ -64,9 +64,9 @@ interface VippsCustomerAddressRepositoryInterface
     public function delete(\Vipps\Login\Api\Data\VippsCustomerAddressInterface $vippsCustomerAddress);
 
     /**
-     * \Vipps\Login\Api\Data\VippsCustomerInterface $vippsAddress
+     * @param Data\VippsCustomerInterface $vippsCustomer
      *
      * @return bool true on success
      */
-    public function deleteByVippsCustomer(\Vipps\Login\Api\Data\VippsCustomerInterface $vippsAddress);
+    public function deleteByVippsCustomer(\Vipps\Login\Api\Data\VippsCustomerInterface $vippsCustomer);
 }

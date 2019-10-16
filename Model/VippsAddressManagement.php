@@ -318,8 +318,8 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         /*
          * remove whitespaces
          */
-        $street = preg_replace('/\s/', '', $street);
-        $vippsStreet = preg_replace('/\s/', '', $vippsAddress->getStreetAddress());
+        $street = preg_replace('/\W/', '', $street);
+        $vippsStreet = preg_replace('/\W/', '', $vippsAddress->getStreetAddress());
         if (strcasecmp($vippsStreet, $street) !== 0) {
             return false;
         }
@@ -349,8 +349,8 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         /*
          * remove whitespaces
          */
-        $region = preg_replace('/\s/', '', $region);
-        $vippsRegion = preg_replace('/\s/', '', $vippsAddress->getRegion());
+        $region = preg_replace('/\W/', '', $region);
+        $vippsRegion = preg_replace('/\W/', '', $vippsAddress->getRegion());
         if (strcasecmp($vippsRegion, $region) !== 0) {
             return false;
         }
