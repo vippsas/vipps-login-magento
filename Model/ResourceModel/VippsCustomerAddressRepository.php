@@ -104,6 +104,24 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
     }
 
     /**
+     * @param $id
+     *
+     * @return VippsCustomerAddressInterface
+     * @throws NoSuchEntityException
+     */
+    public function getById($id)
+    {
+        /** @var \Vipps\Login\Model\VippsCustomerAddress $customer */
+        $vippsAddress = $this->modelFactory->create()->load($id);
+        if (!$vippsAddress->getId()) {
+            // customer does not exist
+            throw NoSuchEntityException::singleField('id', $id);
+        }
+
+        return $vippsAddress->getDataModel();
+    }
+
+    /**
      * @param VippsCustomerAddressInterface $vippsCustomerAddress
      *
      * @return mixed|VippsCustomerAddressInterface

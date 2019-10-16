@@ -16,6 +16,8 @@
 
 namespace Vipps\Login\Api;
 
+use Magento\Framework\Exception\NoSuchEntityException;
+
 /**
  * Interface VippsCustomerAddressRepositoryInterface
  * @package Vipps\Login\Api
@@ -23,10 +25,18 @@ namespace Vipps\Login\Api;
 interface VippsCustomerAddressRepositoryInterface
 {
     /**
+     * @param $id
+     *
+     * @throws NoSuchEntityException
+     * @return \Vipps\Login\Api\Data\VippsCustomerAddressInterface
+     */
+    public function getById($id);
+
+    /**
      * Create or update a vipps customer Address record.
      *
      * @param \Vipps\Login\Api\Data\VippsCustomerAddressInterface $vippsCustomerAddress
-     * @return \Vipps\Login\Api\Data\VippsCustomerAddressInterface
+     * @return $this
      */
     public function save(\Vipps\Login\Api\Data\VippsCustomerAddressInterface $vippsCustomerAddress);
 

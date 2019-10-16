@@ -17,20 +17,24 @@
 declare(strict_types=1);
 
 /** @var $block \Vipps\Login\Block\Account\VippsAddress */
-$addresses = $block->getVippsAddresses();
+$addresses = $block->getVippsAddresses(true);
 /** @var $address \Vipps\Login\Api\Data\VippsCustomerAddressInterface */
-
 ?>
 
 <?php if (!empty($addresses)): ?>
 <div id="vipps_addresses">
-    <select id="vipps_address" name="vipps_address"
-            title="<?= $block->escapeHtmlAttr(__('Vipps Addresses')) ?>"
-            class="validate-select">
-        <option value=""><?= $block->escapeHtml(__('Select vipps address')) ?></option>
-        <?php foreach ($addresses as $address): ?>
-            <option value="<?=$address->getEntityId()?>"><?= $block->escapeHtml($address->getAddressType()) ?></option>
-        <?php endforeach; ?>
-    </select>
+    <fieldset class="fieldset">
+        <div class="field">
+            <label for="vipps_address" class="label"><span><?= $block->escapeHtml(__('Copy from Vipps')) ?></span></label>
+            <select id="vipps_address" name="vipps_address"
+                    title="<?= $block->escapeHtmlAttr(__('Vipps Addresses')) ?>"
+                    class="validate-select">
+                <option value=""><?= $block->escapeHtml(__('Select vipps address')) ?></option>
+                <?php foreach ($addresses as $address): ?>
+                    <option value="<?=$address->getEntityId()?>"><?= $block->escapeHtml($address->getFormatted()) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </fieldset>
 </div>
 <?php endif ?>

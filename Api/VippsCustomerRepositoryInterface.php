@@ -17,6 +17,7 @@
 namespace Vipps\Login\Api;
 
 use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 
 /**
@@ -56,6 +57,7 @@ interface VippsCustomerRepositoryInterface
      * @param CustomerInterface $customer
      *
      * @return VippsCustomerInterface
+     * @throws NoSuchEntityException
      */
     public function getByCustomer(CustomerInterface $customer);
 }
