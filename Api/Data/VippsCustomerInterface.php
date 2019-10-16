@@ -26,17 +26,17 @@ interface VippsCustomerInterface extends CustomAttributesDataInterface
     /**
      * @var integer
      */
-    const MANUAL_UPDATE = 1;
+    const MANUAL_UPDATE = 0;
 
     /**
      * @var integer
      */
-    const AUTO_UPDATE = 2;
+    const AUTO_UPDATE = 1;
 
     /**
      * @var integer
      */
-    const NEVER_UPDATE = 0;
+    const NEVER_UPDATE = 2;
 
     /**
      * @return int
