@@ -155,6 +155,9 @@ class InstallSchema implements InstallSchemaInterface
         $vippsCustomerEntityTable = $installer->getConnection()
             ->getTableName('vipps_customer');
 
+        $magentoCustomerAddressTable = $installer->getConnection()
+            ->getTableName('customer_address_entity');
+
         $table = $installer->getConnection()->newTable(
             $vippsCustomerAddressTable
         )->addColumn(
@@ -218,17 +221,11 @@ class InstallSchema implements InstallSchemaInterface
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],
             'Is Active'
         )->addColumn(
-            'is_converted',
-            Table::TYPE_SMALLINT,
-            null,
-            ['unsigned' => true, 'nullable' => false, 'default' => '0'],
-            'Is Vipps Address converted to Magento Address'
-        )->addColumn(
             'was_changed',
             Table::TYPE_SMALLINT,
             null,
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],
-            'Is Vipps Address converted to Magento Address'
+            'Is Vipps Address changed'
         )->addForeignKey(
             $installer->getFkName(
                 $vippsCustomerAddressTable,
@@ -240,6 +237,17 @@ class InstallSchema implements InstallSchemaInterface
             $vippsCustomerEntityTable,
             'entity_id',
             Table::ACTION_CASCADE
+        )->addForeignKey(
+            $installer->getFkName(
+                $vippsCustomerAddressTable,
+                'customer_address_id',
+                $magentoCustomerAddressTable,
+                'entity_id'
+            ),
+            'customer_address_id',
+            $magentoCustomerAddressTable,
+            'entity_id',
+            Table::ACTION_SET_NULL
         )->setComment(
             'Vipps Customer Address Table'
         );

@@ -45,4 +45,11 @@ interface VippsCustomerAddressRepositoryInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria);
+
+    /**
+     * @param Data\VippsCustomerAddressInterface $vippsCustomerAddress
+     *
+     * @return bool true on success
+     */
+    public function delete(\Vipps\Login\Api\Data\VippsCustomerAddressInterface $vippsCustomerAddress);
 }

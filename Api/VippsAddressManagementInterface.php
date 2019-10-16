@@ -54,7 +54,7 @@ interface VippsAddressManagementInterface
      * @param VippsCustomerAddressInterface $vippsAddress
      * @param AddressInterface[] $magentoAddresses
      *
-     * @return mixed
+     * @return bool
      */
-    public function merge(VippsCustomerAddressInterface $vippsAddress, array $magentoAddresses);
+    public function assign(VippsCustomerAddressInterface $vippsAddress, array $magentoAddresses);
 }

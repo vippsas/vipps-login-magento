@@ -23,6 +23,7 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
 use Vipps\Login\Api\Data\VippsCustomerAddressSearchResultsInterface;
 use Vipps\Login\Api\Data\VippsCustomerAddressSearchResultsInterfaceFactory;
@@ -160,5 +161,26 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
         $searchResults->setItems($records);
 
         return $searchResults;
+    }
+
+    /**
+     * @param VippsCustomerAddressInterface $vippsCustomerAddress
+     *
+     * @return $this|bool
+     * @throws \Exception
+     */
+    public function delete(\Vipps\Login\Api\Data\VippsCustomerAddressInterface $vippsCustomerAddress)
+    {
+        $modelData = $this->extensibleDataObjectConverter->toNestedArray(
+            $vippsCustomerAddress,
+            [],
+            VippsCustomerAddressInterface::class
+        );
+
+        /** @var \Vipps\Login\Model\VippsCustomerAddress $vippsCustomerAddressModel */
+        $vippsCustomerAddressModel = $this->modelFactory->create(['data' => $modelData]);
+        $this->resourceModel->delete($vippsCustomerAddressModel);
+
+        return true;
     }
 }
