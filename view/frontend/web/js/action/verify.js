@@ -3,7 +3,8 @@ define([
     'Vipps_Login/js/action/login',
     'Vipps_Login/js/model/full-screen-loader',
     'mage/storage',
-],function($, loginAction, fullScreenLoader, storage) {
+    'Magento_Ui/js/modal/alert'
+],function($, loginAction, fullScreenLoader, storage, alert) {
     $(document).ready(function() {
         $("#verify-password-form").submit(function(e){
             e.preventDefault();
@@ -42,7 +43,10 @@ define([
                     'json'
                 ).done(function (response) {
                     if (response.success) {
-                        alert('message sent');
+                        alert({
+                              title: $.mage.__('Some title'),
+                              content: $.mage.__('Message are sanded')
+                        });
                     }
                 }).always(function () {
                     fullScreenLoader.stopLoader();
