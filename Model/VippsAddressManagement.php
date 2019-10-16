@@ -268,8 +268,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         VippsCustomerAddressInterface $vippsAddress,
         VippsCustomerInterface $vippsCustomer,
         array $magentoAddresses
-    )
-    {
+    ) {
         if ($vippsAddress->getCustomerAddressId()) {
             return true;
         }
