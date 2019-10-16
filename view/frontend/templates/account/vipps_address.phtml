@@ -26,16 +26,26 @@
                 <?php foreach ($vippsAddresses as $address): ?>
                     <li class="item">
                         <address>
-                            <?= $address->getAddressType() ?><br />
+                            <strong class="box-title">
+                                <?= $block->escapeHtml(ucfirst($address->getAddressType())) ?>
+                            </strong>
+                            <br />
                             <?= $address->getStreetAddress() ?><br />
                             <?= $address->getRegion() ?><br />
                             <?= $address->getPostalCode() ?><br />
                             <?= $address->getCountry() ?><br />
                         </address>
-<!--                        <div class="item actions">
-                            <a class="action edit" href="<?/*= $block->escapeUrl($block->getUrl('customer/address/edit', ['id' => $_address->getId()])) */?>"><span><?/*= $block->escapeHtml(__('Edit Address')) */?></span></a>
-                            <a class="action delete" href="#" role="delete-address" data-address="<?/*= $block->escapeHtmlAttr($_address->getId()) */?>"><span><?/*= $block->escapeHtml(__('Delete Address')) */?></span></a>
-                        </div>-->
+                        <?php if (!$address->getCustomerAddressId()): ?>
+                            <div class="item actions">
+                                <a class="action edit" href="<?= $block->escapeUrl($block->getUrl('customer/address/form', ['vipps_address_id' => $address->getEntityId()])) ?>">
+                                    <span><?= $block->escapeHtml(__('Apply Address')) ?></span>
+                                </a>
+                            </div>
+                        <?php else: ?>
+                            <div class="item actions">
+                                <span><?= $block->escapeHtml(__('Applied')) ?></span>
+                            </div>
+                        <?php endif; ?>
                     </li>
                 <?php endforeach; ?>
             </ol>

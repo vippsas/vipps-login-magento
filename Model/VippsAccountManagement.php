@@ -175,6 +175,7 @@ class VippsAccountManagement implements VippsAccountManagementInterface
     public function unlink(CustomerInterface $customer)
     {
         $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+        $this->vippsCustomerAddressRepository->deleteByVippsCustomer($vippsCustomer);
         $vippsCustomer->setLinked(false);
 
         return $this->vippsCustomerRepository->save($vippsCustomer);
