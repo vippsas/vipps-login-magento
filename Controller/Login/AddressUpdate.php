@@ -19,26 +19,18 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
-use Magento\Customer\Api\AccountManagementInterface;
-use Magento\Customer\Model\Session;
-use Magento\Framework\Exception\EmailNotConfirmedException;
-use Magento\Framework\Exception\InvalidEmailOrPasswordException;
-use Magento\Customer\Model\Account\Redirect as AccountRedirect;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\Result\Raw;
-use Magento\Framework\UrlInterface;
-use Vipps\Login\Api\VippsAccountManagementInterface;
+use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
-use Vipps\Login\Gateway\Command\UserInfoCommand;
-use Vipps\Login\Model\AccessTokenProvider;
+use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
+use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 
 /**
  * Class PasswordConfirm
@@ -47,16 +39,6 @@ use Vipps\Login\Model\AccessTokenProvider;
  */
 class AddressUpdate extends AccountBase
 {
-    /**
-     * @var UserInfoCommand
-     */
-    private $userInfoCommand;
-
-    /**
-     * @var AccountManagementInterface
-     */
-    private $customerAccountManagement;
-
     /**
      * @var SerializerInterface
      */
@@ -73,145 +55,97 @@ class AddressUpdate extends AccountBase
     private $resultRawFactory;
 
     /**
-     * @var AccountRedirect
-     */
-    private $accountRedirect;
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
-     * @var VippsAccountManagementInterface
-     */
-    private $vippsAccountManagement;
-
-    /**
      * @var VippsAddressManagementInterface
      */
     private $vippsAddressManagement;
 
     /**
-     * @var AccessTokenProvider
+     * @var VippsCustomerRepositoryInterface
      */
-    private $accessTokenProvider;
-    /**
-     * @var UrlInterface
-     */
-    private $url;
+    private $vippsCustomerRepository;
 
     /**
-     * PasswordConfirm constructor.
+     * @var VippsCustomerAddressRepositoryInterface
+     */
+    private $vippsCustomerAddressRepository;
+
+    /**
+     * AddressUpdate constructor.
      *
      * @param Context $context
-     * @param UserInfoCommand $userInfoCommand
      * @param SessionManagerInterface $customerSession
      * @param SerializerInterface $serializer
-     * @param AccountManagementInterface $customerAccountManagement
      * @param JsonFactory $resultJsonFactory
      * @param RawFactory $resultRawFactory
-     * @param AccountRedirect $accountRedirect
-     * @param ScopeConfigInterface $scopeConfig
-     * @param VippsAccountManagementInterface $vippsAccountManagement
-     * @param AccessTokenProvider $accessTokenProvider
      * @param VippsAddressManagementInterface $vippsAddressManagement
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
+     * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      */
     public function __construct(
         Context $context,
-        UserInfoCommand $userInfoCommand,
         SessionManagerInterface $customerSession,
         SerializerInterface $serializer,
-        AccountManagementInterface $customerAccountManagement,
         JsonFactory $resultJsonFactory,
         RawFactory $resultRawFactory,
-        AccountRedirect $accountRedirect,
-        ScopeConfigInterface $scopeConfig,
-        VippsAccountManagementInterface $vippsAccountManagement,
-        AccessTokenProvider $accessTokenProvider,
-        UrlInterface $url,
-        VippsAddressManagementInterface $vippsAddressManagement
+        VippsAddressManagementInterface $vippsAddressManagement,
+        VippsCustomerRepositoryInterface $vippsCustomerRepository,
+        VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
     ) {
         parent::__construct($context, $customerSession);
-        $this->customerSession = $customerSession;
-        $this->userInfoCommand = $userInfoCommand;
         $this->serializer = $serializer;
-        $this->customerAccountManagement = $customerAccountManagement;
         $this->resultJsonFactory = $resultJsonFactory;
         $this->resultRawFactory = $resultRawFactory;
-        $this->accountRedirect = $accountRedirect;
-        $this->scopeConfig = $scopeConfig;
-        $this->vippsAccountManagement = $vippsAccountManagement;
         $this->vippsAddressManagement = $vippsAddressManagement;
-        $this->accessTokenProvider = $accessTokenProvider;
-        $this->url = $url;
+        $this->vippsCustomerRepository = $vippsCustomerRepository;
+        $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
     }
 
     /**
-     * Login registered users and initiate a session.
-     *
-     * Expects a POST. ex for JSON {"username":"user@magento.com", "password":"userpassword"}
-     *
-     * @return \Magento\Framework\Controller\ResultInterface
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
      */
     public function execute()
     {
-        $credentials = null;
         $httpBadRequestCode = 400;
 
         /** @var Raw $resultRaw */
         $resultRaw = $this->resultRawFactory->create();
         try {
-            $credentials = $this->serializer->unserialize($this->getRequest()->getContent());
+            $mode = $this->serializer->unserialize($this->getRequest()->getContent());
         } catch (\Exception $e) {
             return $resultRaw->setHttpResponseCode($httpBadRequestCode);
         }
 
-        if (!$this->isValid($credentials)) {
+        if (!$this->isValid($mode)) {
             return $resultRaw->setHttpResponseCode($httpBadRequestCode);
         }
 
         $response = [
             'errors' => false,
-            'message' => __('Login successful.')
+            'message' => __('Updated Successfully')
         ];
 
         try {
-            $magentoCustomer = $this->customerAccountManagement->authenticate(
-                $credentials['username'],
-                $credentials['password']
-            );
-
-            try {
-                $userInfo = $this->userInfoCommand->execute($this->accessTokenProvider->get());
-            } catch (\Throwable $e) {
-                return $resultRaw->setHttpResponseCode($httpBadRequestCode);
+            $customerModel = $this->customerSession->getCustomer();
+            $customer = $customerModel->getDataModel();
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+            if (!$vippsCustomer->getEntityId()) {
+                throw new LocalizedException(__('You are not linked to vipps account.'));
             }
 
-            $this->customerSession->setCustomerDataAsLoggedIn($magentoCustomer);
-            $this->customerSession->regenerateId();
+            $syncType = $this->getRequest()->getParam('sync_address_mode');
+            $vippsCustomer->setSyncAddressMode($syncType);
+            $this->vippsCustomerRepository->save($vippsCustomer);
 
-            $redirectRoute = $this->accountRedirect->getRedirectCookie();
-            // if (!$this->scopeConfig->getValue('customer/startup/redirect_dashboard') && $redirectRoute) {
-            $response['redirectUrl'] = $this->url->getUrl('customer/account');
-            $this->accountRedirect->clearRedirectCookie();
-            // }
+            if ($mode['sync_address_mode'] != VippsCustomerInterface::NEVER_UPDATE) {
+                $vippsAddressesResult = $this->vippsCustomerAddressRepository
+                    ->getByVippsCustomer($vippsCustomer);
+                foreach ($vippsAddressesResult->getItems() as $item) {
+                    if ($item->getWasChanged()) {
+                        $this->vippsAddressManagement->convert($customer, $vippsCustomer, $item, false);
+                    }
+                }
+            }
 
-            $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
-
-            $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $magentoCustomer);
-        } catch (EmailNotConfirmedException $e) {
-            $response = [
-                'errors' => true,
-                'message' => $e->getMessage()
-            ];
-        } catch (InvalidEmailOrPasswordException $e) {
-            $response = [
-                'errors' => true,
-                'message' => $e->getMessage()
-            ];
         } catch (LocalizedException $e) {
             $response = [
                 'errors' => true,
@@ -230,17 +164,21 @@ class AddressUpdate extends AccountBase
     }
 
     /**
-     * @param $credentials
+     * @param $mode
      *
      * @return bool
      */
-    private function isValid($credentials)
+    private function isValid($mode)
     {
-        if (!$credentials ||
-            !array_key_exists('username', $credentials) ||
-            !array_key_exists('password', $credentials) ||
+        if (!$mode ||
+            !array_key_exists('sync_address_mode', $mode) ||
             $this->getRequest()->getMethod() !== 'POST' ||
-            !$this->getRequest()->isXmlHttpRequest()
+            !$this->getRequest()->isXmlHttpRequest() ||
+            !in_array($mode['sync_address_mode'], [
+                VippsCustomerInterface::NEVER_UPDATE,
+                VippsCustomerInterface::MANUAL_UPDATE,
+                VippsCustomerInterface::AUTO_UPDATE
+            ])
         ) {
             return false;
         }

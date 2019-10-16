@@ -24,6 +24,21 @@ use Magento\Framework\Api\CustomAttributesDataInterface;
 interface VippsCustomerInterface extends CustomAttributesDataInterface
 {
     /**
+     * @var integer
+     */
+    const MANUAL_UPDATE = 1;
+
+    /**
+     * @var integer
+     */
+    const AUTO_UPDATE = 2;
+
+    /**
+     * @var integer
+     */
+    const NEVER_UPDATE = 0;
+
+    /**
      * @return int
      */
     public function getEntityId();
@@ -123,12 +138,12 @@ interface VippsCustomerInterface extends CustomAttributesDataInterface
     /**
      * @return int
      */
-    public function getAutoSyncAddress();
+    public function getSyncAddressMode();
 
     /**
      * @param int $value
      *
      * @return $this
      */
-    public function setAutoSyncAddress($value);
+    public function setSyncAddressMode($value);
 }

@@ -77,15 +77,14 @@ class VippsConfiguration extends Template
     }
 
     /**
-     * @return bool
-     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
+     * @return int
      */
-    public function getIsAutoUpdate()
+    public function getSyncAddressMode()
     {
         $customer = $this->customerSession->getCustomer();
         $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
 
-        return $vippsCustomer->getAutoSyncAddress();
+        return $vippsCustomer->getSyncAddressMode();
     }
 
     /**

@@ -96,11 +96,11 @@ class InstallSchema implements InstallSchemaInterface
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],
             'Is Active'
         )->addColumn(
-            'auto_sync_address',
+            'sync_address_mode',
             Table::TYPE_SMALLINT,
             null,
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],
-            'Update addresses automatically'
+            'Sync addresses mode'
         )->addColumn(
             'confirmation_key',
             Table::TYPE_TEXT,

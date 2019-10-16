@@ -183,4 +183,22 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
 
         return true;
     }
+
+
+    /**
+     * @param VippsCustomerInterface $vippsCustomer
+     *
+     * @return $this|bool
+     * @throws \Exception
+     */
+    public function deleteByVippsCustomer(\Vipps\Login\Api\Data\VippsCustomerInterface $vippsCustomer)
+    {
+        $vippsAddressResult = $this->getByVippsCustomer($vippsCustomer);
+
+        foreach($vippsAddressResult->getItems() as $item) {
+            $this->delete($item);
+        }
+
+        return true;
+    }
 }

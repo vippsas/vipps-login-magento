@@ -52,4 +52,11 @@ interface VippsCustomerAddressRepositoryInterface
      * @return bool true on success
      */
     public function delete(\Vipps\Login\Api\Data\VippsCustomerAddressInterface $vippsCustomerAddress);
+
+    /**
+     * \Vipps\Login\Api\Data\VippsCustomerInterface $vippsAddress
+     *
+     * @return bool true on success
+     */
+    public function deleteByVippsCustomer(\Vipps\Login\Api\Data\VippsCustomerInterface $vippsAddress);
 }
