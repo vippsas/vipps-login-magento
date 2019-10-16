@@ -27,7 +27,7 @@ $emails = $block->getEmails();
                     </div>
                 </div>
                 <div class="actions-toolbar">
-                    <div class="primary"><button type="submit" class="action login primary" name="send" id="send1"><span><?= $block->escapeHtml(__('Sign In')) ?></span></button></div>
+                    <div class="primary"><button type="submit" class="action login primary vipps-btn" name="send" id="send1"><span><?= $block->escapeHtml(__('Sign In')) ?></span></button></div>
                 </div>
             </fieldset>
         </form>
@@ -40,7 +40,7 @@ $emails = $block->getEmails();
             <fieldset class="fieldset">
                 <input type="hidden" name="email" value="<?= $block->escapeHtmlAttr(current($emails)) ?>" <?php if ($block->isAutocompleteDisabled()): ?> autocomplete="off"<?php endif; ?> id="email2" type="email" class="input-text" title="<?= $block->escapeHtmlAttr(__('Email')) ?>" data-validate="{required:true, 'validate-email':true}">
                 <div class="actions-toolbar">
-                    <div class="primary"><button type="submit" class="action login primary" name="send" id="send2"><span><?= $block->escapeHtml(__('Send confirmation link to email')) ?></span></button></div>
+                    <div class="primary"><button type="submit" class="action login primary vipps-btn" name="send" id="send2"><span><?= $block->escapeHtml(__('Send confirmation link to email')) ?></span></button></div>
                 </div>
             </fieldset>
         </form>
