@@ -22,19 +22,25 @@ declare(strict_types=1);
 
 if ($block->isLinked()): ?>
 
-<div>
+<div class="login-vipps-account">
     <form action="<?php echo $block->getUrl('vipps/login/unlink'); ?>" method="post">
-        <input type="submit" value="Unlink Vipps Account"
-               class="action create primary"/>
+        <button type="submit"
+               class="action create primary vipps-btn">
+            <span class="icon-vipps-no-icon"></span>
+            <?= $block->escapeHtml(__('Unlink Vipps Account')) ?>
+        </button>
     </form>
 </div>
 
 <?php else: ?>
 
-    <div>
+    <div class="login-vipps-account">
         <form action="<?php echo $block->getUrl('vipps/login/index'); ?>" method="post">
-            <input type="submit" value="Link Vipps Account"
-                   class="action create primary"/>
+            <button type="submit"
+                   class="action create primary vipps-btn">
+                <span class="icon-vipps-no-icon"></span>
+                <?= $block->escapeHtml(__('Link Vipps Account')) ?>
+            </button>
         </form>
     </div>
 

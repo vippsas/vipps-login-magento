@@ -2,18 +2,7 @@
 @media (min-width: @screen__xxs ) {
     .login-vipps {
         margin-top: 10px;
-
-        .icon-vipps {
-            background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
-            display: inline-block;
-            background-size: 55px 14px;
-            padding-left: 62px;
-            height: 15px;
-            margin-left: 10px;
-        }
     }
-
-
 
     .login-vipps-holder {
         display: flex;
@@ -26,6 +15,43 @@
         &-text {
             margin-bottom: 10px;
             text-align: center;
+        }
+    }
+
+    .vipps-btn {
+        .icon-vipps {
+            background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
+            display: inline-block;
+            background-size: 55px 14px;
+            padding-left: 62px;
+            height: 15px;
+            margin-left: 10px;
+
+        }
+
+        .icon-vipps-no-icon {
+            background: url("@{baseDir}images/vipps-no-icon.svg") left center no-repeat;
+            display: inline-block;
+            width: 25px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    }
+
+    .login-vipps-account {
+        .vipps-btn {
+            display: flex;
+            background: @vippsColor;
+            padding: 15px 25px 15px 15px;
+            border-radius: 25px;
+            border: 0;
+
+            &:hover,
+            &:focus,
+            &:active {
+                background: lighten(@vippsColor, 10%);
+                border: 0;
+            }
         }
     }
 
