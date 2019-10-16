@@ -30,8 +30,10 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Customer\Model\CustomerRegistry;
 use Vipps\Login\Api\VippsAccountManagementInterface;
+use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\Creator;
+use Vipps\Login\Model\VippsAddressManagement;
 
 /**
  * Class Create
@@ -70,6 +72,11 @@ class Create implements ActionInterface
     private $vippsAccountManagement;
 
     /**
+     * @var VippsAccountManagementInterface
+     */
+    private $vippsAddressManagement;
+
+    /**
      * Create constructor.
      *
      * @param RedirectFactory $redirectFactory
@@ -78,6 +85,7 @@ class Create implements ActionInterface
      * @param UserInfoCommand $userInfoCommand
      * @param Creator $creator
      * @param VippsAccountManagementInterface $vippsAccountManagement
+     * @param VippsAddressManagementInterface $vippsAddressManagement
      */
     public function __construct(
         RedirectFactory $redirectFactory,
@@ -85,7 +93,8 @@ class Create implements ActionInterface
         CustomerRegistry $customerRegistry,
         UserInfoCommand $userInfoCommand,
         Creator $creator,
-        VippsAccountManagementInterface $vippsAccountManagement
+        VippsAccountManagementInterface $vippsAccountManagement,
+        VippsAddressManagementInterface $vippsAddressManagement
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->sessionManager = $sessionManager;
@@ -93,6 +102,7 @@ class Create implements ActionInterface
         $this->userInfoCommand = $userInfoCommand;
         $this->creator = $creator;
         $this->vippsAccountManagement = $vippsAccountManagement;
+        $this->vippsAddressManagement = $vippsAddressManagement;
     }
 
     /**
@@ -108,13 +118,22 @@ class Create implements ActionInterface
     public function execute($token)
     {
         if ($this->canCreate($token)) {
-            $customer = $this->createCustomer($token);
+
+            $userInfo = $this->userInfoCommand->execute($token['access_token']);
+
+            $magentoCustomer = $this->creator->create($userInfo);
+            $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
+
+            $customer = $this->customerRegistry->retrieveByEmail($magentoCustomer->getEmail());
             $this->sessionManager->setCustomerAsLoggedIn($customer);
+
+            $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
 
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account');
             return $redirect;
         }
+
         return false;
     }
 
@@ -126,23 +145,5 @@ class Create implements ActionInterface
     private function canCreate($token)
     {
         return true;
-    }
-
-    /**
-     * @param array $token
-     *
-     * @return Customer
-     * @throws InputException
-     * @throws InputMismatchException
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
-     * @throws AuthorizationException
-     */
-    private function createCustomer(array $token)
-    {
-        $userInfo = $this->userInfoCommand->execute($token['access_token']);
-        $customer = $this->creator->create($userInfo);
-        $this->vippsAccountManagement->link($userInfo, $customer);
-        return $this->customerRegistry->retrieveByEmail($customer->getEmail());
     }
 }

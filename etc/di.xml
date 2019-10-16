@@ -37,4 +37,16 @@
     <preference for="Vipps\Login\Api\ApiEndpointsInterface" type="Vipps\Login\Model\ApiEndpoints" />
 
     <preference for="Vipps\Login\Model\ConfigInterface" type="Vipps\Login\Model\Config\Config"/>
+
+    <!-- Defining Vipps_Login logger object to process logs into vipps_login files -->
+    <virtualType name="Vipps\Login\Model\Logger" type="Monolog\Logger">
+        <arguments>
+            <argument name="name" xsi:type="string">vipps</argument>
+            <argument name="handlers"  xsi:type="array">
+                <item name="error" xsi:type="object">Vipps\Login\Model\Logger\Handler\Error</item>
+                <item name="debug" xsi:type="object">Vipps\Login\Model\Logger\Handler\Debug</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
 </config>

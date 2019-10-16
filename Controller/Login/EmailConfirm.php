@@ -18,6 +18,9 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Vipps\Login\Api\VippsAddressManagementInterface;
+use Vipps\Login\Gateway\Command\UserInfoCommand;
+use Vipps\Login\Model\AccessTokenProvider;
 use Vipps\Login\Model\VippsAccountManagement;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\Session;
@@ -46,6 +49,18 @@ class EmailConfirm extends Action
      * @var CustomerRegistry
      */
     private $customerRegistry;
+    /**
+     * @var VippsAddressManagementInterface
+     */
+    private $vippsAddressManagement;
+    /**
+     * @var AccessTokenProvider
+     */
+    private $accessTokenProvider;
+    /**
+     * @var UserInfoCommand
+     */
+    private $userInfoCommand;
 
     /**
      * EmailConfirm constructor.
@@ -55,19 +70,28 @@ class EmailConfirm extends Action
      * @param SessionManagerInterface $sessionManager
      * @param CustomerRegistry $customerRegistry
      * @param ManagerInterface $messageManager
+     * @param AccessTokenProvider $accessTokenProvider
+     * @param UserInfoCommand $userInfoCommand
+     * @param VippsAddressManagementInterface $vippsAddressManagement
      */
     public function __construct(
         Context $context,
         VippsAccountManagement $vippsAccountManagement,
         SessionManagerInterface $sessionManager,
         CustomerRegistry $customerRegistry,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        AccessTokenProvider $accessTokenProvider,
+        UserInfoCommand $userInfoCommand,
+        VippsAddressManagementInterface $vippsAddressManagement
     ) {
         parent::__construct($context);
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->sessionManager = $sessionManager;
         $this->customerRegistry = $customerRegistry;
         $this->messageManager = $messageManager;
+        $this->vippsAddressManagement = $vippsAddressManagement;
+        $this->accessTokenProvider = $accessTokenProvider;
+        $this->userInfoCommand = $userInfoCommand;
     }
 
     /**
@@ -85,6 +109,12 @@ class EmailConfirm extends Action
                 $customer = $this->customerRegistry->retrieveByEmail($vippsCustomer->getEmail());
                 $this->sessionManager->setCustomerAsLoggedIn($customer);
                 $this->messageManager->addSuccessMessage(__('Your account was successfully confirmed.'));
+
+                if ($accessToken = $this->accessTokenProvider->get()) {
+                    $userInfo = $this->userInfoCommand->execute($this->accessTokenProvider->get());
+                    $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
+                }
+
                 return $redirect->setPath('customer/account');
             }
         } catch (\Exception $e) {

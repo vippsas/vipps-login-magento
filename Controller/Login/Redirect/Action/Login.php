@@ -25,9 +25,16 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
+use Vipps\Login\Api\VippsAddressManagementInterface;
+use Vipps\Login\Api\VippsCustomerRepositoryInterface;
+use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\TrustedAccountsLocator;
 use Magento\Customer\Model\CustomerRegistry;
 
+/**
+ * Class Login
+ * @package Vipps\Login\Controller\Login\Redirect\Action
+ */
 class Login implements ActionInterface
 {
     /**
@@ -49,6 +56,18 @@ class Login implements ActionInterface
      * @var CustomerRegistry
      */
     private $customerRegistry;
+    /**
+     * @var UserInfoCommand
+     */
+    private $userInfoCommand;
+    /**
+     * @var VippsAddressManagementInterface
+     */
+    private $vippsAddressManagement;
+    /**
+     * @var VippsCustomerRepositoryInterface
+     */
+    private $vippsCustomerRepository;
 
     /**
      * Login constructor.
@@ -57,21 +76,30 @@ class Login implements ActionInterface
      * @param SessionManagerInterface $sessionManager
      * @param TrustedAccountsLocator $trustedAccountsLocator
      * @param CustomerRegistry $customerRegistry
+     * @param UserInfoCommand $userInfoCommand
+     * @param VippsAddressManagementInterface $vippsAddressManagement
+     * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      */
     public function __construct(
         RedirectFactory $redirectFactory,
         SessionManagerInterface $sessionManager,
         TrustedAccountsLocator $trustedAccountsLocator,
-        CustomerRegistry $customerRegistry
+        CustomerRegistry $customerRegistry,
+        UserInfoCommand $userInfoCommand,
+        VippsAddressManagementInterface $vippsAddressManagement,
+        VippsCustomerRepositoryInterface $vippsCustomerRepository
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->sessionManager = $sessionManager;
         $this->trustedAccountsLocator = $trustedAccountsLocator;
         $this->customerRegistry = $customerRegistry;
+        $this->userInfoCommand = $userInfoCommand;
+        $this->vippsAddressManagement = $vippsAddressManagement;
+        $this->vippsCustomerRepository = $vippsCustomerRepository;
     }
 
     /**
-     * @param array $token
+     * @param $token
      *
      * @return bool|Redirect
      * @throws LocalizedException
@@ -81,12 +109,25 @@ class Login implements ActionInterface
     {
         $customer = $this->getCustomerForLogin($token);
         if ($customer) {
-            $this->sessionManager->setCustomerAsLoggedIn($customer);
-
             $redirect = $this->redirectFactory->create();
-            $redirect->setPath('customer/account');
+            try {
+                $userInfo = $this->userInfoCommand->execute($token['access_token']);
+
+                $this->sessionManager->setCustomerAsLoggedIn($customer);
+
+                $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
+                $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
+
+                $redirect = $this->redirectFactory->create();
+                $redirect->setPath('customer/account');
+                return $redirect;
+            } catch (\Throwable $e) {
+
+            }
+
             return $redirect;
         }
+
         return false;
     }
 
@@ -103,10 +144,11 @@ class Login implements ActionInterface
         if ($telephone) {
             $trustedAccounts = $this->trustedAccountsLocator->getList($telephone);
             if ($trustedAccounts->getTotalCount() > 0) {
-                $customerData = $trustedAccounts->getItems()[0];
-                return $this->customerRegistry->retrieveByEmail($customerData->getEmail());
+                $vippsCustomer = $trustedAccounts->getItems()[0];
+                return $this->customerRegistry->retrieveByEmail($vippsCustomer->getEmail());
             }
         }
+
         return null;
     }
 }

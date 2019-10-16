@@ -18,11 +18,15 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model\ResourceModel;
 
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Api\SearchCriteriaBuilder;
 use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
 use Vipps\Login\Api\Data\VippsCustomerAddressSearchResultsInterface;
 use Vipps\Login\Api\Data\VippsCustomerAddressSearchResultsInterfaceFactory;
+use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Model\ResourceModel\VippsCustomerAddress\Collection;
 use Vipps\Login\Model\ResourceModel\VippsCustomerAddress\CollectionFactory;
@@ -65,6 +69,11 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
     private $modelFactory;
 
     /**
+     * @var SearchCriteriaBuilder
+     */
+    private $searchCriteriaBuilder;
+
+    /**
      * VippsCustomerAddressRepository constructor.
      *
      * @param CollectionProcessorInterface $collectionProcessor
@@ -72,6 +81,7 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
      * @param CollectionFactory $collectionFactory
      * @param ExtensibleDataObjectConverter $extensibleDataObjectConverter
      * @param VippsCustomerAddress $resourceModel
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param ModelFactory $modelFactory
      */
     public function __construct(
@@ -80,6 +90,7 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
         CollectionFactory $collectionFactory,
         ExtensibleDataObjectConverter $extensibleDataObjectConverter,
         VippsCustomerAddress $resourceModel,
+        SearchCriteriaBuilder $searchCriteriaBuilder,
         ModelFactory $modelFactory
     ) {
         $this->collectionProcessor = $collectionProcessor;
@@ -88,6 +99,7 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
         $this->extensibleDataObjectConverter = $extensibleDataObjectConverter;
         $this->resourceModel = $resourceModel;
         $this->modelFactory = $modelFactory;
+        $this->searchCriteriaBuilder = $searchCriteriaBuilder;
     }
 
     /**
@@ -105,18 +117,32 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
             VippsCustomerAddressInterface::class
         );
 
-        /** @var \Vipps\Login\Model\VippsCustomerAddress $vippsCustomer */
-        $vippsCustomerAddress = $this->modelFactory->create(['data' => $modelData]);
+        /** @var \Vipps\Login\Model\VippsCustomerAddress $vippsCustomerAddressModel */
+        $vippsCustomerAddressModel = $this->modelFactory->create(['data' => $modelData]);
+        $this->resourceModel->save($vippsCustomerAddressModel);
 
-        return $this->resourceModel->save($vippsCustomerAddress);
+        return $vippsCustomerAddressModel->getDataModel();
     }
 
     /**
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @param VippsCustomerInterface $vippsCustomer
      *
      * @return VippsCustomerAddressSearchResultsInterface
      */
-    public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria)
+    public function getByVippsCustomer(VippsCustomerInterface $vippsCustomer)
+    {
+        $this->searchCriteriaBuilder->addFilter('vipps_customer_id', $vippsCustomer->getEntityId());
+        $searchCriteria = $this->searchCriteriaBuilder->create();
+
+        return $this->getList($searchCriteria);
+    }
+
+    /**
+     * @param SearchCriteriaInterface $searchCriteria
+     *
+     * @return VippsCustomerAddressSearchResultsInterface
+     */
+    public function getList(SearchCriteriaInterface $searchCriteria)
     {
         /** @var Collection $collection */
         $collection = $this->collectionFactory->create();

@@ -22,6 +22,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\State\InputMismatchException;
 use Magento\Framework\Exception\State\InvalidTransitionException;
 use Vipps\Login\Api\Data\UserInfoInterface;
+use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 
 /**
@@ -64,7 +65,7 @@ interface VippsAccountManagementInterface
     public function link(UserInfoInterface $userInfo, CustomerInterface $customer);
 
     /**
-     * Check if customer is already linked ti vipps account.
+     * Check if customer is already linked to vipps account.
      *
      * @param CustomerInterface $customer
      *
@@ -76,9 +77,11 @@ interface VippsAccountManagementInterface
     public function isLinked(CustomerInterface $customer);
 
     /**
+     * @param CustomerInterface $customer
+     *
      * @return mixed
      */
-    public function unlink();
+    public function unlink(CustomerInterface $customer);
 
     /**
      * @param UserInfoInterface $userInfo
@@ -90,4 +93,11 @@ interface VippsAccountManagementInterface
      * @throws LocalizedException
      */
     public function getPair(UserInfoInterface $userInfo, CustomerInterface $customer);
+
+    /**
+     * @param CustomerInterface $customer
+     *
+     * @return VippsCustomerAddressInterface[]
+     */
+    public function getAddresses(CustomerInterface $customer);
 }

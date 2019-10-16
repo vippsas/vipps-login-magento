@@ -18,6 +18,13 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model;
 
+use Magento\Customer\Api\AddressRepositoryInterface;
+use Magento\Customer\Api\Data\AddressInterface;
+use Magento\Customer\Api\Data\AddressInterfaceFactory;
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Customer\Api\Data\RegionInterfaceFactory;
+use Magento\Customer\Model\Metadata\FormFactory;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Math\Random;
@@ -55,44 +62,99 @@ class VippsAddressManagement implements VippsAddressManagementInterface
     private $vippsCustomerAddressFactory;
 
     /**
+     * @var AddressRepositoryInterface
+     */
+    private $addressRepository;
+
+    /**
+     * @var AddressInterfaceFactory
+     */
+    private $addressDataFactory;
+
+    /**
+     * @var RegionInterfaceFactory
+     */
+    private $regionDataFactory;
+
+    /**
+     * @var FormFactory
+     */
+    private $formFactory;
+
+    /**
      * VippsAddressManagement constructor.
      *
      * @param VippsCustomerAddressInterfaceFactory $vippsCustomerAddressFactory
      * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param AddressRepositoryInterface $addressRepository
+     * @param AddressInterfaceFactory $addressDataFactory
+     * @param RegionInterfaceFactory $regionDataFactory
+     * @param FormFactory $formFactory
      * @param Random $mathRand
      */
     public function __construct(
         VippsCustomerAddressInterfaceFactory $vippsCustomerAddressFactory,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
+        AddressRepositoryInterface $addressRepository,
+        AddressInterfaceFactory $addressDataFactory,
+        RegionInterfaceFactory $regionDataFactory,
+        FormFactory $formFactory,
         Random $mathRand
     ) {
         $this->vippsCustomerAddressFactory = $vippsCustomerAddressFactory;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
         $this->mathRand = $mathRand;
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
+        $this->addressRepository = $addressRepository;
+        $this->addressDataFactory = $addressDataFactory;
+        $this->regionDataFactory = $regionDataFactory;
+        $this->formFactory = $formFactory;
     }
 
     /**
      * @param UserInfoInterface $userInfo
      * @param VippsCustomerInterface $vippsCustomer
-     * @param bool $onlyDefault
+     * @param CustomerInterface $customer
+     *
+     * @throws LocalizedException
+     */
+    public function apply(
+        UserInfoInterface $userInfo,
+        VippsCustomerInterface $vippsCustomer,
+        CustomerInterface $customer
+    ) {
+        $vippsAddresses = $this->fetchAddresses($userInfo, $vippsCustomer);
+
+        $this->searchCriteriaBuilder->addFilter('parent_id', $vippsCustomer->getCustomerEntityId());
+        $searchCriteria = $this->searchCriteriaBuilder->create();
+
+        $addressesResult = $this->addressRepository->getList($searchCriteria);
+        $hasDefault = $this->hasDefault($addressesResult->getItems());
+
+        foreach ($vippsAddresses as $vippsAddress) {
+            $result = $this->merge($vippsAddress, $addressesResult->getItems());
+            if (!$result) {
+                $this->convert($customer, $vippsCustomer, $vippsAddress, $hasDefault);
+            }
+        }
+    }
+
+    /**
+     * @param UserInfoInterface $userInfo
+     * @param VippsCustomerInterface $vippsCustomer
      *
      * @return VippsCustomerAddressInterface[]|[]
      * @throws LocalizedException
      */
     public function fetchAddresses(
         UserInfoInterface $userInfo,
-        VippsCustomerInterface $vippsCustomer,
-        $onlyDefault = false
+        VippsCustomerInterface $vippsCustomer
     ) {
         $this->searchCriteriaBuilder->addFilter('vipps_customer_id', $vippsCustomer->getEntityId());
-        if ($onlyDefault) {
-            $this->searchCriteriaBuilder->addFilter('is_default',true);
-        }
-
         $searchCriteria = $this->searchCriteriaBuilder->create();
+
         $vippsAddressResult = $this->vippsCustomerAddressRepository->getList($searchCriteria);
 
         $newVippsAddresses = $userInfo->getAddress();
@@ -101,8 +163,9 @@ class VippsAddressManagement implements VippsAddressManagementInterface
             foreach ($vippsAddressResult->getItems() as $item) {
                 foreach ($newVippsAddresses as $address) {
                     if ($address['address_type'] == $item->getAddressType()) {
-                        $item = $this->convertAddress($item, $address);
+                        $item = $this->populateWithArray($item, $address);
                         $result[] = $this->vippsCustomerAddressRepository->save($item);
+                        break;
                     }
                 }
             }
@@ -110,7 +173,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
             foreach ($newVippsAddresses as $address) {
                 /** @var VippsCustomerAddressInterface $vippsCustomerAddress */
                 $vippsCustomerAddress = $this->vippsCustomerAddressFactory->create();
-                $vippsCustomerAddress = $this->convertAddress($vippsCustomerAddress, $address);
+                $vippsCustomerAddress = $this->populateWithArray($vippsCustomerAddress, $address);
                 $vippsCustomerAddress->setVippsCustomerId($vippsCustomer->getEntityId());
                 if ($vippsCustomerAddress->getAddressType() == VippsCustomerAddressInterface::ADDRESS_TYPE_HOME) {
                     $vippsCustomerAddress->setIsDefault(true);
@@ -122,26 +185,170 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         return $result;
     }
 
-    public function merge()
-    {
-        // TODO: Implement merge() method.
+    /**
+     * @param CustomerInterface $customer
+     * @param VippsCustomerInterface $vippsCustomer
+     * @param VippsCustomerAddressInterface $vippsAddress
+     * @param bool $hasDefault
+     *
+     * @return bool|AddressInterface
+     * @throws LocalizedException
+     */
+    public function convert(
+        CustomerInterface $customer,
+        VippsCustomerInterface $vippsCustomer,
+        VippsCustomerAddressInterface $vippsAddress,
+        bool $hasDefault
+    ) {
+        if ($vippsAddress->getIsConverted() && $vippsAddress->getCustomerAddressId()) {
+            return false;
+        }
+
+        /** @var AddressInterface $magentoAddress */
+        $magentoAddress = $this->addressDataFactory->create();
+        $magentoAddress->setCustomerId($customer->getId());
+        $magentoAddress->setCity($vippsAddress->getRegion());//todo check value
+        $magentoAddress->setCountryId($vippsAddress->getCountry());
+        $magentoAddress->setFirstname($customer->getFirstname());
+        $magentoAddress->setLastname($customer->getLastname());
+        $magentoAddress->setPostcode($vippsAddress->getPostalCode());
+
+        /** @var \Magento\Customer\Api\Data\RegionInterface $regionDataObject */
+        $regionDataObject = $this->regionDataFactory->create();
+        $regionDataObject->setRegion($vippsAddress->getRegion());
+        $magentoAddress->setRegion($regionDataObject);
+
+        $street = explode('\n', $vippsAddress->getStreetAddress());
+        $magentoAddress->setStreet($street);
+
+        $magentoAddress->setTelephone($vippsCustomer->getTelephone());
+
+        if (
+            !$hasDefault &&
+            $vippsAddress->getAddressType() == VippsCustomerAddressInterface::ADDRESS_TYPE_HOME
+        ) {
+            $magentoAddress->setIsDefaultShipping(true);
+            $magentoAddress->setIsDefaultBilling(true);
+        }
+
+        try {
+            $magentoAddress = $this->addressRepository->save($magentoAddress);
+        } catch (InputException $e) {
+            return false;
+        }
+
+
+        $vippsAddress->setCustomerAddressId($magentoAddress->getId());
+        $vippsAddress->setIsConverted(true);
+        $this->vippsCustomerAddressRepository->save($vippsAddress);
+
+        return $magentoAddress;
     }
 
     /**
-     * @param VippsCustomerAddressInterface $vippsCustomerAddress
+     * @param VippsCustomerAddressInterface $vippsAddress
+     * @param AddressInterface[] $magentoAddresses
+     *
+     * @return bool
+     */
+    public function merge(VippsCustomerAddressInterface $vippsAddress, array $magentoAddresses)
+    {
+        foreach ($magentoAddresses as $address) {
+            if ($this->areTheSame($vippsAddress, $address)) {
+                $this->link($vippsAddress, $address);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param VippsCustomerAddressInterface $vippsAddress
+     * @param AddressInterface $magentoAddress
+     */
+    public function link(VippsCustomerAddressInterface $vippsAddress, AddressInterface $magentoAddress)
+    {
+        $vippsAddress->setIsConverted(true);
+        $vippsAddress->setCustomerAddressId($magentoAddress->getId());
+        $this->vippsCustomerAddressRepository->save($vippsAddress);
+    }
+
+    /**
+     * @param VippsCustomerAddressInterface $vippsAddress
+     * @param AddressInterface $magentoAddress
+     *
+     * @return bool
+     */
+    public function areTheSame(VippsCustomerAddressInterface $vippsAddress, AddressInterface $magentoAddress)
+    {
+       return false;
+    }
+
+    /**
+     * @param VippsCustomerAddressInterface $vippsAddress
      * @param array $address
      *
      * @return VippsCustomerAddressInterface
      */
-    public function convertAddress(VippsCustomerAddressInterface $vippsCustomerAddress, array $address)
+    public function populateWithArray(VippsCustomerAddressInterface $vippsAddress, array $address)
     {
-        $vippsCustomerAddress->setCountry($address['country']);
-        $vippsCustomerAddress->setStreetAddress($address['street_address']);
-        $vippsCustomerAddress->setAddressType($address['address_type']);
-        $vippsCustomerAddress->setFormatted($address['formatted']);
-        $vippsCustomerAddress->setPostalCode($address['postal_code']);
-        $vippsCustomerAddress->setRegion($address['region']);
+        $vippsAddress->setCountry($address['country']);
+        $vippsAddress->setStreetAddress($address['street_address']);
+        $vippsAddress->setAddressType($address['address_type']);
+        $vippsAddress->setFormatted($address['formatted']);
+        $vippsAddress->setPostalCode($address['postal_code']);
+        $vippsAddress->setRegion($address['region']);
 
-        return $vippsCustomerAddress;
+        if ($this->isVippsAddressChanged($vippsAddress, $address)) {
+            $vippsAddress->setWasChanged(true);
+        }
+
+        return $vippsAddress;
+    }
+
+    /**
+     * Check if vipps Address was changed on vipps side.
+     *
+     * @param VippsCustomerAddressInterface $vippsAddress
+     * @param array $addressArr
+     *
+     * @return bool
+     */
+    private function isVippsAddressChanged(VippsCustomerAddressInterface $vippsAddress, array $addressArr)
+    {
+        if (strcasecmp($vippsAddress->getCountry(), $addressArr['country']) !== 0) {
+            return true;
+        }
+
+        if (strcasecmp($vippsAddress->getStreetAddress(), $addressArr['street_address']) !== 0) {
+            return true;
+        }
+
+        if (strcasecmp($vippsAddress->getPostalCode(), $addressArr['postal_code']) !== 0) {
+            return true;
+        }
+
+        if (strcasecmp($vippsAddress->getRegion(), $addressArr['region']) !== 0) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param AddressInterface[] $magentoAddresses
+     *
+     * @return bool
+     */
+    private function hasDefault(array $magentoAddresses)
+    {
+        foreach ($magentoAddresses as $address) {
+            if ($address->isDefaultShipping() || $address->isDefaultBilling()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

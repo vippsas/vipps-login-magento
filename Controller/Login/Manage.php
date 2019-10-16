@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+<?php
 /**
  * Copyright 2019 Vipps
  *
@@ -12,18 +11,29 @@
  * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE.
+ * IN THE SOFTWARE
  */
--->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
-    <default>
-        <vipps>
-            <login>
-                <client_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <client_id backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
-                <debug>0</debug>
-            </login>
-        </vipps>
-    </default>
-</config>
+
+declare(strict_types=1);
+
+namespace Vipps\Login\Controller\Login;
+
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultInterface;
+
+/**
+ * Class Manage
+ * @package Vipps\Login\Controller\Login
+ */
+class Manage extends AccountBase
+{
+    /**
+     * @return ResponseInterface|ResultInterface|void
+     */
+    public function execute()
+    {
+        $this->_view->loadLayout();
+        $this->_view->getPage()->getConfig()->getTitle()->set(__('Vipps Login Configuration'));
+        $this->_view->renderLayout();
+    }
+}

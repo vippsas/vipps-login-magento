@@ -96,6 +96,12 @@ class InstallSchema implements InstallSchemaInterface
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],
             'Is Active'
         )->addColumn(
+            'auto_sync_address',
+            Table::TYPE_SMALLINT,
+            null,
+            ['unsigned' => true, 'nullable' => false, 'default' => '0'],
+            'Update addresses automatically'
+        )->addColumn(
             'confirmation_key',
             Table::TYPE_TEXT,
             255,
@@ -213,6 +219,12 @@ class InstallSchema implements InstallSchemaInterface
             'Is Active'
         )->addColumn(
             'is_converted',
+            Table::TYPE_SMALLINT,
+            null,
+            ['unsigned' => true, 'nullable' => false, 'default' => '0'],
+            'Is Vipps Address converted to Magento Address'
+        )->addColumn(
+            'was_changed',
             Table::TYPE_SMALLINT,
             null,
             ['unsigned' => true, 'nullable' => false, 'default' => '0'],

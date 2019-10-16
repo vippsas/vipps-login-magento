@@ -24,10 +24,10 @@ use Magento\Customer\Model\Session;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 
 /**
- * Class Button
- * @package Vipps\Login\Block\Form\Login
+ * Class VippsAddress
+ * @package Vipps\Login\Block\Account
  */
-class Link extends Template
+class VippsAddress extends Template
 {
     /**
      * @var VippsAccountManagementInterface
@@ -59,14 +59,18 @@ class Link extends Template
     }
 
     /**
-     * @return bool
      * @throws \Magento\Framework\Exception\InputException
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Magento\Framework\Exception\State\InputMismatchException
      */
-    public function isLinked()
+    public function getVippsAddresses()
     {
-        $customer = $this->customerSession->getCustomer();
-        return $this->vippsAccountManagement->isLinked($customer->getDataModel());
+        $customerModel = $this->customerSession->getCustomer();
+        $customer = $customerModel->getDataModel();
+        if ($this->vippsAccountManagement->isLinked($customer)){
+            return $this->vippsAccountManagement->getAddresses($customer);
+        }
+
+        return [];
     }
 }
