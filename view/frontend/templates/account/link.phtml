@@ -24,10 +24,14 @@ if ($block->isLinked()): ?>
 
 <div class="login-vipps-account">
     <form action="<?php echo $block->getUrl('vipps/login/unlink'); ?>" method="post">
+        <div class="icon-login"></div>
+        <h3><?= $block->escapeHtml(__('Easier login with Vipps')) ?></h3>
+        <p><?= $block->escapeHtml(__('With Vipps you can log in with the pressure of all your devices.
+            Your existing username/email and password will continue to work.')) ?></p>
         <button type="submit"
                class="action create primary vipps-btn">
-            <span class="icon-vipps-no-icon"></span>
-            <?= $block->escapeHtml(__('Unlink Vipps Account')) ?>
+            <?= $block->escapeHtml(__('Stop keep going with')) ?>
+            <span class="icon-vipps"></span>
         </button>
     </form>
 </div>
@@ -36,10 +40,14 @@ if ($block->isLinked()): ?>
 
     <div class="login-vipps-account">
         <form action="<?php echo $block->getUrl('vipps/login/index'); ?>" method="post">
+            <div class="icon-login"></div>
+            <h3><?= $block->escapeHtml(__('Easier login with Vipps')) ?></h3>
+            <p><?= $block->escapeHtml(__('With Vipps you can log in with the pressure of all your devices.
+            Your existing username/email and password will continue to work.')) ?></p>
             <button type="submit"
                    class="action create primary vipps-btn">
-                <span class="icon-vipps-no-icon"></span>
-                <?= $block->escapeHtml(__('Link Vipps Account')) ?>
+                <?= $block->escapeHtml(__('Keep going with')) ?>
+                <span class="icon-vipps"></span>
             </button>
         </form>
     </div>
