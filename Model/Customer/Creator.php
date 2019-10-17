@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model\Customer;
 
+use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\Data\CustomerInterfaceFactory;
@@ -63,6 +64,11 @@ class Creator
     private $vippsCustomerRepository;
 
     /**
+     * @var AccountManagementInterface
+     */
+    private $accountManagement;
+
+    /**
      * Creator constructor.
      *
      * @param StoreManagerInterface $storeManager
@@ -70,19 +76,22 @@ class Creator
      * @param CustomerRepositoryInterface $customerRepository
      * @param VippsCustomerInterfaceFactory $vippsCustomerFactory
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
+     * @param AccountManagementInterface $accountManagement
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         CustomerInterfaceFactory $customerFactory,
         CustomerRepositoryInterface $customerRepository,
         VippsCustomerInterfaceFactory $vippsCustomerFactory,
-        VippsCustomerRepositoryInterface $vippsCustomerRepository
+        VippsCustomerRepositoryInterface $vippsCustomerRepository,
+        AccountManagementInterface $accountManagement
     ) {
         $this->storeManager = $storeManager;
         $this->customerFactory = $customerFactory;
         $this->customerRepository = $customerRepository;
         $this->vippsCustomerFactory = $vippsCustomerFactory;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
+        $this->accountManagement = $accountManagement;
     }
 
     /**
@@ -105,7 +114,7 @@ class Creator
             $customer->setFirstname($userInfo->getName());
             $customer->setLastname($userInfo->getFamilyName());
 
-            return $this->customerRepository->save($customer);
+            return $this->accountManagement->createAccount($customer);
         } catch(AlreadyExistsException $e) {
             return $this->customerRepository->get($userInfo->getEmail());
         }
