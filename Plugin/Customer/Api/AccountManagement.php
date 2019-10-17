@@ -20,6 +20,7 @@ namespace Vipps\Login\Plugin\Customer\Api;
 
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\AccountManagementInterface as Subject;
+use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Model\TokenProviderInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Api\VippsAccountManagementInterface;
@@ -44,6 +45,10 @@ class AccountManagement
      * @var VippsAccountManagementInterface
      */
     private $vippsAccountManagement;
+    /**
+     * @var VippsAddressManagementInterface
+     */
+    private $vippsAddressManagement;
 
     /**
      * AccountManager constructor.
@@ -51,15 +56,18 @@ class AccountManagement
      * @param TokenProviderInterface $accessTokenProvider
      * @param UserInfoCommand $userInfoCommand
      * @param VippsAccountManagementInterface $vippsAccountManagement
+     * @param VippsAddressManagementInterface $vippsAddressManagement
      */
     public function __construct(
         TokenProviderInterface $accessTokenProvider,
         UserInfoCommand $userInfoCommand,
-        VippsAccountManagementInterface $vippsAccountManagement
+        VippsAccountManagementInterface $vippsAccountManagement,
+        VippsAddressManagementInterface $vippsAddressManagement
     ) {
         $this->accessTokenProvider = $accessTokenProvider;
         $this->userInfoCommand = $userInfoCommand;
         $this->vippsAccountManagement = $vippsAccountManagement;
+        $this->vippsAddressManagement = $vippsAddressManagement;
     }
 
     /**
@@ -74,7 +82,8 @@ class AccountManagement
             $accessToken = $this->accessTokenProvider->get();
             if ($accessToken) {
                 $userInfo = $this->userInfoCommand->execute($accessToken);
-                $this->vippsAccountManagement->link($userInfo, $result);
+                $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $result);
+                $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $result);
             }
         } catch (\Throwable $t) {
             // should not throw exception because it leads to customer account creation failed
