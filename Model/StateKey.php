@@ -30,7 +30,7 @@ class StateKey
     /**
      * @var string
      */
-    const DATA_KEY_STATE = 'vipps_url_state';
+    const DATA_KEY_STATE = 'vipps_login_url_state';
 
     /**
      * @var SessionManagerInterface
@@ -57,12 +57,15 @@ class StateKey
     }
 
     /**
+     * Method to generate stateKey for vipps/login requests.
+     * This stateKey uses for validation on redirect action from vipps/login.
+     *
      * @return string
      */
     public function generate()
     {
         $state = $this->mathRand->getUniqueHash();
-        $this->sessionManager->setData('vipps_login_url_state', $state);
+        $this->sessionManager->setData(self::DATA_KEY_STATE, $state);
         return $state;
     }
 
@@ -73,6 +76,6 @@ class StateKey
      */
     public function isValid($state): bool
     {
-        return $state == $this->sessionManager->getData('vipps_login_url_state');
+        return $state == $this->sessionManager->getData(self::DATA_KEY_STATE);
     }
 }

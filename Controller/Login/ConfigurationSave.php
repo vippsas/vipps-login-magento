@@ -80,14 +80,14 @@ class ConfigurationSave extends AccountBase
             $customer = $this->customerSession->getCustomer();
 
             $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
-            $isAutoSync = (bool) $this->getRequest()->getParam('auto_sync_address');
+            $syncType = $this->getRequest()->getParam('sync_address_mode');
 
-            $vippsCustomer->setAutoSyncAddress($isAutoSync);
+            $vippsCustomer->setSyncAddressMode($syncType);
             $this->vippsCustomerRepository->save($vippsCustomer);
 
             $this->messageManager->addSuccessMessage(__('Your changes applied successfully.'));
             return $redirect;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(
                 __('An error occurred during applying settings. Please, try again later.')
             );

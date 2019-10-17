@@ -18,22 +18,18 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login\Redirect\Action;
 
-use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Exception\State\InputMismatchException;
-use Magento\Framework\Exception\AuthorizationException;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Customer\Model\CustomerRegistry;
-use Vipps\Login\Api\VippsAccountManagementInterface;
-use Vipps\Login\Api\VippsAddressManagementInterface;
+use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\Creator;
-use Vipps\Login\Model\VippsAddressManagement;
 
 /**
  * Class Create
@@ -67,16 +63,6 @@ class Create implements ActionInterface
     private $creator;
 
     /**
-     * @var VippsAccountManagementInterface
-     */
-    private $vippsAccountManagement;
-
-    /**
-     * @var VippsAccountManagementInterface
-     */
-    private $vippsAddressManagement;
-
-    /**
      * Create constructor.
      *
      * @param RedirectFactory $redirectFactory
@@ -84,25 +70,19 @@ class Create implements ActionInterface
      * @param CustomerRegistry $customerRegistry
      * @param UserInfoCommand $userInfoCommand
      * @param Creator $creator
-     * @param VippsAccountManagementInterface $vippsAccountManagement
-     * @param VippsAddressManagementInterface $vippsAddressManagement
      */
     public function __construct(
         RedirectFactory $redirectFactory,
         SessionManagerInterface $sessionManager,
         CustomerRegistry $customerRegistry,
         UserInfoCommand $userInfoCommand,
-        Creator $creator,
-        VippsAccountManagementInterface $vippsAccountManagement,
-        VippsAddressManagementInterface $vippsAddressManagement
+        Creator $creator
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->sessionManager = $sessionManager;
         $this->customerRegistry = $customerRegistry;
         $this->userInfoCommand = $userInfoCommand;
         $this->creator = $creator;
-        $this->vippsAccountManagement = $vippsAccountManagement;
-        $this->vippsAddressManagement = $vippsAddressManagement;
     }
 
     /**
@@ -117,33 +97,62 @@ class Create implements ActionInterface
      */
     public function execute($token)
     {
-        if ($this->canCreate($token)) {
+        $userInfo = $this->userInfoCommand->execute($token['access_token']);
 
-            $userInfo = $this->userInfoCommand->execute($token['access_token']);
-
+        try {
             $magentoCustomer = $this->creator->create($userInfo);
-            $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
-
             $customer = $this->customerRegistry->retrieveByEmail($magentoCustomer->getEmail());
             $this->sessionManager->setCustomerAsLoggedIn($customer);
-
-            $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
 
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account');
             return $redirect;
+        } catch (\Magento\Framework\Validator\Exception $e) {
+            $this->setCustomerFormData($userInfo);
+            $redirect = $this->redirectFactory->create();
+            $redirect->setPath('customer/account/create');
+            return $redirect;
         }
-
-        return false;
     }
 
     /**
-     * @param $token
-     *
-     * @return bool
+     * @param UserInfoInterface $userInfo
      */
-    private function canCreate($token)
+    private function setCustomerFormData(UserInfoInterface $userInfo)
     {
-        return true;
+        $customerFormData = [
+            'email' => $userInfo->getEmail(),
+            'firstname' => $userInfo->getGivenName(),
+            'lastname' => $userInfo->getFamilyName(),
+            'birthday' => $userInfo->getBirthdate(),
+            'telephone' => $userInfo->getPhoneNumber()
+        ];
+
+        $address = $this->getAddressByType($userInfo, 'home');
+        if ($address) {
+            $customerFormData['postcode'] = $address['postal_code'];
+            $customerFormData['country_id'] = $address['country'];
+            $customerFormData['street'] = $address['street_address'];
+            $customerFormData['city'] = $address['region'];
+        }
+
+        $this->sessionManager->setCustomerFormData($customerFormData);
+    }
+
+    /**
+     * @param UserInfoInterface $userInfo
+     * @param $type
+     *
+     * @return mixed|null
+     */
+    private function getAddressByType(UserInfoInterface $userInfo, $type)
+    {
+        $addresses = $userInfo->getAddress() ?? [];
+        foreach ($addresses as $address) {
+            if ($address['address_type'] == $type) {
+                return $address;
+            }
+        }
+        return null;
     }
 }

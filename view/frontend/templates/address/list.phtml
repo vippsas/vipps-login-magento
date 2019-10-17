@@ -1,0 +1,40 @@
+<?php
+/**
+ * Copyright 2019 Vipps
+ *
+ *    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ *    documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ *    the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ *    and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ *    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ *    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ *    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ *    IN THE SOFTWARE
+ */
+
+declare(strict_types=1);
+
+/** @var $block \Vipps\Login\Block\Account\VippsAddress */
+$addresses = $block->getVippsAddresses(true);
+/** @var $address \Vipps\Login\Api\Data\VippsCustomerAddressInterface */
+?>
+
+<?php if (!empty($addresses)): ?>
+<div id="vipps_addresses">
+    <fieldset class="fieldset">
+        <div class="field">
+            <label for="vipps_address" class="label"><span><?= $block->escapeHtml(__('Copy from Vipps')) ?></span></label>
+            <select id="vipps_address" name="vipps_address"
+                    title="<?= $block->escapeHtmlAttr(__('Vipps Addresses')) ?>"
+                    class="validate-select">
+                <option value=""><?= $block->escapeHtml(__('Select vipps address')) ?></option>
+                <?php foreach ($addresses as $address): ?>
+                    <option value="<?=$address->getEntityId()?>"><?= $block->escapeHtml($address->getFormatted()) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </fieldset>
+</div>
+<?php endif ?>

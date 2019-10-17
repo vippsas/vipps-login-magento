@@ -21,6 +21,7 @@ namespace Vipps\Login\Block\Account;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Customer\Model\Session;
+use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 
 /**
@@ -59,16 +60,26 @@ class VippsAddress extends Template
     }
 
     /**
+     * @param bool $onlyNotLinked
+     *
+     * @return array|\Vipps\Login\Api\Data\VippsCustomerAddressInterface[]
      * @throws \Magento\Framework\Exception\InputException
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Magento\Framework\Exception\State\InputMismatchException
      */
-    public function getVippsAddresses()
+    public function getVippsAddresses($onlyNotLinked = false)
     {
         $customerModel = $this->customerSession->getCustomer();
         $customer = $customerModel->getDataModel();
         if ($this->vippsAccountManagement->isLinked($customer)){
-            return $this->vippsAccountManagement->getAddresses($customer);
+            $addresses = $this->vippsAccountManagement->getAddresses($customer);
+            if ($onlyNotLinked) {
+                $addresses = array_filter($addresses, function ($item){
+                    /** @var $item VippsCustomerAddressInterface  */
+                    return $item->getCustomerAddressId() ? false : true;
+                });
+            }
+            return $addresses;
         }
 
         return [];

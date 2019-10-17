@@ -167,7 +167,7 @@ class UserInfo extends AbstractExtensibleObject implements UserInfoInterface
      */
     public function getAddress()
     {
-        return $this->_get(UserInfoInterface::ADDRESS);
+        return (array)$this->_get(UserInfoInterface::ADDRESS);
     }
 
     /**

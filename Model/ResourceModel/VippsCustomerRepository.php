@@ -21,6 +21,7 @@ namespace Vipps\Login\Model\ResourceModel;
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\Data\VippsCustomerSearchResultsInterfaceFactory;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
@@ -141,12 +142,17 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
      * @param CustomerInterface $customer
      *
      * @return VippsCustomerInterface
+     * @throws NoSuchEntityException
      */
     public function getByCustomer(CustomerInterface $customer)
     {
         /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
         $vippsCustomer = $this->modelFactory->create();
         $vippsCustomer->load($customer->getId(), 'customer_entity_id');
+        if (!$vippsCustomer->getId()) {
+            // customer does not exist
+            throw NoSuchEntityException::singleField('customer_entity_id', $customer->getId());
+        }
 
         return $vippsCustomer->getDataModel();
     }

@@ -30,6 +30,9 @@ use Vipps\Login\Api\Data\VippsCustomerInterface;
 interface VippsAddressManagementInterface
 {
     /**
+     * Fetch addresses information from vipps API
+     * update existing and save to DB.
+     *
      * @param UserInfoInterface $userInfo
      * @param VippsCustomerInterface $vippsCustomer
      *
@@ -38,6 +41,8 @@ interface VippsAddressManagementInterface
     public function fetchAddresses(UserInfoInterface $userInfo, VippsCustomerInterface $vippsCustomer);
 
     /**
+     * Method applies vipps addresses information to magento addresses.
+     *
      * @param UserInfoInterface $userInfo
      * @param VippsCustomerInterface $vippsCustomer
      * @param CustomerInterface $customer
@@ -51,10 +56,42 @@ interface VippsAddressManagementInterface
     );
 
     /**
+     * Method links vipps address with magento address.
+     *
      * @param VippsCustomerAddressInterface $vippsAddress
+     * @param AddressInterface $magentoAddress
+     *
+     * @return void
+     */
+    public function link(VippsCustomerAddressInterface $vippsAddress, AddressInterface $magentoAddress);
+
+    /**
+     * Methods tries to assign vipps address to magento address.
+     *
+     * @param VippsCustomerAddressInterface $vippsAddress
+     * @param VippsCustomerInterface $vippsCustomer
      * @param AddressInterface[] $magentoAddresses
      *
-     * @return mixed
+     * @return bool
      */
-    public function merge(VippsCustomerAddressInterface $vippsAddress, array $magentoAddresses);
+    public function assign(
+        VippsCustomerAddressInterface $vippsAddress,
+        VippsCustomerInterface $vippsCustomer,
+        array $magentoAddresses
+    );
+
+    /**
+     * @param CustomerInterface $customer
+     * @param VippsCustomerInterface $vippsCustomer
+     * @param VippsCustomerAddressInterface $vippsAddress
+     * @param bool $hasDefault
+     *
+     * @return bool|AddressInterface
+     */
+    public function convert(
+        CustomerInterface $customer,
+        VippsCustomerInterface $vippsCustomer,
+        VippsCustomerAddressInterface $vippsAddress,
+        bool $hasDefault
+    );
 }

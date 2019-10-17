@@ -210,24 +210,6 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
     /**
      * @return bool
      */
-    public function getIsConverted()
-    {
-        return $this->_get('is_converted');
-    }
-
-    /**
-     * @param bool $value
-     *
-     * @return VippsCustomerAddressInterface
-     */
-    public function setIsConverted($value)
-    {
-        return $this->setData('is_converted', $value);
-    }
-
-    /**
-     * @return bool
-     */
     public function getWasChanged()
     {
         return $this->_get('was_changed');
