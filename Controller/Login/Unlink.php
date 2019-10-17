@@ -19,17 +19,16 @@ declare(strict_types=1);
 namespace Vipps\Login\Controller\Login;
 
 use Vipps\Login\Model\VippsAccountManagement;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Controller\Result\Redirect;
 
 /**
  * Class Unlink
  * @package Vipps\Login\Controller\Login
  */
-class Unlink extends Action
+class Unlink extends AccountBase
 {
     /**
      * @var VippsAccountManagement
@@ -37,52 +36,46 @@ class Unlink extends Action
     private $vippsAccountManagement;
 
     /**
-     * @var SessionManagerInterface|Session
-     */
-    private $customerSession;
-
-    /**
-     * EmailConfirm constructor.
+     * Unlink constructor.
      *
      * @param Context $context
-     * @param VippsAccountManagement $vippsAccountManagement
      * @param SessionManagerInterface $customerSession
+     * @param VippsAccountManagement $vippsAccountManagement
      * @param ManagerInterface $messageManager
      */
     public function __construct(
         Context $context,
-        VippsAccountManagement $vippsAccountManagement,
         SessionManagerInterface $customerSession,
+        VippsAccountManagement $vippsAccountManagement,
         ManagerInterface $messageManager
     ) {
-        parent::__construct($context);
+        parent::__construct($context, $customerSession);
         $this->vippsAccountManagement = $vippsAccountManagement;
-        $this->customerSession = $customerSession;
         $this->messageManager = $messageManager;
     }
 
     /**
-     * @return \Magento\Framework\Controller\Result\Redirect
+     * @return Redirect
      */
     public function execute()
     {
         $redirect = $this->resultRedirectFactory->create();
-
-        if (!$this->customerSession->isLoggedIn()) {
-            $this->messageManager->addErrorMessage(__('Please, login first.'));
-        }
+        $refererUrl = $this->_redirect->getRefererUrl();
+        $redirect->setPath($refererUrl);
 
         try {
             $customer = $this->customerSession->getCustomer();
             $this->vippsAccountManagement->unlink($customer->getDataModel());
+
             $this->messageManager->addSuccessMessage(__('Your account was successfully unlinked.'));
-            return $redirect->setPath('customer/account');
+
+            return $redirect;
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage(
                 __('An error occurred during unbinding accounts. Please, try again later.')
             );
         }
 
-        return $redirect->setPath('/');
+        return $redirect;
     }
 }

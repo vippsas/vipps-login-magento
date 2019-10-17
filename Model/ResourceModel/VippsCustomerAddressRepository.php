@@ -23,6 +23,7 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
 use Vipps\Login\Api\Data\VippsCustomerAddressSearchResultsInterface;
 use Vipps\Login\Api\Data\VippsCustomerAddressSearchResultsInterfaceFactory;
@@ -103,6 +104,24 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
     }
 
     /**
+     * @param $id
+     *
+     * @return VippsCustomerAddressInterface
+     * @throws NoSuchEntityException
+     */
+    public function getById($id)
+    {
+        /** @var \Vipps\Login\Model\VippsCustomerAddress $customer */
+        $vippsAddress = $this->modelFactory->create()->load($id);
+        if (!$vippsAddress->getId()) {
+            // customer does not exist
+            throw NoSuchEntityException::singleField('id', $id);
+        }
+
+        return $vippsAddress->getDataModel();
+    }
+
+    /**
      * @param VippsCustomerAddressInterface $vippsCustomerAddress
      *
      * @return mixed|VippsCustomerAddressInterface
@@ -160,5 +179,44 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
         $searchResults->setItems($records);
 
         return $searchResults;
+    }
+
+    /**
+     * @param VippsCustomerAddressInterface $vippsCustomerAddress
+     *
+     * @return $this|bool
+     * @throws \Exception
+     */
+    public function delete(\Vipps\Login\Api\Data\VippsCustomerAddressInterface $vippsCustomerAddress)
+    {
+        $modelData = $this->extensibleDataObjectConverter->toNestedArray(
+            $vippsCustomerAddress,
+            [],
+            VippsCustomerAddressInterface::class
+        );
+
+        /** @var \Vipps\Login\Model\VippsCustomerAddress $vippsCustomerAddressModel */
+        $vippsCustomerAddressModel = $this->modelFactory->create(['data' => $modelData]);
+        $this->resourceModel->delete($vippsCustomerAddressModel);
+
+        return true;
+    }
+
+
+    /**
+     * @param VippsCustomerInterface $vippsCustomer
+     *
+     * @return $this|bool
+     * @throws \Exception
+     */
+    public function deleteByVippsCustomer(\Vipps\Login\Api\Data\VippsCustomerInterface $vippsCustomer)
+    {
+        $vippsAddressResult = $this->getByVippsCustomer($vippsCustomer);
+
+        foreach($vippsAddressResult->getItems() as $item) {
+            $this->delete($item);
+        }
+
+        return true;
     }
 }

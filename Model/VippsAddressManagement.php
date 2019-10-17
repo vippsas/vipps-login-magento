@@ -22,11 +22,13 @@ use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\AddressInterfaceFactory;
 use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Customer\Api\Data\RegionInterface;
 use Magento\Customer\Api\Data\RegionInterfaceFactory;
 use Magento\Customer\Model\Metadata\FormFactory;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Math\Random;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
@@ -134,10 +136,8 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $hasDefault = $this->hasDefault($addressesResult->getItems());
 
         foreach ($vippsAddresses as $vippsAddress) {
-            $result = $this->merge($vippsAddress, $addressesResult->getItems());
-            if (!$result) {
-                $this->convert($customer, $vippsCustomer, $vippsAddress, $hasDefault);
-            }
+            $this->assign($vippsAddress, $vippsCustomer, $addressesResult->getItems());
+            $this->convert($customer, $vippsCustomer, $vippsAddress, $hasDefault);
         }
     }
 
@@ -145,47 +145,55 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      * @param UserInfoInterface $userInfo
      * @param VippsCustomerInterface $vippsCustomer
      *
-     * @return VippsCustomerAddressInterface[]|[]
-     * @throws LocalizedException
+     * @return array|VippsCustomerAddressInterface[]
      */
     public function fetchAddresses(
         UserInfoInterface $userInfo,
         VippsCustomerInterface $vippsCustomer
     ) {
-        $this->searchCriteriaBuilder->addFilter('vipps_customer_id', $vippsCustomer->getEntityId());
-        $searchCriteria = $this->searchCriteriaBuilder->create();
-
-        $vippsAddressResult = $this->vippsCustomerAddressRepository->getList($searchCriteria);
+        $vippsAddressResult = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
+        $vippsAddresses = $vippsAddressResult->getItems();
 
         $newVippsAddresses = $userInfo->getAddress();
         $result = [];
-        if ($vippsAddressResult->getTotalCount()) {
-            foreach ($vippsAddressResult->getItems() as $item) {
-                foreach ($newVippsAddresses as $address) {
-                    if ($address['address_type'] == $item->getAddressType()) {
-                        $item = $this->populateWithArray($item, $address);
-                        $result[] = $this->vippsCustomerAddressRepository->save($item);
-                        break;
-                    }
+
+        foreach ($vippsAddresses as $type => $item) {
+            $match = false;
+            foreach ($newVippsAddresses as $addressType => $address) {
+                if ($address['address_type'] != $item->getAddressType()) {
+                    continue;
                 }
-            }
-        } else {
-            foreach ($newVippsAddresses as $address) {
-                /** @var VippsCustomerAddressInterface $vippsCustomerAddress */
-                $vippsCustomerAddress = $this->vippsCustomerAddressFactory->create();
-                $vippsCustomerAddress = $this->populateWithArray($vippsCustomerAddress, $address);
-                $vippsCustomerAddress->setVippsCustomerId($vippsCustomer->getEntityId());
-                if ($vippsCustomerAddress->getAddressType() == VippsCustomerAddressInterface::ADDRESS_TYPE_HOME) {
-                    $vippsCustomerAddress->setIsDefault(true);
+                $match = true;
+                if ($this->isVippsAddressChanged($item, $address)) {
+                    $item = $this->populateWithArray($item, $address);
+                    $item->setWasChanged(true);
+                    $result[] = $this->vippsCustomerAddressRepository->save($item);
                 }
-                $result[] = $this->vippsCustomerAddressRepository->save($vippsCustomerAddress);
+                unset($newVippsAddresses[$addressType]);
+                break;
             }
+            if (!$match) {
+                $this->vippsCustomerAddressRepository->delete($item);
+            }
+        }
+
+        foreach ($newVippsAddresses as $address) {
+            /** @var VippsCustomerAddressInterface $vippsCustomerAddress */
+            $vippsCustomerAddress = $this->vippsCustomerAddressFactory->create();
+            $vippsCustomerAddress = $this->populateWithArray($vippsCustomerAddress, $address);
+            $vippsCustomerAddress->setVippsCustomerId($vippsCustomer->getEntityId());
+            if ($vippsCustomerAddress->getAddressType() == VippsCustomerAddressInterface::ADDRESS_TYPE_HOME) {
+                $vippsCustomerAddress->setIsDefault(true);
+            }
+            $result[] = $this->vippsCustomerAddressRepository->save($vippsCustomerAddress);
         }
 
         return $result;
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @param CustomerInterface $customer
      * @param VippsCustomerInterface $vippsCustomer
      * @param VippsCustomerAddressInterface $vippsAddress
@@ -200,12 +208,17 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         VippsCustomerAddressInterface $vippsAddress,
         bool $hasDefault
     ) {
-        if ($vippsAddress->getIsConverted() && $vippsAddress->getCustomerAddressId()) {
+        if (!$this->isConvertAllowed($vippsCustomer, $vippsAddress)) {
             return false;
         }
 
         /** @var AddressInterface $magentoAddress */
-        $magentoAddress = $this->addressDataFactory->create();
+        try {
+            $magentoAddress = $this->addressRepository->getById($vippsAddress->getCustomerAddressId());
+        } catch (NoSuchEntityException $e) {
+            $magentoAddress = $this->addressDataFactory->create();
+        }
+
         $magentoAddress->setCustomerId($customer->getId());
         $magentoAddress->setCity($vippsAddress->getRegion());//todo check value
         $magentoAddress->setCountryId($vippsAddress->getCountry());
@@ -218,9 +231,9 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $regionDataObject->setRegion($vippsAddress->getRegion());
         $magentoAddress->setRegion($regionDataObject);
 
-        $street = explode('\n', $vippsAddress->getStreetAddress());
-        $magentoAddress->setStreet($street);
+        $street = explode(PHP_EOL, $vippsAddress->getStreetAddress());
 
+        $magentoAddress->setStreet($street);
         $magentoAddress->setTelephone($vippsCustomer->getTelephone());
 
         if (
@@ -237,24 +250,31 @@ class VippsAddressManagement implements VippsAddressManagementInterface
             return false;
         }
 
-
-        $vippsAddress->setCustomerAddressId($magentoAddress->getId());
-        $vippsAddress->setIsConverted(true);
-        $this->vippsCustomerAddressRepository->save($vippsAddress);
+        $this->link($vippsAddress, $magentoAddress);
 
         return $magentoAddress;
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @param VippsCustomerAddressInterface $vippsAddress
-     * @param AddressInterface[] $magentoAddresses
+     * @param VippsCustomerInterface $vippsCustomer
+     * @param array $magentoAddresses
      *
      * @return bool
      */
-    public function merge(VippsCustomerAddressInterface $vippsAddress, array $magentoAddresses)
-    {
+    public function assign(
+        VippsCustomerAddressInterface $vippsAddress,
+        VippsCustomerInterface $vippsCustomer,
+        array $magentoAddresses
+    ) {
+        if ($vippsAddress->getCustomerAddressId()) {
+            return true;
+        }
+
         foreach ($magentoAddresses as $address) {
-            if ($this->areTheSame($vippsAddress, $address)) {
+            if ($this->areTheSame($vippsAddress, $vippsCustomer, $address)) {
                 $this->link($vippsAddress, $address);
                 return true;
             }
@@ -264,25 +284,82 @@ class VippsAddressManagement implements VippsAddressManagementInterface
     }
 
     /**
+     * {@inheritdoc}
+     *
      * @param VippsCustomerAddressInterface $vippsAddress
      * @param AddressInterface $magentoAddress
      */
     public function link(VippsCustomerAddressInterface $vippsAddress, AddressInterface $magentoAddress)
     {
-        $vippsAddress->setIsConverted(true);
+        $vippsAddress->setWasChanged(false);
         $vippsAddress->setCustomerAddressId($magentoAddress->getId());
         $this->vippsCustomerAddressRepository->save($vippsAddress);
     }
 
     /**
+     * Method compares magento address and vipps address.
+     *
      * @param VippsCustomerAddressInterface $vippsAddress
+     * @param VippsCustomerInterface $vippsCustomer
      * @param AddressInterface $magentoAddress
      *
      * @return bool
      */
-    public function areTheSame(VippsCustomerAddressInterface $vippsAddress, AddressInterface $magentoAddress)
-    {
-       return false;
+    public function areTheSame(
+        VippsCustomerAddressInterface $vippsAddress,
+        VippsCustomerInterface $vippsCustomer,
+        AddressInterface $magentoAddress
+    ) {
+        $street = $magentoAddress->getStreet();
+        if (is_array($street)) {
+            $street = implode(PHP_EOL, $street);
+        }
+
+        /*
+         * remove whitespaces
+         */
+        $street = preg_replace('/\W/', '', $street);
+        $vippsStreet = preg_replace('/\W/', '', $vippsAddress->getStreetAddress());
+        if (strcasecmp($vippsStreet, $street) !== 0) {
+            return false;
+        }
+
+        /*
+         * compare only digits
+         */
+        $postCode = preg_replace('/\D/', '', $magentoAddress->getPostcode());
+        if (strcmp($vippsAddress->getPostalCode(), $postCode) !== 0) {
+            return false;
+        }
+
+        /*
+         * compare only digits
+         */
+        $phone = preg_replace('/\D/', '', $magentoAddress->getTelephone());
+        if (strcmp($vippsCustomer->getTelephone(), $phone) !== 0) {
+            return false;
+        }
+
+        $region = '';
+        $magentoRegion = $magentoAddress->getRegion();
+        if ($magentoRegion instanceof RegionInterface) {
+            $region = $magentoRegion->getRegion();
+        }
+
+        /*
+         * remove whitespaces
+         */
+        $region = preg_replace('/\W/', '', $region);
+        $vippsRegion = preg_replace('/\W/', '', $vippsAddress->getRegion());
+        if (strcasecmp($vippsRegion, $region) !== 0) {
+            return false;
+        }
+
+        if (strcasecmp($vippsAddress->getCountry(), $magentoAddress->getCountryId()) !== 0) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -300,10 +377,6 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $vippsAddress->setPostalCode($address['postal_code']);
         $vippsAddress->setRegion($address['region']);
 
-        if ($this->isVippsAddressChanged($vippsAddress, $address)) {
-            $vippsAddress->setWasChanged(true);
-        }
-
         return $vippsAddress;
     }
 
@@ -317,19 +390,19 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      */
     private function isVippsAddressChanged(VippsCustomerAddressInterface $vippsAddress, array $addressArr)
     {
-        if (strtolower($vippsAddress->getCountry()) != strtolower($addressArr['country'])) {
+        if (strcasecmp($vippsAddress->getCountry(), $addressArr['country']) !== 0) {
             return true;
         }
 
-        if (strtolower($vippsAddress->getStreetAddress()) != strtolower($addressArr['street_address'])) {
+        if (strcasecmp($vippsAddress->getStreetAddress(), $addressArr['street_address']) !== 0) {
             return true;
         }
 
-        if (strtolower($vippsAddress->getPostalCode()) != strtolower($addressArr['postal_code'])) {
+        if (strcasecmp($vippsAddress->getPostalCode(), $addressArr['postal_code']) !== 0) {
             return true;
         }
 
-        if (strtolower($vippsAddress->getRegion()) != strtolower($addressArr['region'])) {
+        if (strcasecmp($vippsAddress->getRegion(), $addressArr['region']) !== 0) {
             return true;
         }
 
@@ -350,5 +423,28 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         }
 
         return false;
+    }
+
+    /**
+     * @param VippsCustomerInterface $vippsCustomer
+     * @param VippsCustomerAddressInterface $vippsAddress
+     *
+     * @return bool
+     */
+    private function isConvertAllowed(
+        VippsCustomerInterface $vippsCustomer,
+        VippsCustomerAddressInterface $vippsAddress
+    ) {
+        if (
+            $vippsAddress->getCustomerAddressId() &&
+            (
+                !$vippsAddress->getWasChanged() ||
+                $vippsCustomer->getSyncAddressMode() == VippsCustomerInterface::AUTO_UPDATE
+            )
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

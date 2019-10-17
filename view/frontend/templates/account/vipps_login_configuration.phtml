@@ -1,0 +1,64 @@
+<?php
+/**
+ * Copyright 2019 Vipps
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE
+ */
+
+// @codingStandardsIgnoreFile
+use Vipps\Login\Api\Data\VippsCustomerInterface;
+/** @var \Vipps\Login\Block\Account\VippsConfiguration $block */
+
+$syncMode = $block->getSyncAddressMode();
+?>
+
+<?php if ($block->isLinked()): ?>
+<form class="form form-newsletter-manage" action="<?= $block->escapeUrl($block->getAction()) ?>" method="post" id="form-validate">
+    <fieldset class="fieldset">
+        <?= $block->getBlockHtml('formkey') ?>
+        <legend class="legend"><span><?= $block->escapeHtml(__('Address synchronization option')) ?></span></legend><br>
+        <div class="field choice">
+            <input type="radio" name="sync_address_mode" id="auto_sync_address"
+                   value="<?=VippsCustomerInterface::AUTO_UPDATE?>"
+                   title="<?= $block->escapeHtmlAttr(__('Update automatically')) ?>"
+                   <?php if ($syncMode == VippsCustomerInterface::AUTO_UPDATE): ?> checked="checked"<?php endif; ?>
+                   class="checkbox"
+            >
+            <label for="auto_sync_address" class="label"><span><?= $block->escapeHtml(__('Update automatically')) ?></span></label>
+        </div>
+        <div class="field choice">
+            <input type="radio" name="sync_address_mode" id="manual_sync_address"
+                   value="<?=VippsCustomerInterface::MANUAL_UPDATE?>"
+                   title="<?= $block->escapeHtmlAttr(__('Ask, before update')) ?>"
+                <?php if ($syncMode == VippsCustomerInterface::MANUAL_UPDATE): ?> checked="checked"<?php endif; ?>
+                   class="checkbox"
+            >
+            <label for="manual_sync_address" class="label"><span><?= $block->escapeHtml(__('Ask, before update')) ?></span></label>
+        </div>
+        <div class="field choice">
+            <input type="radio" name="sync_address_mode" id="never_sync_address"
+                   value="<?=VippsCustomerInterface::NEVER_UPDATE?>"
+                   title="<?= $block->escapeHtmlAttr(__('Never update')) ?>"
+                <?php if ($syncMode == VippsCustomerInterface::NEVER_UPDATE): ?> checked="checked"<?php endif; ?>
+                   class="checkbox"
+            >
+            <label for="never_sync_address" class="label"><span><?= $block->escapeHtml(__('Never update')) ?></span></label>
+        </div>
+    </fieldset>
+    <div class="actions-toolbar">
+        <div class="primary"><button type="submit" title="<?= $block->escapeHtmlAttr(__('Save')) ?>" class="action save primary"><span><?= $block->escapeHtml(__('Save')) ?></span></button></div>
+        <div class="secondary"><a class="action back" href="<?= $block->escapeUrl($block->getBackUrl()) ?>"><span><?= $block->escapeHtml(__('Back')) ?></span></a></div>
+    </div>
+</form>
+<?php else: ?>
+    <?= $block->escapeHtml(__('Your account is not linked to Vipps.')) ?>
+<?php endif;?>

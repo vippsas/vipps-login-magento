@@ -7,10 +7,16 @@
 -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceContainer name="content">
-            <block class="Vipps\Login\Block\Form\Login\Button"
-                   name="vipps_form_login_button"
-                   template="Vipps_Login::form/login/button.phtml">
+        <referenceContainer name="customer.login.container">
+            <block
+                class="Magento\Catalog\Block\Product\View\Description"
+                name="vipps_login_holder"
+                template="Vipps_Login::form/login/login-holder.phtml"
+                before="-">
+                <block class="Vipps\Login\Block\Form\Login\Button"
+                       name="vipps_form_login_button"
+                       template="Vipps_Login::form/login/button.phtml"
+                       before="-"/>
             </block>
         </referenceContainer>
     </body>

@@ -1,0 +1,134 @@
+
+@media (min-width: @screen__xxs ) {
+    .login-vipps {
+        margin-top: 10px;
+    }
+
+    .login-vipps-holder {
+        display: flex;
+        flex-flow: column wrap;
+        align-items: center;
+        margin-bottom: 20px;
+        min-height: 300px;
+        justify-content: space-between;
+
+        &-text {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+    }
+
+    .vipps-btn {
+        .icon-vipps {
+            background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
+            display: inline-block;
+            background-size: 55px 14px;
+            padding-left: 62px;
+            height: 15px;
+            margin-left: 10px;
+
+        }
+
+        .icon-vipps-no-icon {
+            background: url("@{baseDir}images/vipps-no-icon.svg") left center no-repeat;
+            display: inline-block;
+            width: 25px;
+            height: 20px;
+            margin-right: 10px;
+        }
+    }
+
+    .login-vipps-account {
+        .vipps-btn {
+            display: flex;
+            background: @vippsColor;
+            padding: 15px 25px 15px 15px;
+            border-radius: 25px;
+            border: 0;
+
+            &:hover,
+            &:focus,
+            &:active {
+                background: lighten(@vippsColor, 10%);
+                border: 0;
+            }
+        }
+    }
+
+    .login-container {
+        flex-flow: column wrap;
+
+        .vipps-btn {
+            display: flex;
+            background: @vippsColor;
+            padding: 15px 25px;
+            border-radius: 25px;
+            border: 0;
+
+            &:hover,
+            &:focus,
+            &:active {
+                background: lighten(@vippsColor, 10%);
+                border: 0;
+            }
+        }
+
+        form.form-login {
+            margin-bottom: 15px;
+        }
+        .fieldset:after {
+            display: none;
+        }
+
+        .login-vipps-holder {
+            order: initial;
+            width: 100%;
+        }
+
+        .block {
+            width: 100%;
+
+            &-customer-login {
+                order: initial;
+            }
+
+            &-new-customer {
+                order: initial;
+            }
+
+            &-static-block {
+                order: initial;
+            }
+        }
+    }
+}
+
+@media (min-width: @screen__m ) {
+    .login-container {
+        display: flex;
+        justify-content: flex-start;
+        flex-flow: row wrap;
+
+        .login-vipps-holder {
+            order: 0;
+            width: 50%;
+        }
+
+        .block {
+            width: 50%;
+
+            &-customer-login {
+                order: 2;
+            }
+
+            &-new-customer {
+                order: 1;
+            }
+
+            &-static-block {
+                order: 3;
+            }
+        }
+    }
+
+}

@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace Vipps\Login\Model;
 
 use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Exception\State\InvalidTransitionException;
 use Magento\Framework\Math\Random;
 use Vipps\Login\Api\Data\UserInfoInterface;
@@ -159,7 +160,11 @@ class VippsAccountManagement implements VippsAccountManagementInterface
      */
     public function isLinked(CustomerInterface $customer)
     {
-        $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+        try {
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+        } catch (NoSuchEntityException $e) {
+            return false;
+        }
 
         return $vippsCustomer->getLinked();
     }
@@ -167,14 +172,20 @@ class VippsAccountManagement implements VippsAccountManagementInterface
     /**
      * @param CustomerInterface $customer
      *
-     * @return mixed|VippsCustomerInterface
+     * @return bool|VippsCustomerInterface
      * @throws InputException
      * @throws InputMismatchException
      * @throws LocalizedException
      */
     public function unlink(CustomerInterface $customer)
     {
-        $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+        try {
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+        } catch (NoSuchEntityException $e) {
+            return true;
+        }
+
+        $this->vippsCustomerAddressRepository->deleteByVippsCustomer($vippsCustomer);
         $vippsCustomer->setLinked(false);
 
         return $this->vippsCustomerRepository->save($vippsCustomer);
@@ -191,16 +202,18 @@ class VippsAccountManagement implements VippsAccountManagementInterface
      */
     public function getPair(UserInfoInterface $userInfo, CustomerInterface $customer)
     {
-        $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
-        if (!$vippsCustomer->getEntityId()) {
-            $vippsCustomer->setCustomerEntityId($customer->getId());
-            $vippsCustomer->setWebsiteId($customer->getWebsiteId());
-            $vippsCustomer->setEmail($customer->getEmail());
-            $vippsCustomer->setTelephone($userInfo->getPhoneNumber());
-            return $this->vippsCustomerRepository->save($vippsCustomer);
+        try {
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+        } catch (NoSuchEntityException $e) {
+            $vippsCustomer= $this->vippsCustomerFactory->create();
         }
 
-        return $vippsCustomer;
+        $vippsCustomer->setCustomerEntityId($customer->getId());
+        $vippsCustomer->setWebsiteId($customer->getWebsiteId());
+        $vippsCustomer->setEmail($customer->getEmail());
+        $vippsCustomer->setTelephone($userInfo->getPhoneNumber());
+
+        return $this->vippsCustomerRepository->save($vippsCustomer);
     }
 
     /**
@@ -210,7 +223,12 @@ class VippsAccountManagement implements VippsAccountManagementInterface
      */
     public function getAddresses(CustomerInterface $customer)
     {
-        $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+        try {
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+        } catch (NoSuchEntityException $e) {
+            return [];
+        }
+
         $result = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
 
         return $result->getItems();

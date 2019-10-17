@@ -1,6 +1,5 @@
-<?xml version="1.0"?>
-<!--
-/*
+<?php
+/**
  * Copyright 2019 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
@@ -14,14 +13,27 @@
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE
  */
-  -->
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <head>
-        <css src="Vipps_Login::css/vipps_login_styles.css"/>
-    </head>
-    <body>
-        <referenceContainer name="content">
-            <!--<block class="Magento\Framework\View\Element\Template" name="vipps_login_popup" template="Vipps_Login::vipps_login_popup.phtml"/>-->
-        </referenceContainer>
-    </body>
-</page>
+
+declare(strict_types=1);
+
+namespace Vipps\Login\Controller\Login;
+
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\ResultInterface;
+
+/**
+ * Class Manage
+ * @package Vipps\Login\Controller\Login
+ */
+class Manage extends AccountBase
+{
+    /**
+     * @return ResponseInterface|ResultInterface|void
+     */
+    public function execute()
+    {
+        $this->_view->loadLayout();
+        $this->_view->getPage()->getConfig()->getTitle()->set(__('Vipps Login Configuration'));
+        $this->_view->renderLayout();
+    }
+}

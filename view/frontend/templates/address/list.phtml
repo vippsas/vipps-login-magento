@@ -16,32 +16,25 @@
 
 declare(strict_types=1);
 
-// @codingStandardsIgnoreFile
+/** @var $block \Vipps\Login\Block\Account\VippsAddress */
+$addresses = $block->getVippsAddresses(true);
+/** @var $address \Vipps\Login\Api\Data\VippsCustomerAddressInterface */
+?>
 
-/** @var \Vipps\Login\Block\Account\Link $block */
-
-if ($block->isLinked()): ?>
-
-<div class="login-vipps-account">
-    <form action="<?php echo $block->getUrl('vipps/login/unlink'); ?>" method="post">
-        <button type="submit"
-               class="action create primary vipps-btn">
-            <span class="icon-vipps-no-icon"></span>
-            <?= $block->escapeHtml(__('Unlink Vipps Account')) ?>
-        </button>
-    </form>
+<?php if (!empty($addresses)): ?>
+<div id="vipps_addresses">
+    <fieldset class="fieldset">
+        <div class="field">
+            <label for="vipps_address" class="label"><span><?= $block->escapeHtml(__('Copy from Vipps')) ?></span></label>
+            <select id="vipps_address" name="vipps_address"
+                    title="<?= $block->escapeHtmlAttr(__('Vipps Addresses')) ?>"
+                    class="validate-select">
+                <option value=""><?= $block->escapeHtml(__('Select vipps address')) ?></option>
+                <?php foreach ($addresses as $address): ?>
+                    <option value="<?=$address->getEntityId()?>"><?= $block->escapeHtml($address->getFormatted()) ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+    </fieldset>
 </div>
-
-<?php else: ?>
-
-    <div class="login-vipps-account">
-        <form action="<?php echo $block->getUrl('vipps/login/index'); ?>" method="post">
-            <button type="submit"
-                   class="action create primary vipps-btn">
-                <span class="icon-vipps-no-icon"></span>
-                <?= $block->escapeHtml(__('Link Vipps Account')) ?>
-            </button>
-        </form>
-    </div>
-
-<?php endif?>
+<?php endif ?>
