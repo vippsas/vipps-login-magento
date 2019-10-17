@@ -136,7 +136,7 @@
             </argument>
         </arguments>
     </type>
-    
+
     <type name="Magento\Customer\Api\AddressRepositoryInterface">
         <plugin name="Vipps\Login\Plugin\AddressSave" type="Vipps\Login\Plugin\AddressSave"/>
     </type>
@@ -147,4 +147,13 @@
         </arguments>
     </type>
 
+    <type name="Magento\Customer\Api\AccountManagementInterface">
+        <plugin name="Vipps\Login\Plugin\Customer\Api\AccountManagement"
+                type="Vipps\Login\Plugin\Customer\Api\AccountManagement" />
+    </type>
+    <type name="Vipps\Login\Plugin\Customer\Api\AccountManagement">
+        <arguments>
+            <argument name="accessTokenProvider" xsi:type="object">Vipps\Login\Model\AccessTokenProvider</argument>
+        </arguments>
+    </type>
 </config>
