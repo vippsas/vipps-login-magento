@@ -53,6 +53,11 @@ class UserInfoCommand
     private $apiEndpoints;
 
     /**
+     * @var array
+     */
+    private $cache = [];
+
+    /**
      * UserInfoCommand constructor.
      *
      * @param SerializerInterface $serializer
@@ -82,6 +87,10 @@ class UserInfoCommand
      */
     public function execute($accessToken)
     {
+        if (isset($this->cache[$accessToken])) {
+            return $this->cache[$accessToken];
+        }
+
         $httpClient = $this->httpClientFactory->create();
         $httpClient->addHeader('Authorization', 'Bearer ' . $accessToken);
         $httpClient->get($this->apiEndpoints->getUserInfoEndpoint());
@@ -90,7 +99,8 @@ class UserInfoCommand
         $body = $this->serializer->unserialize($httpClient->getBody());
 
         if (200 <= $status && 300 > $status) {
-            return $this->userInfoFactory->create(['data' => $body]);
+            $this->cache[$accessToken] = $this->userInfoFactory->create(['data' => $body]);
+            return $this->cache[$accessToken];
         }
 
         if (400 <= $status && 500 > $status) {
