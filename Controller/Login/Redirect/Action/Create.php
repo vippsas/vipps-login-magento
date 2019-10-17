@@ -28,8 +28,6 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Customer\Model\CustomerRegistry;
 use Vipps\Login\Api\Data\UserInfoInterface;
-use Vipps\Login\Api\VippsAccountManagementInterface;
-use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\Creator;
 
@@ -65,16 +63,6 @@ class Create implements ActionInterface
     private $creator;
 
     /**
-     * @var VippsAccountManagementInterface
-     */
-    private $vippsAccountManagement;
-
-    /**
-     * @var VippsAccountManagementInterface
-     */
-    private $vippsAddressManagement;
-
-    /**
      * Create constructor.
      *
      * @param RedirectFactory $redirectFactory
@@ -82,25 +70,19 @@ class Create implements ActionInterface
      * @param CustomerRegistry $customerRegistry
      * @param UserInfoCommand $userInfoCommand
      * @param Creator $creator
-     * @param VippsAccountManagementInterface $vippsAccountManagement
-     * @param VippsAddressManagementInterface $vippsAddressManagement
      */
     public function __construct(
         RedirectFactory $redirectFactory,
         SessionManagerInterface $sessionManager,
         CustomerRegistry $customerRegistry,
         UserInfoCommand $userInfoCommand,
-        Creator $creator,
-        VippsAccountManagementInterface $vippsAccountManagement,
-        VippsAddressManagementInterface $vippsAddressManagement
+        Creator $creator
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->sessionManager = $sessionManager;
         $this->customerRegistry = $customerRegistry;
         $this->userInfoCommand = $userInfoCommand;
         $this->creator = $creator;
-        $this->vippsAccountManagement = $vippsAccountManagement;
-        $this->vippsAddressManagement = $vippsAddressManagement;
     }
 
     /**
@@ -119,23 +101,18 @@ class Create implements ActionInterface
 
         try {
             $magentoCustomer = $this->creator->create($userInfo);
+            $customer = $this->customerRegistry->retrieveByEmail($magentoCustomer->getEmail());
+            $this->sessionManager->setCustomerAsLoggedIn($customer);
+
+            $redirect = $this->redirectFactory->create();
+            $redirect->setPath('customer/account');
+            return $redirect;
         } catch (\Magento\Framework\Validator\Exception $e) {
             $this->setCustomerFormData($userInfo);
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account/create');
             return $redirect;
         }
-
-        $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
-
-        $customer = $this->customerRegistry->retrieveByEmail($magentoCustomer->getEmail());
-        $this->sessionManager->setCustomerAsLoggedIn($customer);
-
-        $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
-
-        $redirect = $this->redirectFactory->create();
-        $redirect->setPath('customer/account');
-        return $redirect;
     }
 
     /**
