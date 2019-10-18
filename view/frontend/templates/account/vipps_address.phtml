@@ -37,7 +37,7 @@
                         </address>
                         <?php if (!$address->getCustomerAddressId()): ?>
                             <div class="item actions">
-                                <a class="action edit" href="<?= $block->escapeUrl($block->getUrl('customer/address/form', ['vipps_address_id' => $address->getEntityId()])) ?>">
+                                <a class="action edit" href="<?= $block->escapeUrl($block->getUrl('vipps/login/applyAddress', ['id' => $address->getEntityId()])) ?>">
                                     <span><?= $block->escapeHtml(__('Apply Address')) ?></span>
                                 </a>
                             </div>

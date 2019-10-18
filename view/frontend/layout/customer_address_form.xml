@@ -17,10 +17,7 @@
     <update handle="customer_account"/>
     <body>
         <referenceContainer name="content">
-<!--
-todo not sure if we needs this. I think it's useless.
             <block class="Vipps\Login\Block\Account\VippsAddress" name="vipps_addresses_list" template="Vipps_Login::address/list.phtml" before="-" cacheable="false"/>
--->
         </referenceContainer>
     </body>
 </page>
