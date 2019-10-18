@@ -68,8 +68,10 @@ class CustomerRegistrationFormFill implements ObserverInterface
     {
         if (!$this->sessionManager->getCustomerFormData()) {
             $payload = $this->payloadProvider->get();
-            $userInfo = $this->userInfoFactory->create(['data' => $payload]);
-            $this->setCustomerFormData($userInfo);
+            if ($payload) {
+                $userInfo = $this->userInfoFactory->create(['data' => $payload]);
+                $this->setCustomerFormData($userInfo);
+            }
         }
     }
 
