@@ -81,10 +81,14 @@ class VippsCustomer implements SectionSourceInterface
         $addressResult = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
 
         foreach ($addressResult->getItems() as $vippsCustomerAddress) {
+            $result['addresses'] = [
+                'county_id' => $vippsCustomerAddress->getCountry(),
+                'postal_code' => $vippsCustomerAddress->getPostalCode(),
+                'street' => $vippsCustomerAddress->getStreetAddress(),
+                'telephone' => $vippsCustomer->getTelephone()
+            ];
             if ($vippsCustomerAddress->getWasChanged()) {
-                $result = [
-                    'addressUpdated' => true
-                ];
+                $result['addressUpdated'] = true;
             }
         }
 

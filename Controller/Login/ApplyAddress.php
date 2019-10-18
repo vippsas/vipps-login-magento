@@ -18,7 +18,6 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
-use Magento\Framework\Controller\Result\ForwardFactory;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
@@ -45,10 +44,6 @@ class ApplyAddress extends AccountBase
      * @var VippsCustomerRepositoryInterface
      */
     private $vippsCustomerRepository;
-    /**
-     * @var ForwardFactory
-     */
-    private $resultForwardFactory;
 
     /**
      * Unlink constructor.
@@ -105,6 +100,7 @@ class ApplyAddress extends AccountBase
                 $this->messageManager->addErrorMessage(__('We can\'t delete the address right now.'));
             }
         }
+
         $resultRedirect->setPath('customer/address/form');
 
         return $resultRedirect;

@@ -95,7 +95,9 @@ class AddressSave
             try {
                 $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customerModel->getDataModel());
                 $vippsAddress = $this->vippsCustomerAddressRepository->getById($addressId);
-                if ($vippsAddress->getVippsCustomerId() != $vippsCustomer->getEntityId()) {
+                if ($vippsAddress->getVippsCustomerId() != $vippsCustomer->getEntityId()
+
+                ) {
                     return $address;
                 }
                 $this->vippsAddressManagement->link($vippsAddress, $address);
