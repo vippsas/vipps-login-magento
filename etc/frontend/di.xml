@@ -2,6 +2,8 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
     <preference for="Magento\Customer\Block\Address\Edit" type="Vipps\Login\Block\Address\Edit"/>
+    <preference for="Vipps\Login\Api\VippsSessionInterface" type="Vipps\Login\Model\VippsSession"/>
+
 
     <type name="Vipps\Login\Controller\Login\Redirect">
         <arguments>
@@ -155,5 +157,11 @@
         <arguments>
             <argument name="accessTokenProvider" xsi:type="object">Vipps\Login\Model\AccessTokenProvider</argument>
         </arguments>
+    </type>
+
+    <type name="Magento\Captcha\Helper\Data">
+        <plugin
+            name="Vipps\Login\Plugin\Captcha\Helper\Data"
+            type="Vipps\Login\Plugin\Captcha\Helper\Data" />
     </type>
 </config>
