@@ -22,34 +22,14 @@ define([
    'Magento_Customer/js/customer-data'
 ], function ($, modal, storage) {
     'use strict';
-
-    var cacheKey = 'vipps_login_data',
-
+    $.widget('vipps.loginPopUp', $.extend({}, editTriggerPrototype, {
         /**
-         * @param {Object} data
+         * Added clear timeout on trigger show
          */
-        saveData = function (data) {
-            storage.set(cacheKey, data);
-        },
-
-        /**
-         * @return {*}
-         */
-        getData = function () {
-            var data = storage.get(cacheKey)();
-
-            if ($.isEmptyObject(data)) {
-                data = {
-                    'addressUpdated': false
-                };
-                saveData(data);
-            }
-
-            return data;
-        },
-
-        options = {
+        options: {
             type: 'popup',
+            cacheKey: 'vipps_login_data',
+            idModal: '#popup-mpdal',
             responsive: true,
             innerScroll: true,
             buttons: [
@@ -75,11 +55,44 @@ define([
                     }
                 }
             ]
-        };
+        },
+        initialize: function () {
+            var popup = modal(this.options, $(this.options.idModal));
+            var getKey = window.localStorage.getItem('vippsPopUpShow');
 
-    var popup = modal(options, $('#popup-mpdal'));
+            if (this.getData().addressUpdated &&
+                getKey === null) {
+                $(this.options.idModal).modal("openModal");
+                window.localStorage.setItem('vippsPopUpShow',true);
+            }
+        },
+        /**
+         * @param {Object} data
+         */
+        saveData: function (data) {
+            storage.set(this.options.cacheKey, data);
+        },
 
-    if (getData().addressUpdated) {
-        $("#popup-mpdal").modal("openModal");
-    }
+        /**
+         * @return {*}
+         */
+        getData: function () {
+            var data = storage.get(this.options.cacheKey)();
+
+            if ($.isEmptyObject(data)) {
+                data = {
+                    'addressUpdated': false
+                };
+                this.saveData(data);
+            }
+
+            return data;
+        },
+
+    }));
+
+    return $.vipps.loginPopUp;
+
 });
+
+
