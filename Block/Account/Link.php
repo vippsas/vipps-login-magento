@@ -24,8 +24,8 @@ use Magento\Customer\Model\Session;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 
 /**
- * Class Button
- * @package Vipps\Login\Block\Form\Login
+ * Class Link
+ * @package Vipps\Login\Block\Account
  */
 class Link extends Template
 {

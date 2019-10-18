@@ -166,4 +166,10 @@
             name="Vipps\Login\Plugin\Captcha\Helper\Data"
             type="Vipps\Login\Plugin\Captcha\Helper\Data" />
     </type>
+
+    <type name="Vipps\Login\Observer\CustomerRegistrationFormFill">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
 </config>
