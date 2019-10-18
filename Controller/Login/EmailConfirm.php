@@ -18,9 +18,11 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\AccessTokenProvider;
+use Vipps\Login\Model\RedirectUrlResolver;
 use Vipps\Login\Model\VippsAccountManagement;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\Session;
@@ -49,18 +51,31 @@ class EmailConfirm extends Action
      * @var CustomerRegistry
      */
     private $customerRegistry;
+
     /**
      * @var VippsAddressManagementInterface
      */
     private $vippsAddressManagement;
+
     /**
      * @var AccessTokenProvider
      */
     private $accessTokenProvider;
+
     /**
      * @var UserInfoCommand
      */
     private $userInfoCommand;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var RedirectUrlResolver
+     */
+    private $redirectUrlResolver;
 
     /**
      * EmailConfirm constructor.
@@ -73,6 +88,8 @@ class EmailConfirm extends Action
      * @param AccessTokenProvider $accessTokenProvider
      * @param UserInfoCommand $userInfoCommand
      * @param VippsAddressManagementInterface $vippsAddressManagement
+     * @param RedirectUrlResolver $redirectUrlResolver
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Context $context,
@@ -82,7 +99,9 @@ class EmailConfirm extends Action
         ManagerInterface $messageManager,
         AccessTokenProvider $accessTokenProvider,
         UserInfoCommand $userInfoCommand,
-        VippsAddressManagementInterface $vippsAddressManagement
+        VippsAddressManagementInterface $vippsAddressManagement,
+        RedirectUrlResolver $redirectUrlResolver,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->vippsAccountManagement = $vippsAccountManagement;
@@ -92,6 +111,8 @@ class EmailConfirm extends Action
         $this->vippsAddressManagement = $vippsAddressManagement;
         $this->accessTokenProvider = $accessTokenProvider;
         $this->userInfoCommand = $userInfoCommand;
+        $this->logger = $logger;
+        $this->redirectUrlResolver = $redirectUrlResolver;
     }
 
     /**
@@ -115,11 +136,15 @@ class EmailConfirm extends Action
                     $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
                 }
 
-                return $redirect->setPath('customer/account');
+                return $redirect->setUrl(
+                    $this->redirectUrlResolver->getRedirectUrl()
+                );
             }
         } catch (\Exception $e) {
+            $this->logger->critical($e);
             $this->messageManager->addErrorMessage(__('An error occurred during email confirmation.'));
         }
+
         return $redirect->setPath('/');
     }
 }

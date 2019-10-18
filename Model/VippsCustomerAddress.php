@@ -68,6 +68,7 @@ class VippsCustomerAddress extends AbstractModel
         $this->vippsCustomerAddressFactory = $vippsCustomerAddressFactory;
         $this->dataObjectHelper = $dataObjectHelper;
     }
+
     /**
      * Init resource model and id field
      *

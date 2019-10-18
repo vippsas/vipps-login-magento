@@ -21,6 +21,7 @@ namespace Vipps\Login\Model;
 use Magento\Framework\App\CacheInterface;
 use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\Serialize\SerializerInterface;
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\Adminhtml\Source\Environment;
 
@@ -74,6 +75,10 @@ class ApiEndpoints implements ApiEndpointsInterface
      * @var array|null
      */
     private $preLoadedCache = null;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * APIEndpoints constructor.
@@ -82,17 +87,20 @@ class ApiEndpoints implements ApiEndpointsInterface
      * @param ClientFactory $httpClientFactory
      * @param CacheInterface $cache
      * @param SerializerInterface $serializer
+     * @param LoggerInterface $logger
      */
     public function __construct(
         ConfigInterface $config,
         ClientFactory $httpClientFactory,
         CacheInterface $cache,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        LoggerInterface $logger
     ) {
         $this->cache = $cache;
         $this->httpClientFactory = $httpClientFactory;
         $this->serializer = $serializer;
         $this->config = $config;
+        $this->logger = $logger;
     }
 
     /**
@@ -202,7 +210,8 @@ class ApiEndpoints implements ApiEndpointsInterface
             }
             $this->saveToCache($apiSchema);
             $this->preLoadedCache = $apiSchema;
-        } catch (\Throwable $e) {
+        } catch (\Throwable $t) {
+            $this->logger->critical($t);
             $this->applyDefaultSchema();
         }
     }

@@ -35,10 +35,12 @@ use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\Result\Raw;
 use Magento\Framework\UrlInterface;
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\AccessTokenProvider;
+use Vipps\Login\Model\RedirectUrlResolver;
 
 /**
  * Class PasswordConfirm
@@ -101,10 +103,19 @@ class PasswordConfirm extends Action
      * @var AccessTokenProvider
      */
     private $accessTokenProvider;
+
     /**
      * @var UrlInterface
      */
     private $url;
+    /**
+     * @var RedirectUrlResolver
+     */
+    private $redirectUrlResolver;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * PasswordConfirm constructor.
@@ -116,12 +127,13 @@ class PasswordConfirm extends Action
      * @param AccountManagementInterface $customerAccountManagement
      * @param JsonFactory $resultJsonFactory
      * @param RawFactory $resultRawFactory
-     * @param AccountRedirect $accountRedirect
+     * @param RedirectUrlResolver $redirectUrlResolver
      * @param ScopeConfigInterface $scopeConfig
      * @param VippsAccountManagementInterface $vippsAccountManagement
      * @param AccessTokenProvider $accessTokenProvider
+     * @param UrlInterface $url
      * @param VippsAddressManagementInterface $vippsAddressManagement
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Context $context,
@@ -131,12 +143,13 @@ class PasswordConfirm extends Action
         AccountManagementInterface $customerAccountManagement,
         JsonFactory $resultJsonFactory,
         RawFactory $resultRawFactory,
-        AccountRedirect $accountRedirect,
+        RedirectUrlResolver $redirectUrlResolver,
         ScopeConfigInterface $scopeConfig,
         VippsAccountManagementInterface $vippsAccountManagement,
         AccessTokenProvider $accessTokenProvider,
         UrlInterface $url,
-        VippsAddressManagementInterface $vippsAddressManagement
+        VippsAddressManagementInterface $vippsAddressManagement,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->customerSession = $customerSession;
@@ -145,12 +158,13 @@ class PasswordConfirm extends Action
         $this->customerAccountManagement = $customerAccountManagement;
         $this->resultJsonFactory = $resultJsonFactory;
         $this->resultRawFactory = $resultRawFactory;
-        $this->accountRedirect = $accountRedirect;
         $this->scopeConfig = $scopeConfig;
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->vippsAddressManagement = $vippsAddressManagement;
         $this->accessTokenProvider = $accessTokenProvider;
         $this->url = $url;
+        $this->redirectUrlResolver = $redirectUrlResolver;
+        $this->logger = $logger;
     }
 
     /**
@@ -198,11 +212,7 @@ class PasswordConfirm extends Action
             $this->customerSession->setCustomerDataAsLoggedIn($magentoCustomer);
             $this->customerSession->regenerateId();
 
-            $redirectRoute = $this->accountRedirect->getRedirectCookie();
-           // if (!$this->scopeConfig->getValue('customer/startup/redirect_dashboard') && $redirectRoute) {
-                $response['redirectUrl'] = $this->url->getUrl('customer/account');
-                $this->accountRedirect->clearRedirectCookie();
-           // }
+            $response['redirectUrl'] = $this->redirectUrlResolver->getRedirectUrl();
 
             $vippsCustomer = $this->vippsAccountManagement->link($userInfo, $magentoCustomer);
 
@@ -223,6 +233,7 @@ class PasswordConfirm extends Action
                 'message' => $e->getMessage()
             ];
         } catch (\Throwable $e) {
+            $this->logger->error($e);
             $response = [
                 'errors' => true,
                 'message' => __('Invalid login or password.')

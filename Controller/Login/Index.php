@@ -19,13 +19,16 @@ declare(strict_types=1);
 namespace Vipps\Login\Controller\Login;
 
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\UrlInterface;
 use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
+use Vipps\Login\Model\RedirectPathResolver;
 use Vipps\Login\Model\StateKey;
 
 /**
@@ -55,9 +58,21 @@ class Index extends Action
     private $url;
 
     /**
+     * @var SessionManagerInterface
+     */
+    private $customerSession;
+    
+    /**
+     * @var RedirectPathResolver
+     */
+    private $redirectPathResolver;
+
+    /**
      * Index constructor.
      *
      * @param Context $context
+     * @param SessionManagerInterface $customerSession
+     * @param RedirectPathResolver $redirectPathResolver
      * @param ApiEndpointsInterface $apiEndpoints
      * @param ConfigInterface $config
      * @param StateKey $stateKey
@@ -65,6 +80,8 @@ class Index extends Action
      */
     public function __construct(
         Context $context,
+        SessionManagerInterface $customerSession,
+        RedirectPathResolver $redirectPathResolver,
         ApiEndpointsInterface $apiEndpoints,
         ConfigInterface $config,
         StateKey $stateKey,
@@ -75,6 +92,8 @@ class Index extends Action
         $this->apiEndpoints = $apiEndpoints;
         $this->stateKey = $stateKey;
         $this->url = $url;
+        $this->customerSession = $customerSession;
+        $this->redirectPathResolver = $redirectPathResolver;
     }
 
     /**
@@ -93,6 +112,9 @@ class Index extends Action
 
         $vippsRedirectUrl = $this->apiEndpoints->getAuthorizationEndpoint()
             . '?' . implode('&', $params);
+
+        $refererUrl = $this->_redirect->getRefererUrl();
+        $this->customerSession->setVippsRedirectUrl($refererUrl);
 
         $resultRedirect = $this->resultRedirectFactory->create();
         $resultRedirect->setUrl($vippsRedirectUrl);

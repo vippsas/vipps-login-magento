@@ -24,6 +24,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\Message\ManagerInterface;
 use Vipps\Login\Model\ConfigInterface;
 use Vipps\Login\Model\TokenProviderInterface;
 
@@ -48,16 +49,19 @@ class Confirmation extends Action
      *
      * @param Context $context
      * @param ConfigInterface $config
+     * @param ManagerInterface $messageManager
      * @param TokenProviderInterface $tokenPayloadProvider
      */
     public function __construct(
         Context $context,
         ConfigInterface $config,
+        ManagerInterface $messageManager,
         TokenProviderInterface $tokenPayloadProvider
     ) {
         parent::__construct($context);
         $this->config = $config;
         $this->tokenPayloadProvider = $tokenPayloadProvider;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -66,7 +70,7 @@ class Confirmation extends Action
     public function execute()
     {
         if (!$this->tokenPayloadProvider->get()) {
-            //@todo implement error handling
+            $this->messageManager->addErrorMessage(__('An error occurred. Please, try again later.'));
             return $this->_redirect('customer/account/login');
         }
 

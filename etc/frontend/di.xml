@@ -1,9 +1,21 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
+    <type name="Vipps\Login\Controller\Login\Index">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
     <type name="Vipps\Login\Controller\Login\Redirect">
         <arguments>
             <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Unlink">
+        <arguments>
             <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
@@ -17,12 +29,20 @@
     <type name="Vipps\Login\Controller\Login\Redirect\Action\Create">
         <arguments>
             <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
 
     <type name="Vipps\Login\Controller\Login\EmailConfirm">
         <arguments>
             <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\EmailConfirmation">
+        <arguments>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
 
@@ -32,9 +52,16 @@
         </arguments>
     </type>
 
+    <type name="Vipps\Login\Controller\Login\ConfigurationSave">
+        <arguments>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
     <type name="Vipps\Login\Controller\Login\Confirmation">
         <arguments>
             <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
 
@@ -42,12 +69,14 @@
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
 
     <type name="Vipps\Login\Gateway\Command\TokenCommand">
         <arguments>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
 
@@ -119,6 +148,7 @@
     <type name="Vipps\Login\Controller\Login\Redirect\Action\Bind">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
 
@@ -143,6 +173,7 @@
     <type name="Vipps\Login\Plugin\AddressSave">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
 
@@ -153,6 +184,12 @@
     <type name="Vipps\Login\Plugin\Customer\Api\AccountManagement">
         <arguments>
             <argument name="accessTokenProvider" xsi:type="object">Vipps\Login\Model\AccessTokenProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Model\RedirectUrlResolver">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
     </type>
 </config>

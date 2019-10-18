@@ -18,18 +18,18 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login\Redirect\Action;
 
-use Magento\Customer\Model\Session;
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Validator\Exception as ValidatoException;
 use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\Exception\State\InputMismatchException;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
+use Magento\Customer\Model\Session;
 use Magento\Customer\Model\CustomerRegistry;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\Creator;
+use Vipps\Login\Model\RedirectUrlResolver;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Create
@@ -63,63 +63,91 @@ class Create implements ActionInterface
     private $creator;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var RedirectUrlResolver
+     */
+    private $redirectUrlResolver;
+
+    /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
+
+    /**
      * Create constructor.
      *
      * @param RedirectFactory $redirectFactory
      * @param SessionManagerInterface $sessionManager
      * @param CustomerRegistry $customerRegistry
      * @param UserInfoCommand $userInfoCommand
+     * @param RedirectUrlResolver $redirectUrlResolver
      * @param Creator $creator
+     * @param ManagerInterface $messageManager
+     * @param LoggerInterface $logger
      */
     public function __construct(
         RedirectFactory $redirectFactory,
         SessionManagerInterface $sessionManager,
         CustomerRegistry $customerRegistry,
         UserInfoCommand $userInfoCommand,
-        Creator $creator
+        RedirectUrlResolver $redirectUrlResolver,
+        Creator $creator,
+        ManagerInterface $messageManager,
+        LoggerInterface $logger
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->sessionManager = $sessionManager;
         $this->customerRegistry = $customerRegistry;
         $this->userInfoCommand = $userInfoCommand;
+        $this->redirectUrlResolver = $redirectUrlResolver;
         $this->creator = $creator;
+        $this->logger = $logger;
+        $this->messageManager = $messageManager;
     }
 
     /**
      * @param $token
      *
-     * @return bool|Redirect
-     * @throws InputException
-     * @throws InputMismatchException
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
-     * @throws \Exception
+     * @return Redirect|mixed
      */
     public function execute($token)
     {
-        $userInfo = $this->userInfoCommand->execute($token['access_token']);
-
+        $redirect = $this->redirectFactory->create();
+        $userInfo = null;
         try {
+            $userInfo = $this->userInfoCommand->execute($token['access_token']);
             $magentoCustomer = $this->creator->create($userInfo);
             $customer = $this->customerRegistry->retrieveByEmail($magentoCustomer->getEmail());
             $this->sessionManager->setCustomerAsLoggedIn($customer);
-
-            $redirect = $this->redirectFactory->create();
-            $redirect->setPath('customer/account');
-            return $redirect;
-        } catch (\Magento\Framework\Validator\Exception $e) {
+            $redirect->setUrl(
+                $this->redirectUrlResolver->getRedirectUrl()
+            );
+        } catch (ValidatoException $e) {
+            $this->messageManager->addErrorMessage($e);
             $this->setCustomerFormData($userInfo);
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account/create');
-            return $redirect;
+        } catch(\Throwable $e) {
+            $this->logger->critical($e);
+            return false;
         }
+
+        return $redirect;
     }
 
     /**
-     * @param UserInfoInterface $userInfo
+     * @param UserInfoInterface|null $userInfo
      */
-    private function setCustomerFormData(UserInfoInterface $userInfo)
+    private function setCustomerFormData($userInfo)
     {
+        if (!$userInfo instanceof UserInfoInterface) {
+            return;
+        }
+
         $customerFormData = [
             'email' => $userInfo->getEmail(),
             'firstname' => $userInfo->getGivenName(),
@@ -153,6 +181,7 @@ class Create implements ActionInterface
                 return $address;
             }
         }
+
         return null;
     }
 }

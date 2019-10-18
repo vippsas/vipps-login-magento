@@ -99,6 +99,7 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
         /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
         $vippsCustomer = $this->modelFactory->create(['data' => $modelData]);
         $vippsCustomer->save();
+
         return $vippsCustomer->getDataModel();
     }
 
@@ -121,6 +122,7 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
             $records[] = $model->getDataModel();
         }
         $searchResults->setItems($records);
+
         return $searchResults;
     }
 
