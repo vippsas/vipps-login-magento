@@ -18,6 +18,9 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Message\ManagerInterface;
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Controller\Login\Redirect\ActionsPool;
 use Vipps\Login\Gateway\Command\TokenCommand;
 use Vipps\Login\Model\StateKey;
@@ -57,6 +60,16 @@ class Redirect extends Action
     private $actionsPool;
 
     /**
+     * @var Context
+     */
+    private $context;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Redirect constructor.
      *
      * @param Context $context
@@ -64,6 +77,8 @@ class Redirect extends Action
      * @param TokenCommand $tokenCommand
      * @param StateKey $stateKey
      * @param ActionsPool $actionsPool
+     * @param ManagerInterface $messageManager
+     * @param LoggerInterface $logger
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -71,13 +86,18 @@ class Redirect extends Action
         SessionManagerInterface $sessionManager,
         TokenCommand $tokenCommand,
         StateKey $stateKey,
-        ActionsPool $actionsPool
+        ActionsPool $actionsPool,
+        ManagerInterface $messageManager,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->sessionManager = $sessionManager;
         $this->tokenCommand = $tokenCommand;
         $this->stateKey = $stateKey;
         $this->actionsPool = $actionsPool;
+        $this->context = $context;
+        $this->logger = $logger;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -91,8 +111,7 @@ class Redirect extends Action
 
         try {
             if (!$this->stateKey->isValid($state)) {
-                $resultRedirect->setPath('vipps/login/error');
-                return $resultRedirect;
+                throw new LocalizedException(__('Invalid state key.'));
             }
 
             // get token
@@ -102,12 +121,16 @@ class Redirect extends Action
             $this->storeToken($token);
 
             $result = $this->actionsPool->execute($token);
-            if ($result instanceof ResultInterface) {
-                return $result;
+            if (!$result instanceof ResultInterface) {
+                throw new \Exception('Redirect action was not defined.');
             }
+            return $result;
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e);
+            $this->logger->critical($e->getMessage());
         } catch (\Throwable $t) {
-            // @todo put error into log
-            $exception = $t;
+            $this->messageManager->addErrorMessage(__('Please, try again later.'));
+            $this->logger->critical($t->getMessage());
         }
 
         $resultRedirect->setPath('vipps/login/error');
@@ -115,6 +138,8 @@ class Redirect extends Action
     }
 
     /**
+     * Save access token and vipps ID token in customer session data.
+     *
      * @param $token
      */
     private function storeToken($token)
