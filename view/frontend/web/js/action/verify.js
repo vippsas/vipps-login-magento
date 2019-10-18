@@ -44,7 +44,7 @@ define([
                     'json'
                 ).done(function (response) {
                     if (response.success) {
-                        self.showMsgPopUp('Request was send','You msg was send')
+                        self.showMsgPopUp('Request was send',response.message)
                     } else {
                         self.showMsgPopUp('An error occurred',response.message);
                     }

@@ -22,7 +22,8 @@ define([
    'Magento_Customer/js/customer-data'
 ], function ($, modal, storage) {
     'use strict';
-    $.widget('vipps.loginPopUp', $.extend({}, editTriggerPrototype, {
+
+    $.widget('mage.vippsLoginPopUp',{
         /**
          * Added clear timeout on trigger show
          */
@@ -34,21 +35,14 @@ define([
             innerScroll: true,
             buttons: [
                 {
-                    text: $.mage.__('Cancel'),
+                    text: $.mage.__('No'),
                     class: '',
                     click: function () {
                         this.closeModal();
                     }
                 },
                 {
-                    text: $.mage.__('Only this time'),
-                    class: '',
-                    click: function () {
-                        this.closeModal();
-                    }
-                },
-                {
-                    text: $.mage.__('Update automatically'),
+                    text: $.mage.__('Yes'),
                     class: '',
                     click: function () {
                         this.closeModal();
@@ -56,42 +50,42 @@ define([
                 }
             ]
         },
-        initialize: function () {
+        _init: function () {
             var popup = modal(this.options, $(this.options.idModal));
-            var getKey = window.localStorage.getItem('vippsPopUpShow');
+            var getKey = storage.get('vippsPopUpShow');
 
-            if (this.getData().addressUpdated &&
-                getKey === null) {
+            if (this._getData().addressUpdated &&
+                getKey() !== true) {
                 $(this.options.idModal).modal("openModal");
-                window.localStorage.setItem('vippsPopUpShow',true);
+                storage.set('vippsPopUpShow',true);
             }
         },
         /**
          * @param {Object} data
          */
-        saveData: function (data) {
+        _saveData: function (data) {
             storage.set(this.options.cacheKey, data);
         },
 
         /**
          * @return {*}
          */
-        getData: function () {
+        _getData: function () {
             var data = storage.get(this.options.cacheKey)();
 
             if ($.isEmptyObject(data)) {
                 data = {
                     'addressUpdated': false
                 };
-                this.saveData(data);
+                this._saveData(data);
             }
 
             return data;
-        },
+        }
 
-    }));
+    });
 
-    return $.vipps.loginPopUp;
+    return $.mage.vippsLoginPopUp;
 
 });
 
