@@ -23,63 +23,70 @@ define([
 ], function ($, modal, storage) {
     'use strict';
 
-    var cacheKey = 'vipps_login_data',
-
+    $.widget('mage.vippsLoginPopUp',{
         /**
-         * @param {Object} data
+         * Added clear timeout on trigger show
          */
-        saveData = function (data) {
-            storage.set(cacheKey, data);
-        },
-
-        /**
-         * @return {*}
-         */
-        getData = function () {
-            var data = storage.get(cacheKey)();
-
-            if ($.isEmptyObject(data)) {
-                data = {
-                    'addressUpdated': false
-                };
-                saveData(data);
-            }
-
-            return data;
-        },
-
-        options = {
+        options: {
             type: 'popup',
+            cacheKey: 'vipps_login_data',
+            idModal: '#popup-mpdal',
             responsive: true,
             innerScroll: true,
             buttons: [
                 {
-                    text: $.mage.__('Cancel'),
+                    text: $.mage.__('No'),
                     class: '',
                     click: function () {
                         this.closeModal();
                     }
                 },
                 {
-                    text: $.mage.__('Only this time'),
-                    class: '',
-                    click: function () {
-                        this.closeModal();
-                    }
-                },
-                {
-                    text: $.mage.__('Update automatically'),
+                    text: $.mage.__('Yes'),
                     class: '',
                     click: function () {
                         this.closeModal();
                     }
                 }
             ]
-        };
+        },
+        _init: function () {
+            var popup = modal(this.options, $(this.options.idModal));
+            var getKey = storage.get('vippsPopUpShow');
 
-    var popup = modal(options, $('#popup-mpdal'));
+            if (this._getData().addressUpdated &&
+                getKey() !== true) {
+                $(this.options.idModal).modal("openModal");
+                storage.set('vippsPopUpShow',true);
+            }
+        },
+        /**
+         * @param {Object} data
+         */
+        _saveData: function (data) {
+            storage.set(this.options.cacheKey, data);
+        },
 
-    if (getData().addressUpdated) {
-        $("#popup-mpdal").modal("openModal");
-    }
+        /**
+         * @return {*}
+         */
+        _getData: function () {
+            var data = storage.get(this.options.cacheKey)();
+
+            if ($.isEmptyObject(data)) {
+                data = {
+                    'addressUpdated': false
+                };
+                this._saveData(data);
+            }
+
+            return data;
+        }
+
+    });
+
+    return $.mage.vippsLoginPopUp;
+
 });
+
+

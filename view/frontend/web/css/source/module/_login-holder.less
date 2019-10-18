@@ -1,156 +1,157 @@
-@media (min-width: @screen__xxs ) {
-    .login-vipps {
-        margin-top: 10px;
+.login-vipps {
+    margin-top: 10px;
 
-        .icon-vipps {
-            background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
-            display: inline-block;
-            background-size: 55px 14px;
-            padding-left: 62px;
-            height: 15px;
-            margin-left: 10px;
+    .icon-vipps {
+        background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
+        display: inline-block;
+        background-size: 55px 14px;
+        padding-left: 62px;
+        height: 15px;
+        margin-left: 10px;
+    }
+}
+
+
+.login-vipps-holder {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    margin-bottom: 20px;
+    min-height: 250px;
+    justify-content: space-between;
+
+    &-text {
+        h2 {
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 400;
         }
     }
 
-
-    .login-vipps-holder {
-        display: flex;
-        flex-flow: column wrap;
-        align-items: center;
-        margin-bottom: 20px;
-        min-height: 250px;
-        justify-content: space-between;
-
-        &-text {
-            h2 {
-                margin-bottom: 10px;
-                text-align: center;
-                font-weight: 400;
-            }
-        }
-
-        p {
-            color: @cipps__text-color;
-        }
+    p {
+        color: @cipps__text-color;
     }
+}
+
+.vipps-btn {
+    .icon-vipps {
+        background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
+        display: inline-block;
+        background-size: 55px 14px;
+        padding-left: 62px;
+        height: 15px;
+        margin-left: 10px;
+
+    }
+
+    .icon-vipps-no-icon {
+        background: url("@{baseDir}images/vipps-no-icon.svg") left center no-repeat;
+        display: inline-block;
+        width: 25px;
+        height: 20px;
+        margin-right: 10px;
+    }
+}
+
+.login-vipps-account {
+    background: @vipps__backgound-box;
+    padding: 25px;
+    border-radius: 12px;
 
     .vipps-btn {
-        .icon-vipps {
-            background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
-            display: inline-block;
-            background-size: 55px 14px;
-            padding-left: 62px;
-            height: 15px;
-            margin-left: 10px;
+        display: flex;
+        background: @vipps__color;
+        padding: 15px 25px;
+        border-radius: 5px;
+        border: 0;
 
-        }
-
-        .icon-vipps-no-icon {
-            background: url("@{baseDir}images/vipps-no-icon.svg") left center no-repeat;
-            display: inline-block;
-            width: 25px;
-            height: 20px;
-            margin-right: 10px;
+        &:hover,
+        &:focus,
+        &:active {
+            background: lighten(@vipps__color, 10%);
+            border: 0;
         }
     }
 
-    .login-vipps-account {
-        background: @vipps__backgound-box;
-        padding: 25px;
-        border-radius: 12px;
+    p {
+        color: @cipps__text-color;
+    }
 
-        .vipps-btn {
-            display: flex;
-            background: @vipps__color;
-            padding: 15px 25px;
-            border-radius: 5px;
+    .icon-login {
+        background: url("@{baseDir}images/icon-login.svg") left center no-repeat;
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background-size: cover;
+    }
+}
+
+.login-container {
+    flex-flow: column wrap;
+
+    .vipps-btn {
+        display: flex;
+        background: @vipps__color;
+        padding: 15px 25px;
+        border-radius: 25px;
+        border: 0;
+
+        &:hover,
+        &:focus,
+        &:active {
+            background: lighten(@vipps__color, 10%);
             border: 0;
-
-            &:hover,
-            &:focus,
-            &:active {
-                background: lighten(@vipps__color, 10%);
-                border: 0;
-            }
-        }
-
-        p {
-            color: @cipps__text-color;
-        }
-
-        .icon-login {
-            background: url("@{baseDir}images/icon-login.svg") left center no-repeat;
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            background-size: cover;
         }
     }
 
-    .login-container {
-        flex-flow: column wrap;
+    p {
+        color: @cipps__text-color;
+    }
 
-        .vipps-btn {
-            display: flex;
-            background: @vipps__color;
-            padding: 15px 25px;
-            border-radius: 25px;
-            border: 0;
+    form.form-login {
+        margin-bottom: 15px;
+    }
 
-            &:hover,
-            &:focus,
-            &:active {
-                background: lighten(@vipps__color, 10%);
-                border: 0;
-            }
-        }
+    .fieldset:after {
+        display: none;
+    }
 
-        p {
-            color: @cipps__text-color;
-        }
+    .login-vipps-holder {
+        order: initial;
+        width: 100%;
+    }
 
-        form.form-login {
-            margin-bottom: 15px;
-        }
+    .block {
+        width: 100%;
 
-        .fieldset:after {
-            display: none;
-        }
-
-        .login-vipps-holder {
+        &-customer-login {
             order: initial;
-            width: 100%;
         }
 
-        .block {
-            width: 100%;
+        &-new-customer {
+            order: initial;
+        }
 
-            &-customer-login {
-                order: initial;
-            }
-
-            &-new-customer {
-                order: initial;
-            }
-
-            &-static-block {
-                order: initial;
-            }
+        &-static-block {
+            order: initial;
         }
     }
+}
 
-    .vipps-login-confirmation {
+.vipps-login-confirmation {
 
-        .icon-confirmation {
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .page-title-wrapper {
-            text-align: center;
-        }
-
+    .icon-confirmation {
+        margin-bottom: 15px;
+        text-align: center;
     }
+
+    .page-title-wrapper {
+        text-align: center;
+    }
+
+}
+.vipps-addresse {
+    margin-top: 25px;
 }
 
 @media (min-width: @screen__m ) {
@@ -187,8 +188,10 @@
     }
 
     .login-vipps-account {
+        padding: 15px;
         .vipps-btn {
             padding: 15px 10px;
+            align-items: center;
         }
     }
 
@@ -203,5 +206,14 @@
             text-align: left;
         }
 
+    }
+}
+
+@media (min-width: @screen__l ) {
+    .login-vipps-account {
+        padding: 25px;
+        .vipps-btn {
+            padding: 15px 10px;
+        }
     }
 }

@@ -18,7 +18,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="content">
-            <!--<block class="Magento\Framework\View\Element\Template" name="vipps_login_popup" template="Vipps_Login::vipps_login_popup.phtml"/>-->
+            <block class="Magento\Framework\View\Element\Template" name="vipps_login_popup" template="Vipps_Login::vipps_login_popup.phtml"/>
         </referenceContainer>
     </body>
 </page>
