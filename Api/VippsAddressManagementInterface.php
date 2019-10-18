@@ -94,4 +94,19 @@ interface VippsAddressManagementInterface
         VippsCustomerAddressInterface $vippsAddress,
         bool $hasDefault
     );
+
+    /**
+     * Method to compare Vipps Address and Magento address.
+     *
+     * @param VippsCustomerAddressInterface $vippsAddress
+     * @param VippsCustomerInterface $vippsCustomer
+     * @param AddressInterface $magentoAddress
+     *
+     * @return bool
+     */
+    public function areTheSame(
+        VippsCustomerAddressInterface $vippsAddress,
+        VippsCustomerInterface $vippsCustomer,
+        AddressInterface $magentoAddress
+    );
 }
