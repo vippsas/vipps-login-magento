@@ -144,7 +144,6 @@ class AddressUpdate extends AccountBase
                     }
                 }
             }
-
         } catch (LocalizedException $e) {
             $response = [
                 'errors' => true,
@@ -153,7 +152,7 @@ class AddressUpdate extends AccountBase
         } catch (\Throwable $e) {
             $response = [
                 'errors' => true,
-                'message' => __('Invalid login or password.')
+                'message' => __('An error occurred.')
             ];
         }
 
