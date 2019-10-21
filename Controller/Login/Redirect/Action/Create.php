@@ -88,7 +88,6 @@ class Create implements ActionInterface
         $this->userInfoCommand = $userInfoCommand;
         $this->redirectUrlResolver = $redirectUrlResolver;
         $this->creator = $creator;
-        $this->logger = $logger;
     }
 
     /**
@@ -114,7 +113,6 @@ class Create implements ActionInterface
                 $this->redirectUrlResolver->getRedirectUrl()
             );
         } catch (ValidatoException $e) {
-            $this->setCustomerFormData($userInfo);
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account/create');
         }

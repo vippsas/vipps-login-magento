@@ -3,11 +3,10 @@
     "description": "N/A",
     "require": {
         "magento/framework": "101.0.*",
-        "firebase/php-jwt": "*",
-        "okta/jwt-verifier": "^0.2.1"
+        "firebase/php-jwt": "*"
     },
     "type": "magento2-module",
-    "version": "100.0.0",
+    "version": "1.0.0",
     "license": [
         "OSL-3.0",
         "AFL-3.0"

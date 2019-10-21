@@ -133,7 +133,7 @@ class TokenCommand
     public function getPayload($token)
     {
         if (array_key_exists('id_token', $token)) {
-            $payload = JWT::decode($token['id_token'], $this->getPublicKey(), ['RS256']);
+            $payload = JWT::decode($token['id_token'], $this->getPublicKeys(), ['RS256']);
 
             //encode and decode again to convert strClass to array
             return $this->serializer->unserialize($this->serializer->serialize($payload));
@@ -142,24 +142,34 @@ class TokenCommand
     }
 
     /**
-     * @return bool|string
+     * @return array
      */
-    private function getPublicKey()
+    private function getPublicKeys()
     {
         $httpClient = $this->httpClientFactory->create();
         $httpClient->get($this->apiEndpoints->getJwksUri());
 
         $jwks = $this->serializer->unserialize($httpClient->getBody());
-        $jwk = $jwks['keys'][0];
 
-        $rsa = new RSA();
-        $rsa->loadKey(
-            [
-                'e' => new BigInteger(base64_decode($jwk['e']), 256),
-                'n' => new BigInteger(base64_decode(strtr($jwk['n'], '-_', '+/'), true), 256)
-            ]
-        );
+        $keys = $jwks['keys'] ?? null;
 
-        return $rsa->getPublicKey();
+        $publicKeys = [];
+        foreach ($keys as $key) {
+            if (array_key_exists('e', $key) &&
+                array_key_exists('n', $key) &&
+                array_key_exists('kid', $key)
+            ) {
+                $rsa = new RSA();
+                $rsa->loadKey(
+                    [
+                        'e' => new BigInteger(base64_decode($key['e']), 256),
+                        'n' => new BigInteger(base64_decode(strtr($key['n'], '-_', '+/'), true), 256)
+                    ]
+                );
+                $publicKeys[$key['kid']] = $rsa->getPublicKey();
+            }
+        }
+
+        return $publicKeys;
     }
 }
