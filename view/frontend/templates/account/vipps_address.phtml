@@ -19,7 +19,7 @@
 /** @var \Vipps\Login\Block\Account\VippsAddress $block */
 ?>
 <?php if ($vippsAddresses = $block->getVippsAddresses()): ?>
-    <div class="block block-addresses-list">
+    <div class="block block-addresses-list vipps-addresse">
         <div class="block-title"><strong><?= $block->escapeHtml(__('Vipps Address Entries')) ?></strong></div>
         <div class="block-content">
             <ol class="items addresses">
@@ -37,7 +37,7 @@
                         </address>
                         <?php if (!$address->getCustomerAddressId()): ?>
                             <div class="item actions">
-                                <a class="action edit" href="<?= $block->escapeUrl($block->getUrl('customer/address/form', ['vipps_address_id' => $address->getEntityId()])) ?>">
+                                <a class="action edit" href="<?= $block->escapeUrl($block->getUrl('vipps/login/applyAddress', ['id' => $address->getEntityId()])) ?>">
                                     <span><?= $block->escapeHtml(__('Apply Address')) ?></span>
                                 </a>
                             </div>

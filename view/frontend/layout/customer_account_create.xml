@@ -11,8 +11,8 @@
             <container name="vipps.new.account" label="Confirmation Login Container" htmlTag="div" htmlClass="login-container" before="-">
                 <block class="Vipps\Login\Block\Account\Link" name="vipps_login_links" template="Vipps_Login::account/create/vipps_register.phtml" before="-">
                     <block class="Vipps\Login\Block\Form\Login\Button"
-                           name="vipps_form_login_button"
-                           template="Vipps_Login::form/login/button.phtml"
+                           name="vipps_form_register_button"
+                           template="Vipps_Login::form/login/button-register.phtml"
                            before="-"/>
                 </block>
             </container>

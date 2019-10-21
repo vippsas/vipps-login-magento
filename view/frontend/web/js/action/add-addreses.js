@@ -22,7 +22,6 @@ define([
             var self = this;
             var addresessKey = customerData.get(this.options.cacheKey)(),
                 addressesList = addresessKey.addresses;
-            console.log(addressesList)
 
             $('#' + this.options.selectHolder).change(function () {
                 var dataOption = $('#' + self.options.selectHolder + " option:selected")[0].value;
