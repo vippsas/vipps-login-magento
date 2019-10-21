@@ -17,11 +17,12 @@
 declare(strict_types=1);
 
 /** @var $block \Vipps\Login\Block\Account\VippsAddress */
+$isNewAddress = $block->isNewAddress();
 $addresses = $block->getVippsAddresses(true);
 /** @var $address \Vipps\Login\Api\Data\VippsCustomerAddressInterface */
 ?>
 
-<?php if (!empty($addresses)): ?>
+<?php if ($isNewAddress && !empty($addresses)): ?>
 <div id="vipps_addresses">
     <fieldset class="fieldset">
         <div class="field">

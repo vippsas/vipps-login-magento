@@ -79,6 +79,7 @@ class ApplyAddress extends AccountBase
         $resultRedirect = $this->resultRedirectFactory->create();
 
         $addressId = $this->getRequest()->getParam('id', false);
+        $params = [];
         if ($addressId) {
             try {
                 $customer = $this->customerSession->getCustomer();
@@ -96,12 +97,13 @@ class ApplyAddress extends AccountBase
                     'street' => explode(PHP_EOL, $vippsAddress->getStreetAddress()),
                     'region' => $vippsAddress->getRegion()
                 ]);
+                $params = ['vipps_address_id' => $addressId];
             } catch (NoSuchEntityException $e) {
                 $this->messageManager->addErrorMessage(__('We can\'t delete the address right now.'));
             }
         }
 
-        $resultRedirect->setPath('customer/address/form');
+        $resultRedirect->setPath('customer/address/new', $params);
 
         return $resultRedirect;
     }

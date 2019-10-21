@@ -84,4 +84,17 @@ class VippsAddress extends Template
 
         return [];
     }
+
+    /**
+     * Check if address is new or applying vipps address.
+     *
+     * @return bool
+     */
+    public function isNewAddress()
+    {
+        $isVippsApply = $this->getRequest()->getParam('vipps_address_id');
+        $isNewAddress = empty($this->getRequest()->getParam('id'));
+
+        return $isNewAddress && !$isVippsApply;
+    }
 }
