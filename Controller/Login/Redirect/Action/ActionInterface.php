@@ -22,5 +22,10 @@ namespace Vipps\Login\Controller\Login\Redirect\Action;
  */
 interface ActionInterface
 {
+    /**
+     * @param $token
+     *
+     * @return mixed
+     */
     public function execute($token);
 }

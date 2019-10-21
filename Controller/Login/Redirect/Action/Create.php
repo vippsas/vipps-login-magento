@@ -18,17 +18,15 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login\Redirect\Action;
 
-use Magento\Customer\Model\Session;
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Validator\Exception as ValidatoException;
 use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\Exception\State\InputMismatchException;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
+use Magento\Customer\Model\Session;
 use Magento\Customer\Model\CustomerRegistry;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\Creator;
+use Vipps\Login\Model\RedirectUrlResolver;
 
 /**
  * Class Create
@@ -62,12 +60,18 @@ class Create implements ActionInterface
     private $creator;
 
     /**
+     * @var RedirectUrlResolver
+     */
+    private $redirectUrlResolver;
+
+    /**
      * Create constructor.
      *
      * @param RedirectFactory $redirectFactory
      * @param SessionManagerInterface $sessionManager
      * @param CustomerRegistry $customerRegistry
      * @param UserInfoCommand $userInfoCommand
+     * @param RedirectUrlResolver $redirectUrlResolver
      * @param Creator $creator
      */
     public function __construct(
@@ -75,41 +79,46 @@ class Create implements ActionInterface
         SessionManagerInterface $sessionManager,
         CustomerRegistry $customerRegistry,
         UserInfoCommand $userInfoCommand,
+        RedirectUrlResolver $redirectUrlResolver,
         Creator $creator
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->sessionManager = $sessionManager;
         $this->customerRegistry = $customerRegistry;
         $this->userInfoCommand = $userInfoCommand;
+        $this->redirectUrlResolver = $redirectUrlResolver;
         $this->creator = $creator;
+        $this->logger = $logger;
     }
 
     /**
-     * @param array $token
+     * @param $token
      *
-     * @return Redirect
-     * @throws InputException
-     * @throws InputMismatchException
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
+     * @return Redirect|mixed
+     * @throws \Exception
      * @throws \Magento\Framework\Exception\AuthorizationException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function execute($token)
     {
+        $redirect = $this->redirectFactory->create();
+        $userInfo = null;
         try {
             $accessToken = $token['access_token'] ?? null;
             $userInfo = $this->userInfoCommand->execute($accessToken);
             $magentoCustomer = $this->creator->create($userInfo);
             $customer = $this->customerRegistry->retrieveByEmail($magentoCustomer->getEmail());
             $this->sessionManager->setCustomerAsLoggedIn($customer);
-
-            $redirect = $this->redirectFactory->create();
-            $redirect->setPath('customer/account');
-            return $redirect;
-        } catch (\Magento\Framework\Validator\Exception $e) {
+            $redirect->setUrl(
+                $this->redirectUrlResolver->getRedirectUrl()
+            );
+        } catch (ValidatoException $e) {
+            $this->setCustomerFormData($userInfo);
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account/create');
-            return $redirect;
         }
+
+        return $redirect;
     }
 }

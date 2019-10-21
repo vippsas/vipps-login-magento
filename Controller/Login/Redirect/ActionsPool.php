@@ -21,6 +21,10 @@ namespace Vipps\Login\Controller\Login\Redirect;
 use Magento\Framework\ObjectManager\TMapFactory;
 use Vipps\Login\Controller\Login\Redirect\Action\ActionInterface;
 
+/**
+ * Class ActionsPool
+ * @package Vipps\Login\Controller\Login\Redirect
+ */
 class ActionsPool
 {
     /**
@@ -59,6 +63,7 @@ class ActionsPool
                 return $result;
             }
         }
+
         return false;
     }
 }

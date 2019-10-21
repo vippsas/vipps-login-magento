@@ -20,6 +20,7 @@ namespace Vipps\Login\Plugin\Customer\Api;
 
 use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Customer\Api\AccountManagementInterface as Subject;
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Model\TokenProviderInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
@@ -45,10 +46,16 @@ class AccountManagement
      * @var VippsAccountManagementInterface
      */
     private $vippsAccountManagement;
+
     /**
      * @var VippsAddressManagementInterface
      */
     private $vippsAddressManagement;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * AccountManager constructor.
@@ -57,17 +64,20 @@ class AccountManagement
      * @param UserInfoCommand $userInfoCommand
      * @param VippsAccountManagementInterface $vippsAccountManagement
      * @param VippsAddressManagementInterface $vippsAddressManagement
+     * @param LoggerInterface $logger
      */
     public function __construct(
         TokenProviderInterface $accessTokenProvider,
         UserInfoCommand $userInfoCommand,
         VippsAccountManagementInterface $vippsAccountManagement,
-        VippsAddressManagementInterface $vippsAddressManagement
+        VippsAddressManagementInterface $vippsAddressManagement,
+        LoggerInterface $logger
     ) {
         $this->accessTokenProvider = $accessTokenProvider;
         $this->userInfoCommand = $userInfoCommand;
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->vippsAddressManagement = $vippsAddressManagement;
+        $this->logger = $logger;
     }
 
     /**
@@ -86,8 +96,7 @@ class AccountManagement
                 $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $result);
             }
         } catch (\Throwable $t) {
-            // should not throw exception because it leads to customer account creation failed
-            // @todo log error
+            $this->logger->critical($t);
         }
 
         return $result;

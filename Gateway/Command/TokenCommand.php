@@ -21,6 +21,7 @@ namespace Vipps\Login\Gateway\Command;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\UrlInterface;
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
 use Magento\Framework\Serialize\SerializerInterface;
@@ -58,6 +59,10 @@ class TokenCommand
      * @var UrlInterface
      */
     private $url;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * TokenCommand constructor.
@@ -67,19 +72,22 @@ class TokenCommand
      * @param ApiEndpointsInterface $apiEndpoints
      * @param ClientFactory $httpClientFactory
      * @param UrlInterface $url
+     * @param LoggerInterface $logger
      */
     public function __construct(
         ConfigInterface $config,
         SerializerInterface $serializer,
         ApiEndpointsInterface $apiEndpoints,
         ClientFactory $httpClientFactory,
-        UrlInterface $url
+        UrlInterface $url,
+        LoggerInterface $logger
     ) {
         $this->config = $config;
         $this->httpClientFactory = $httpClientFactory;
         $this->apiEndpoints = $apiEndpoints;
         $this->serializer = $serializer;
         $this->url = $url;
+        $this->logger = $logger;
     }
 
     /**
@@ -95,23 +103,24 @@ class TokenCommand
         $clientId = $this->config->getLoginClientId();
         $clientSecret = $this->config->getLoginClientSecret();
 
-        $httpClient = $this->httpClientFactory->create();
-        $httpClient->addHeader('Content-Type', 'application/x-www-form-urlencoded');
-        $httpClient->setCredentials($clientId, $clientSecret);
-
-        $httpClient->post($this->apiEndpoints->getTokenEndpoint(), [
-            'grant_type' => 'authorization_code',
-            'code' => $code,
-            'redirect_uri' => trim($this->url->getUrl('vipps/login/redirect'), '/')
-        ]);
-
         try {
+            $httpClient = $this->httpClientFactory->create();
+            $httpClient->addHeader('Content-Type', 'application/x-www-form-urlencoded');
+            $httpClient->setCredentials($clientId, $clientSecret);
+
+            $httpClient->post($this->apiEndpoints->getTokenEndpoint(), [
+                'grant_type' => 'authorization_code',
+                'code' => $code,
+                'redirect_uri' => trim($this->url->getUrl('vipps/login/redirect'), '/')
+            ]);
+
             $token = $this->serializer->unserialize($httpClient->getBody());
             $payload = $this->getPayload($token);
 
             $token['id_token_payload'] = $payload;
             return $token;
         } catch (\Exception $e) {
+            $this->logger->critical($e);
             throw new LocalizedException(__('An error occurred trying to get token'), $e);
         }
     }

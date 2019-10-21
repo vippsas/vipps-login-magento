@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Model\VippsAccountManagement;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Session\SessionManagerInterface;
@@ -36,22 +37,30 @@ class Unlink extends AccountBase
     private $vippsAccountManagement;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Unlink constructor.
      *
      * @param Context $context
      * @param SessionManagerInterface $customerSession
      * @param VippsAccountManagement $vippsAccountManagement
      * @param ManagerInterface $messageManager
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Context $context,
         SessionManagerInterface $customerSession,
         VippsAccountManagement $vippsAccountManagement,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        LoggerInterface $logger
     ) {
         parent::__construct($context, $customerSession);
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->messageManager = $messageManager;
+        $this->logger = $logger;
     }
 
     /**
@@ -70,7 +79,8 @@ class Unlink extends AccountBase
             $this->messageManager->addSuccessMessage(__('Your account was successfully unlinked.'));
 
             return $redirect;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            $this->logger->critical($e);
             $this->messageManager->addErrorMessage(
                 __('An error occurred during unbinding accounts. Please, try again later.')
             );
