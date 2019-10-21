@@ -56,7 +56,7 @@ define([
             if (formId.id === this.options.verifyPasswordForm) {
                 self.loadderShowOrHide(true);
                 loginAction(self.fetchData(self.options.verifyPasswordForm),
-                            self.options.urlLoginConfirmation).always(function () {
+                            self.options.urlPasswordConfirmation).always(function () {
                     self.loadderShowOrHide();
                 });
             }
