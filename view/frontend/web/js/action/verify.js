@@ -13,7 +13,8 @@ define([
         options: {
             verifyPasswordForm: 'verify-password-form',
             verifyEmailForm: 'verify-email-form',
-            urlLoginConfirmation: 'vipps/login/emailConfirmation'
+            urlLoginConfirmation: 'vipps/login/emailConfirmation',
+            urlPasswordConfirmation: 'vipps/login/passwordConfirmation'
         },
         initialize: function () {
             this._super();

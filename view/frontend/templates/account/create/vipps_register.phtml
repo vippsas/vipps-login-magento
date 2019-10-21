@@ -1,10 +1,8 @@
 <?php
 // @codingStandardsIgnoreFile
-/** @var \Vipps\Login\Block\Form\Verification $block */
-
-$isVippsVisibble = true;
+/** @var \Vipps\Login\Block\Account\Create $block */
 ?>
-<?php if($isVippsVisibble): ?>
+<?php if (!$block->isVippsLoggedIn()): ?>
     <div class="login-vipps-holder new-account">
         <div class="login-vipps-holder-text">
             <h2><?= $block->escapeHtml(__('Register')) ?></h2>

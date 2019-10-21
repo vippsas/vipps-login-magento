@@ -18,18 +18,15 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login\Redirect\Action;
 
-use Magento\Customer\Model\Session;
-use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Validator\Exception as ValidatoException;
 use Magento\Framework\Controller\Result\RedirectFactory;
-use Magento\Framework\Exception\State\InputMismatchException;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
+use Magento\Customer\Model\Session;
 use Magento\Customer\Model\CustomerRegistry;
-use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\Creator;
+use Vipps\Login\Model\RedirectUrlResolver;
 
 /**
  * Class Create
@@ -63,12 +60,18 @@ class Create implements ActionInterface
     private $creator;
 
     /**
+     * @var RedirectUrlResolver
+     */
+    private $redirectUrlResolver;
+
+    /**
      * Create constructor.
      *
      * @param RedirectFactory $redirectFactory
      * @param SessionManagerInterface $sessionManager
      * @param CustomerRegistry $customerRegistry
      * @param UserInfoCommand $userInfoCommand
+     * @param RedirectUrlResolver $redirectUrlResolver
      * @param Creator $creator
      */
     public function __construct(
@@ -76,83 +79,44 @@ class Create implements ActionInterface
         SessionManagerInterface $sessionManager,
         CustomerRegistry $customerRegistry,
         UserInfoCommand $userInfoCommand,
+        RedirectUrlResolver $redirectUrlResolver,
         Creator $creator
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->sessionManager = $sessionManager;
         $this->customerRegistry = $customerRegistry;
         $this->userInfoCommand = $userInfoCommand;
+        $this->redirectUrlResolver = $redirectUrlResolver;
         $this->creator = $creator;
     }
 
     /**
      * @param $token
      *
-     * @return bool|Redirect
-     * @throws InputException
-     * @throws InputMismatchException
-     * @throws LocalizedException
-     * @throws NoSuchEntityException
+     * @return Redirect|mixed
      * @throws \Exception
+     * @throws \Magento\Framework\Exception\AuthorizationException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function execute($token)
     {
-        $userInfo = $this->userInfoCommand->execute($token['access_token']);
-
+        $redirect = $this->redirectFactory->create();
+        $userInfo = null;
         try {
+            $accessToken = $token['access_token'] ?? null;
+            $userInfo = $this->userInfoCommand->execute($accessToken);
             $magentoCustomer = $this->creator->create($userInfo);
             $customer = $this->customerRegistry->retrieveByEmail($magentoCustomer->getEmail());
             $this->sessionManager->setCustomerAsLoggedIn($customer);
-
-            $redirect = $this->redirectFactory->create();
-            $redirect->setPath('customer/account');
-            return $redirect;
-        } catch (\Magento\Framework\Validator\Exception $e) {
-            $this->setCustomerFormData($userInfo);
+            $redirect->setUrl(
+                $this->redirectUrlResolver->getRedirectUrl()
+            );
+        } catch (ValidatoException $e) {
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account/create');
-            return $redirect;
-        }
-    }
-
-    /**
-     * @param UserInfoInterface $userInfo
-     */
-    private function setCustomerFormData(UserInfoInterface $userInfo)
-    {
-        $customerFormData = [
-            'email' => $userInfo->getEmail(),
-            'firstname' => $userInfo->getGivenName(),
-            'lastname' => $userInfo->getFamilyName(),
-            'birthday' => $userInfo->getBirthdate(),
-            'telephone' => $userInfo->getPhoneNumber()
-        ];
-
-        $address = $this->getAddressByType($userInfo, 'home');
-        if ($address) {
-            $customerFormData['postcode'] = $address['postal_code'];
-            $customerFormData['country_id'] = $address['country'];
-            $customerFormData['street'] = $address['street_address'];
-            $customerFormData['city'] = $address['region'];
         }
 
-        $this->sessionManager->setCustomerFormData($customerFormData);
-    }
-
-    /**
-     * @param UserInfoInterface $userInfo
-     * @param $type
-     *
-     * @return mixed|null
-     */
-    private function getAddressByType(UserInfoInterface $userInfo, $type)
-    {
-        $addresses = $userInfo->getAddress() ?? [];
-        foreach ($addresses as $address) {
-            if ($address['address_type'] == $type) {
-                return $address;
-            }
-        }
-        return null;
+        return $redirect;
     }
 }

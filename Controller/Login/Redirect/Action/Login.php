@@ -23,13 +23,16 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
+use Magento\Customer\Model\CustomerRegistry;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\TrustedAccountsLocator;
-use Magento\Customer\Model\CustomerRegistry;
+use Psr\Log\LoggerInterface;
+use Vipps\Login\Model\RedirectUrlResolver;
 
 /**
  * Class Login
@@ -56,18 +59,36 @@ class Login implements ActionInterface
      * @var CustomerRegistry
      */
     private $customerRegistry;
+
     /**
      * @var UserInfoCommand
      */
     private $userInfoCommand;
+
     /**
      * @var VippsAddressManagementInterface
      */
     private $vippsAddressManagement;
+
     /**
      * @var VippsCustomerRepositoryInterface
      */
     private $vippsCustomerRepository;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var RedirectUrlResolver
+     */
+    private $redirectUrlResolver;
+
+    /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
 
     /**
      * Login constructor.
@@ -79,6 +100,9 @@ class Login implements ActionInterface
      * @param UserInfoCommand $userInfoCommand
      * @param VippsAddressManagementInterface $vippsAddressManagement
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
+     * @param RedirectUrlResolver $redirectUrlResolver
+     * @param ManagerInterface $messageManager
+     * @param LoggerInterface $logger
      */
     public function __construct(
         RedirectFactory $redirectFactory,
@@ -87,7 +111,10 @@ class Login implements ActionInterface
         CustomerRegistry $customerRegistry,
         UserInfoCommand $userInfoCommand,
         VippsAddressManagementInterface $vippsAddressManagement,
-        VippsCustomerRepositoryInterface $vippsCustomerRepository
+        VippsCustomerRepositoryInterface $vippsCustomerRepository,
+        RedirectUrlResolver $redirectUrlResolver,
+        ManagerInterface $messageManager,
+        LoggerInterface $logger
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->sessionManager = $sessionManager;
@@ -96,6 +123,9 @@ class Login implements ActionInterface
         $this->userInfoCommand = $userInfoCommand;
         $this->vippsAddressManagement = $vippsAddressManagement;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
+        $this->logger = $logger;
+        $this->redirectUrlResolver = $redirectUrlResolver;
+        $this->messageManager = $messageManager;
     }
 
     /**
@@ -114,15 +144,20 @@ class Login implements ActionInterface
                 $userInfo = $this->userInfoCommand->execute($token['access_token']);
 
                 $this->sessionManager->setCustomerAsLoggedIn($customer);
-
                 $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
+
                 $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
 
                 $redirect = $this->redirectFactory->create();
-                $redirect->setPath('customer/account');
+                $redirect->setUrl(
+                    $this->redirectUrlResolver->getRedirectUrl()
+                );
                 return $redirect;
+            } catch (LocalizedException $e) {
+                $this->messageManager->addErrorMessage($e);
+                $this->logger->critical($e);
             } catch (\Throwable $e) {
-
+                $this->logger->critical($e);
             }
 
             return $redirect;
@@ -144,7 +179,7 @@ class Login implements ActionInterface
         if ($telephone) {
             $trustedAccounts = $this->trustedAccountsLocator->getList($telephone);
             if ($trustedAccounts->getTotalCount() > 0) {
-                $vippsCustomer = $trustedAccounts->getItems()[0];
+                $vippsCustomer = current($trustedAccounts->getItems());
                 return $this->customerRegistry->retrieveByEmail($vippsCustomer->getEmail());
             }
         }

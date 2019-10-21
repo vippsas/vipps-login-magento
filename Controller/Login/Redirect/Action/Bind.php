@@ -20,9 +20,11 @@ namespace Vipps\Login\Controller\Login\Redirect\Action;
 
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\Session;
-use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\Controller\Result\RedirectFactory;
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
@@ -64,6 +66,11 @@ class Bind implements ActionInterface
     private $messageManager;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Bind constructor.
      *
      * @param RedirectFactory $redirectFactory
@@ -72,6 +79,7 @@ class Bind implements ActionInterface
      * @param SessionManagerInterface $customerSession
      * @param UserInfoCommand $userInfoCommand
      * @param ManagerInterface $messageManager
+     * @param LoggerInterface $logger
      */
     public function __construct(
         RedirectFactory $redirectFactory,
@@ -79,7 +87,8 @@ class Bind implements ActionInterface
         VippsAccountManagementInterface $vippsAccountManagement,
         SessionManagerInterface $customerSession,
         UserInfoCommand $userInfoCommand,
-        ManagerInterface $messageManager
+        ManagerInterface $messageManager,
+        LoggerInterface $logger
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->vippsAccountManagement = $vippsAccountManagement;
@@ -87,6 +96,7 @@ class Bind implements ActionInterface
         $this->customerSession = $customerSession;
         $this->userInfoCommand = $userInfoCommand;
         $this->messageManager = $messageManager;
+        $this->logger = $logger;
     }
 
     /**
@@ -112,12 +122,15 @@ class Bind implements ActionInterface
             $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer);
 
             $this->messageManager->addSuccessMessage(__('Your account was successfully linked.'));
-            $resultRedirect->setPath('customer/account');
-            return $resultRedirect;
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e);
+            $this->logger->critical($e);
         } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(
                 __('An error occurred during linking accounts.')
             );
+            $this->logger->critical($e);
+        } finally {
             $resultRedirect->setPath('customer/account');
         }
 

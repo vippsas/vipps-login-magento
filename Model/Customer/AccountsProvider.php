@@ -136,15 +136,10 @@ class AccountsProvider
         /** @var GridCollection $collection */
         $collection = $this->gridCollectionFactory->create();
 
-        $phones[] = $phone;
-        $phones[] = preg_replace('/[^\d]/', '', $phone);
-
-        foreach (array_unique($phones) as $phone) {
-            $this->filterGroupBuilder->addFilter($this->filterBuilder->setField('billing_telephone')
-                ->setValue($phone)
-                ->setConditionType('eq')
-                ->create());
-        }
+        $this->filterGroupBuilder->addFilter($this->filterBuilder->setField('billing_telephone')
+            ->setValue($this->preparePhonePattern($phone))
+            ->setConditionType('like')
+            ->create());
 
         $this->searchCriteriaBuilder->setFilterGroups([$this->filterGroupBuilder->create()]);
         $this->collectionProcessor->process($this->searchCriteriaBuilder->create(), $collection);
@@ -154,6 +149,31 @@ class AccountsProvider
             /** @var $item CustomerInterface */
             $result[] = $item->getEmail();
         }
+
         return $result;
+    }
+
+    /**
+     * @param $phone
+     *
+     * @return string
+     */
+    private function preparePhonePattern($phone)
+    {
+        $phone = preg_replace('/[^\d]/', '', $phone);
+
+        $length = strlen($phone);
+        //remove norwegian country code
+        if ($length > 8 && strpos($phone, '47') === 0) {
+            $phone = substr($phone, 2, $length - 2);
+        }
+
+        $tmpPhone = '%';
+        $length = strlen($phone);
+        for ($i = 0; $i < $length; $i++) {
+            $tmpPhone .= $phone[$i] . '%';
+        }
+
+        return $tmpPhone;
     }
 }
