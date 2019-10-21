@@ -24,6 +24,7 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Session\SessionManagerInterface;
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
@@ -57,6 +58,10 @@ class AddressSave
      * @var VippsAddressManagementInterface
      */
     private $vippsAddressManagement;
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * AddressSave constructor.
@@ -66,19 +71,22 @@ class AddressSave
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      * @param VippsAddressManagementInterface $vippsAddressManagement
+     * @param LoggerInterface $logger
      */
     public function __construct(
         RequestInterface $request,
         SessionManagerInterface $customerSession,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
-        VippsAddressManagementInterface $vippsAddressManagement
+        VippsAddressManagementInterface $vippsAddressManagement,
+        LoggerInterface $logger
     ) {
         $this->request = $request;
         $this->customerSession = $customerSession;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
         $this->vippsAddressManagement = $vippsAddressManagement;
+        $this->logger = $logger;
     }
 
     /**
@@ -102,7 +110,9 @@ class AddressSave
                 }
                 $this->vippsAddressManagement->link($vippsAddress, $address);
             } catch (NoSuchEntityException $e) {
-
+                $this->logger->error($e);
+            } catch (\Throwable $e) {
+                $this->logger->critical($e);
             }
         }
 

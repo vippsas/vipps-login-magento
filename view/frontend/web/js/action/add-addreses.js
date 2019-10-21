@@ -12,11 +12,13 @@ define([
             cacheKey: 'vipps_login_data',
             formNewAddress: 'form-address-edit',
             streetField: 'street_1',
-            postCode: 'zip'
+            postCode: 'zip',
+            vippsInputId: 'vipps_address_id'
         },
         initialize: function () {
             this._super();
             this.selectHolderChange();
+            this.insertHiddenInput();
         },
         selectHolderChange: function () {
             var self = this;
@@ -25,8 +27,10 @@ define([
 
             $('#' + this.options.selectHolder).change(function () {
                 var dataOption = $('#' + self.options.selectHolder + " option:selected")[0].value;
+                var dataOptionText = $('#' + self.options.selectHolder + " option:selected")[0].textContent;
                 var addressePos = self.findData(dataOption, addressesList);
-                self.changeValue(addressesList[addressePos])
+                self.changeValue(addressesList[addressePos]);
+                self.insertHiddenInput(dataOptionText);
             })
         },
         /**
@@ -47,6 +51,19 @@ define([
             var propsZip = $('.' + this.options.formNewAddress).find('#' + this.options.postCode);
             propsStreet.val(props.street);
             propsZip.val(props.postalcode);
+        },
+        /**
+         * @return {text} itemText
+         */
+        insertHiddenInput: function (itemText) {
+            if(!$('#' + this.options.vippsInputId).length) {
+                $('.' + this.options.formNewAddress).append(
+                    '<input name="vipps_address_id" id="vipps_address_id" type="text" hidden>'
+                );
+            } else {
+                $('#' + this.options.vippsInputId).val(itemText);
+            }
+
         }
 
     });

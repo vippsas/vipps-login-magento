@@ -14,18 +14,36 @@
  *  IN THE SOFTWARE.
  */
 
-namespace Vipps\Login\Controller\Login\Redirect\Action;
+namespace Vipps\Login\Model;
+
+use Vipps\Login\Api\VippsSessionInterface;
 
 /**
- * Interface ActionInterface
- * @package Vipps\Login\Controller\Login\Redirect\Action
+ * Class VippsSession
+ * @package Vipps\Login\Model
  */
-interface ActionInterface
+class VippsSession implements VippsSessionInterface
 {
     /**
-     * @param $token
-     *
-     * @return mixed
+     * @var AccessTokenProvider
      */
-    public function execute($token);
+    private $accessTokenProvider;
+
+    /**
+     * VippsSession constructor.
+     *
+     * @param AccessTokenProvider $accessTokenProvider
+     */
+    public function __construct(AccessTokenProvider $accessTokenProvider)
+    {
+        $this->accessTokenProvider = $accessTokenProvider;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLoggedIn(): bool
+    {
+        return (bool)$this->accessTokenProvider->get();
+    }
 }

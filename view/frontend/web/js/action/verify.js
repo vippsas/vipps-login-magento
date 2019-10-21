@@ -13,7 +13,8 @@ define([
         options: {
             verifyPasswordForm: 'verify-password-form',
             verifyEmailForm: 'verify-email-form',
-            urlLoginConfirmation: 'vipps/login/emailConfirmation'
+            urlLoginConfirmation: 'vipps/login/emailConfirmation',
+            urlPasswordConfirmation: 'vipps/login/passwordConfirmation'
         },
         initialize: function () {
             this._super();
@@ -55,7 +56,7 @@ define([
             if (formId.id === this.options.verifyPasswordForm) {
                 self.loadderShowOrHide(true);
                 loginAction(self.fetchData(self.options.verifyPasswordForm),
-                            self.options.urlLoginConfirmation).always(function () {
+                            self.options.urlPasswordConfirmation).always(function () {
                     self.loadderShowOrHide();
                 });
             }

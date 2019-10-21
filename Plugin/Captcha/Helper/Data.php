@@ -14,56 +14,46 @@
  *    IN THE SOFTWARE
  */
 
-declare(strict_types=1);
+namespace Vipps\Login\Plugin\Captcha\Helper;
 
-namespace Vipps\Login\Controller\Login\Redirect;
-
-use Magento\Framework\ObjectManager\TMapFactory;
-use Vipps\Login\Controller\Login\Redirect\Action\ActionInterface;
+use Magento\Captcha\Helper\Data as Subject;
+use Vipps\Login\Api\VippsSessionInterface;
 
 /**
- * Class ActionsPool
- * @package Vipps\Login\Controller\Login\Redirect
+ * Class Data
+ * @package Vipps\Login\Plugin\Captcha\Helper\Data
  */
-class ActionsPool
+class Data
 {
     /**
-     * @var array
+     * @var VippsSessionInterface
      */
-    private $actions;
+    private $vippsSession;
 
     /**
-     * ActionsPool constructor.
+     * CheckUserCreateObserver constructor.
      *
-     * @param TMapFactory $tmapFactory
-     * @param array $actions
+     * @param VippsSessionInterface $vippsSession
      */
-    public function __construct(
-        TMapFactory $tmapFactory,
-        array $actions = []
-    ) {
-        $this->actions = $tmapFactory->create(
-            [
-                'array' => $actions,
-                'type' => ActionInterface::class
-            ]
-        );
+    public function __construct(VippsSessionInterface $vippsSession)
+    {
+        $this->vippsSession = $vippsSession;
     }
 
     /**
-     * @param array $token
+     * @param Subject $subject
+     * @param string $formId
      *
-     * @return bool
+     * @return array
      */
-    public function execute($token)
+    public function beforeGetCaptcha(Subject $subject, $formId)
     {
-        foreach ($this->actions as $action) {
-            $result = $action->execute($token);
-            if ($result) {
-                return $result;
+        if ('user_create' == $formId) {
+            if ($this->vippsSession->isLoggedIn()) {
+                $formId = null;
             }
         }
 
-        return false;
+        return [$formId];
     }
 }

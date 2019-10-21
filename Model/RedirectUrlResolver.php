@@ -16,57 +16,73 @@
 
 declare(strict_types=1);
 
-namespace Vipps\Login\Block\Account;
+namespace Vipps\Login\Model;
 
-use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Framework\View\Element\Template;
 use Magento\Customer\Model\Session;
-use Vipps\Login\Api\VippsAccountManagementInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\UrlInterface;
 
 /**
- * Class Link
- * @package Vipps\Login\Block\Account
+ * Class RedirectPathResolver
+ * @package Vipps\Login\Model
  */
-class Link extends Template
+class RedirectUrlResolver
 {
-    /**
-     * @var VippsAccountManagementInterface
-     */
-    private $vippsAccountManagement;
-
     /**
      * @var SessionManagerInterface|Session
      */
     private $customerSession;
 
     /**
-     * Link constructor.
+     * @var ScopeConfigInterface
+     */
+    private $scopeConfig;
+
+    /**
+     * @var string|null
+     */
+    private $redirectUrl = null;
+
+    /**
+     * @var UrlInterface
+     */
+    private $url;
+
+    /**
+     * RedirectUrlResolver constructor.
      *
-     * @param VippsAccountManagementInterface $vippsAccountManagement
      * @param SessionManagerInterface $customerSession
-     * @param Template\Context $context
-     * @param array $data
+     * @param UrlInterface $url
+     * @param ScopeConfigInterface $scopeConfig
      */
     public function __construct(
-        VippsAccountManagementInterface $vippsAccountManagement,
         SessionManagerInterface $customerSession,
-        Template\Context $context,
-        array $data = []
+        UrlInterface $url,
+        ScopeConfigInterface $scopeConfig
     ) {
-        parent::__construct($context, $data);
-        $this->vippsAccountManagement = $vippsAccountManagement;
         $this->customerSession = $customerSession;
+        $this->scopeConfig = $scopeConfig;
+        $this->url = $url;
     }
 
     /**
-     * @return bool
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\State\InputMismatchException
+     * Retrieve redirect back url.
+     *
+     * @return string
      */
-    public function isLinked()
+    public function getRedirectUrl()
     {
-        $customer = $this->customerSession->getCustomer();
-        return $this->vippsAccountManagement->isLinked($customer->getDataModel());
+        if (!empty($this->redirectUrl)) {
+            return $this->redirectUrl;
+        }
+
+        $redirectUrl = $this->url->getUrl('customer/account');
+        if (!$this->scopeConfig->getValue('customer/startup/redirect_dashboard')) {
+            $redirectUrl = $this->customerSession->getVippsRedirectUrl()?: $redirectUrl;
+        }
+
+        $this->redirectUrl = $redirectUrl;
+        return $redirectUrl;
     }
 }

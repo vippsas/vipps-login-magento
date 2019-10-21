@@ -98,8 +98,6 @@ class Creator
      * @param UserInfoInterface $userInfo
      *
      * @return CustomerInterface
-     * @throws InputException
-     * @throws InputMismatchException
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */

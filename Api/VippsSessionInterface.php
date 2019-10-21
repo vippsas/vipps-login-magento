@@ -14,18 +14,16 @@
  *  IN THE SOFTWARE.
  */
 
-namespace Vipps\Login\Controller\Login\Redirect\Action;
+namespace Vipps\Login\Api;
 
 /**
- * Interface ActionInterface
- * @package Vipps\Login\Controller\Login\Redirect\Action
+ * Interface VippsSessionInterface
+ * @package Vipps\Login\Api
  */
-interface ActionInterface
+interface VippsSessionInterface
 {
     /**
-     * @param $token
-     *
-     * @return mixed
+     * @return bool
      */
-    public function execute($token);
+    public function isLoggedIn(): bool;
 }

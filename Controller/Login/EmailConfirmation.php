@@ -19,6 +19,7 @@ declare(strict_types=1);
 namespace Vipps\Login\Controller\Login;
 
 use Magento\Framework\Exception\LocalizedException;
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\AccessTokenProvider;
 use Vipps\Login\Model\VippsAccountManagement;
@@ -67,6 +68,11 @@ class EmailConfirmation extends Action
     private $serializer;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * EmailConfirmation constructor.
      *
      * @param Context $context
@@ -76,6 +82,7 @@ class EmailConfirmation extends Action
      * @param JsonFactory $jsonFactory
      * @param AccessTokenProvider $accessTokenProvider
      * @param SerializerInterface $serializer
+     * @param LoggerInterface $logger
      */
     public function __construct(
         Context $context,
@@ -84,7 +91,8 @@ class EmailConfirmation extends Action
         UserInfoCommand $userInfoCommand,
         JsonFactory $jsonFactory,
         AccessTokenProvider $accessTokenProvider,
-        SerializerInterface $serializer
+        SerializerInterface $serializer,
+        LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->customerRepository = $customerRepository;
@@ -93,6 +101,7 @@ class EmailConfirmation extends Action
         $this->jsonFactory = $jsonFactory;
         $this->accessTokenProvider = $accessTokenProvider;
         $this->serializer = $serializer;
+        $this->logger = $logger;
     }
 
     /**
@@ -120,6 +129,7 @@ class EmailConfirmation extends Action
             } catch (LocalizedException $e) {
                 $errorMessage = $e->getMessage();
             } catch (\Exception $e) {
+                $this->logger->critical($e);
                 $errorMessage = __('An error occurred trying to send email');
             }
         }

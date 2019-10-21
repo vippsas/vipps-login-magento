@@ -23,9 +23,11 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\Action;
+use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\UrlInterface;
 use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
+use Vipps\Login\Model\RedirectUrlResolver;
 use Vipps\Login\Model\StateKey;
 
 /**
@@ -55,9 +57,21 @@ class Index extends Action
     private $url;
 
     /**
+     * @var SessionManagerInterface
+     */
+    private $customerSession;
+    
+    /**
+     * @var RedirectUrlResolver
+     */
+    private $redirectUrlResolver;
+
+    /**
      * Index constructor.
      *
      * @param Context $context
+     * @param SessionManagerInterface $customerSession
+     * @param RedirectUrlResolver $redirectUrlResolver
      * @param ApiEndpointsInterface $apiEndpoints
      * @param ConfigInterface $config
      * @param StateKey $stateKey
@@ -65,6 +79,8 @@ class Index extends Action
      */
     public function __construct(
         Context $context,
+        SessionManagerInterface $customerSession,
+        RedirectUrlResolver $redirectUrlResolver,
         ApiEndpointsInterface $apiEndpoints,
         ConfigInterface $config,
         StateKey $stateKey,
@@ -75,6 +91,8 @@ class Index extends Action
         $this->apiEndpoints = $apiEndpoints;
         $this->stateKey = $stateKey;
         $this->url = $url;
+        $this->customerSession = $customerSession;
+        $this->redirectUrlResolver = $redirectUrlResolver;
     }
 
     /**
@@ -93,6 +111,9 @@ class Index extends Action
 
         $vippsRedirectUrl = $this->apiEndpoints->getAuthorizationEndpoint()
             . '?' . implode('&', $params);
+
+        $refererUrl = $this->_redirect->getRefererUrl();
+        $this->customerSession->setVippsRedirectUrl($refererUrl);
 
         $resultRedirect = $this->resultRedirectFactory->create();
         $resultRedirect->setUrl($vippsRedirectUrl);
