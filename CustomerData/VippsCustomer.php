@@ -79,7 +79,6 @@ class VippsCustomer implements SectionSourceInterface
         }
 
         $addressResult = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
-
         foreach ($addressResult->getItems() as $vippsCustomerAddress) {
             $result['addresses'][] = [
                 'country_id' => $vippsCustomerAddress->getCountry(),

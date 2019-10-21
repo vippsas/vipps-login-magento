@@ -103,8 +103,8 @@ class AddressSave
             try {
                 $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customerModel->getDataModel());
                 $vippsAddress = $this->vippsCustomerAddressRepository->getById($addressId);
-                if ($vippsAddress->getVippsCustomerId() != $vippsCustomer->getEntityId()
-
+                if ($vippsAddress->getVippsCustomerId() != $vippsCustomer->getEntityId() &&
+                    $this->vippsAddressManagement->areTheSame($vippsAddress, $vippsCustomer, $address)
                 ) {
                     return $address;
                 }

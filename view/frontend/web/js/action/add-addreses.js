@@ -13,12 +13,15 @@ define([
             formNewAddress: 'form-address-edit',
             streetField: 'street_1',
             postCode: 'zip',
+            city: 'city',
+            telephone: 'telephone',
+            country_id: 'country',
             vippsInputId: 'vipps_address_id'
         },
-        initialize: function () {
+        initialize: function (config) {
             this._super();
             this.selectHolderChange();
-            this.insertHiddenInput();
+            this.insertHiddenInput(config.vippsAddressId);
         },
         selectHolderChange: function () {
             var self = this;
@@ -27,10 +30,9 @@ define([
 
             $('#' + this.options.selectHolder).change(function () {
                 var dataOption = $('#' + self.options.selectHolder + " option:selected")[0].value;
-                var dataOptionText = $('#' + self.options.selectHolder + " option:selected")[0].textContent;
                 var addressePos = self.findData(dataOption, addressesList);
                 self.changeValue(addressesList[addressePos]);
-                self.insertHiddenInput(dataOptionText);
+                self.insertHiddenInput(dataOption);
             })
         },
         /**
@@ -49,22 +51,25 @@ define([
         changeValue: function (props) {
             var propsStreet = $('.' + this.options.formNewAddress).find('#' + this.options.streetField);
             var propsZip = $('.' + this.options.formNewAddress).find('#' + this.options.postCode);
+            var propsCity = $('.' + this.options.formNewAddress).find('#' + this.options.city);
+            var propsTelephone = $('.' + this.options.formNewAddress).find('#' + this.options.telephone);
+            var propsCountry = $('.' + this.options.formNewAddress).find('#' + this.options.country_id);
             propsStreet.val(props.street);
             propsZip.val(props.postalcode);
+            propsCity.val(props.city);
+            propsTelephone.val(props.telephone);
+            propsCountry.val(props.country_id).change();
         },
         /**
          * @return {text} itemText
          */
-        insertHiddenInput: function (itemText) {
+        insertHiddenInput: function (itemValue) {
             if(!$('#' + this.options.vippsInputId).length) {
                 $('.' + this.options.formNewAddress).append(
                     '<input name="vipps_address_id" id="vipps_address_id" type="text" hidden>'
                 );
-            } else {
-                $('#' + this.options.vippsInputId).val(itemText);
             }
-
+            $('#' + this.options.vippsInputId).val(itemValue);
         }
-
-    });
+    })
 });

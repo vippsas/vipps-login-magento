@@ -97,4 +97,12 @@ class VippsAddress extends Template
 
         return $isNewAddress && !$isVippsApply;
     }
+
+    /**
+     * @return int|null
+     */
+    public function getVippsAddressId()
+    {
+        return $this->getRequest()->getParam('vipps_address_id');
+    }
 }

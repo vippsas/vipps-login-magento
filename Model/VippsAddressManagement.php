@@ -435,16 +435,19 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         VippsCustomerInterface $vippsCustomer,
         VippsCustomerAddressInterface $vippsAddress
     ) {
-        if (
-            $vippsAddress->getCustomerAddressId() &&
-            (
-                !$vippsAddress->getWasChanged() ||
-                $vippsCustomer->getSyncAddressMode() == VippsCustomerInterface::AUTO_UPDATE
-            )
-        ) {
+        if (!$vippsAddress->getCustomerAddressId()) {
+            return true;
+        }
+
+
+        if (!$vippsAddress->getWasChanged()) {
             return false;
         }
 
-        return true;
+        if ($vippsCustomer->getSyncAddressMode() == VippsCustomerInterface::AUTO_UPDATE) {
+            return true;
+        }
+
+        return false;
     }
 }

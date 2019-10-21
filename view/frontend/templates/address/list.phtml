@@ -38,12 +38,14 @@ $addresses = $block->getVippsAddresses(true);
         </div>
     </fieldset>
 </div>
+<?php endif ?>
 
 <script type="text/x-magento-init">
     {
         "*": {
-            "Vipps_Login/js/action/add-addreses": {}
+            "Vipps_Login/js/action/add-addreses": {
+                "vippsAddressId": "<?php echo $block->getVippsAddressId(); ?>"
+            }
         }
     }
 </script>
-<?php endif ?>

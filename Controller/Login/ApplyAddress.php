@@ -97,6 +97,7 @@ class ApplyAddress extends AccountBase
                     'street' => explode(PHP_EOL, $vippsAddress->getStreetAddress()),
                     'region' => $vippsAddress->getRegion()
                 ]);
+
                 $params = ['vipps_address_id' => $addressId];
             } catch (NoSuchEntityException $e) {
                 $this->messageManager->addErrorMessage(__('We can\'t delete the address right now.'));
