@@ -4,6 +4,8 @@
 <!--
     <preference for="Magento\Customer\Block\Address\Edit" type="Vipps\Login\Block\Address\Edit"/>
 -->
+    <preference for="Vipps\Login\Api\VippsSessionInterface" type="Vipps\Login\Model\VippsSession"/>
+
 
     <type name="Vipps\Login\Controller\Login\Redirect">
         <arguments>
@@ -156,6 +158,18 @@
     <type name="Vipps\Login\Plugin\Customer\Api\AccountManagement">
         <arguments>
             <argument name="accessTokenProvider" xsi:type="object">Vipps\Login\Model\AccessTokenProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Captcha\Helper\Data">
+        <plugin
+            name="Vipps\Login\Plugin\Captcha\Helper\Data"
+            type="Vipps\Login\Plugin\Captcha\Helper\Data" />
+    </type>
+
+    <type name="Vipps\Login\Observer\CustomerRegistrationFormFill">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
     </type>
 </config>

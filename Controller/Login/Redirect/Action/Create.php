@@ -27,7 +27,6 @@ use Magento\Framework\Exception\State\InputMismatchException;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Customer\Model\CustomerRegistry;
-use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\Creator;
 
@@ -86,20 +85,20 @@ class Create implements ActionInterface
     }
 
     /**
-     * @param $token
+     * @param array $token
      *
-     * @return bool|Redirect
+     * @return Redirect
      * @throws InputException
      * @throws InputMismatchException
      * @throws LocalizedException
      * @throws NoSuchEntityException
-     * @throws \Exception
+     * @throws \Magento\Framework\Exception\AuthorizationException
      */
     public function execute($token)
     {
-        $userInfo = $this->userInfoCommand->execute($token['access_token']);
-
         try {
+            $accessToken = $token['access_token'] ?? null;
+            $userInfo = $this->userInfoCommand->execute($accessToken);
             $magentoCustomer = $this->creator->create($userInfo);
             $customer = $this->customerRegistry->retrieveByEmail($magentoCustomer->getEmail());
             $this->sessionManager->setCustomerAsLoggedIn($customer);
@@ -108,51 +107,9 @@ class Create implements ActionInterface
             $redirect->setPath('customer/account');
             return $redirect;
         } catch (\Magento\Framework\Validator\Exception $e) {
-            $this->setCustomerFormData($userInfo);
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account/create');
             return $redirect;
         }
-    }
-
-    /**
-     * @param UserInfoInterface $userInfo
-     */
-    private function setCustomerFormData(UserInfoInterface $userInfo)
-    {
-        $customerFormData = [
-            'email' => $userInfo->getEmail(),
-            'firstname' => $userInfo->getGivenName(),
-            'lastname' => $userInfo->getFamilyName(),
-            'birthday' => $userInfo->getBirthdate(),
-            'telephone' => $userInfo->getPhoneNumber()
-        ];
-
-        $address = $this->getAddressByType($userInfo, 'home');
-        if ($address) {
-            $customerFormData['postcode'] = $address['postal_code'];
-            $customerFormData['country_id'] = $address['country'];
-            $customerFormData['street'] = $address['street_address'];
-            $customerFormData['city'] = $address['region'];
-        }
-
-        $this->sessionManager->setCustomerFormData($customerFormData);
-    }
-
-    /**
-     * @param UserInfoInterface $userInfo
-     * @param $type
-     *
-     * @return mixed|null
-     */
-    private function getAddressByType(UserInfoInterface $userInfo, $type)
-    {
-        $addresses = $userInfo->getAddress() ?? [];
-        foreach ($addresses as $address) {
-            if ($address['address_type'] == $type) {
-                return $address;
-            }
-        }
-        return null;
     }
 }
