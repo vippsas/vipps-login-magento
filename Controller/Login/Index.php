@@ -19,7 +19,6 @@ declare(strict_types=1);
 namespace Vipps\Login\Controller\Login;
 
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ResponseInterface;
@@ -28,7 +27,7 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\UrlInterface;
 use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
-use Vipps\Login\Model\RedirectPathResolver;
+use Vipps\Login\Model\RedirectUrlResolver;
 use Vipps\Login\Model\StateKey;
 
 /**
@@ -63,16 +62,16 @@ class Index extends Action
     private $customerSession;
     
     /**
-     * @var RedirectPathResolver
+     * @var RedirectUrlResolver
      */
-    private $redirectPathResolver;
+    private $redirectUrlResolver;
 
     /**
      * Index constructor.
      *
      * @param Context $context
      * @param SessionManagerInterface $customerSession
-     * @param RedirectPathResolver $redirectPathResolver
+     * @param RedirectUrlResolver $redirectUrlResolver
      * @param ApiEndpointsInterface $apiEndpoints
      * @param ConfigInterface $config
      * @param StateKey $stateKey
@@ -81,7 +80,7 @@ class Index extends Action
     public function __construct(
         Context $context,
         SessionManagerInterface $customerSession,
-        RedirectPathResolver $redirectPathResolver,
+        RedirectUrlResolver $redirectUrlResolver,
         ApiEndpointsInterface $apiEndpoints,
         ConfigInterface $config,
         StateKey $stateKey,
@@ -93,7 +92,7 @@ class Index extends Action
         $this->stateKey = $stateKey;
         $this->url = $url;
         $this->customerSession = $customerSession;
-        $this->redirectPathResolver = $redirectPathResolver;
+        $this->redirectUrlResolver = $redirectUrlResolver;
     }
 
     /**

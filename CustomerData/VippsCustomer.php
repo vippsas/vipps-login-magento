@@ -85,7 +85,8 @@ class VippsCustomer implements SectionSourceInterface
                 'county_id' => $vippsCustomerAddress->getCountry(),
                 'postal_code' => $vippsCustomerAddress->getPostalCode(),
                 'street' => $vippsCustomerAddress->getStreetAddress(),
-                'telephone' => $vippsCustomer->getTelephone()
+                'telephone' => $vippsCustomer->getTelephone(),
+                'id' => $vippsCustomerAddress->getEntityId()
             ];
             if ($vippsCustomerAddress->getWasChanged()) {
                 $result['addressUpdated'] = true;
