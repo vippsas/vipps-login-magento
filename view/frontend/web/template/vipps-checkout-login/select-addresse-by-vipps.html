@@ -1,0 +1,17 @@
+<div id="vipps_addresses">
+    <fieldset class="fieldset">
+        <div class="field">
+            <label for="vipps_address" class="label"><span data-bind="i18n: 'Copy from Vipps'"/></label>
+            <select id="vipps_address" name="vipps_address"
+                    data-bind="
+                    event:{ change: selectHolderChange},
+                    attr: {'title': $t('Vipps Addresses')}"
+                    class="validate-select">
+                <option value="" data-bind="i18n: 'Select vipps address'"></option>
+                <!-- ko foreach: getDataList() -->
+                        <option data-bind="attr: {'value': id}, html: street + ' ' + postalcode" />
+                <!--/ko-->
+            </select>
+        </div>
+    </fieldset>
+</div>
