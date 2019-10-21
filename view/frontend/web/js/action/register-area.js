@@ -7,7 +7,7 @@ define([
     return Component.extend({
         options: {
             formAccountCreate: 'form-create-account',
-            linkToogle: 'link-toogle'
+            linkToogle: 'link-toogle',
         },
         initialize: function () {
             this._super();
@@ -15,9 +15,15 @@ define([
         },
         toogle: function () {
             var self = this;
-            $('.' + this.options.linkToogle).on('click',function () {
-               $('.' + self.options.formAccountCreate).slideToggle();
-            });
+            if($('.' + this.options.linkToogle).length) {
+                $('.' + this.options.linkToogle).on('click',function () {
+                    $('.' + self.options.formAccountCreate).slideToggle();
+                });
+            } else  {
+                $('.' + self.options.formAccountCreate).show();
+                $('.' + self.options.formAccountCreate).find('.field.password').remove();
+                $('.' + self.options.formAccountCreate).find('.field.confirmation').remove();
+            }
         }
     });
 });
