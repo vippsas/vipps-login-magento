@@ -27,7 +27,6 @@ use Magento\Customer\Model\ResourceModel\Grid\CollectionFactory as GridCollectio
 use Magento\Customer\Model\ResourceModel\Grid\Collection as GridCollection;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Api\Data\CustomerSearchResultsInterface;
 use Magento\Framework\Exception\LocalizedException;
 
 /**
@@ -119,6 +118,7 @@ class AccountsProvider
             $result = $this->customerRepository->getList($searchCriteria);
             return $result->getItems();
         }
+
         return null;
     }
 
