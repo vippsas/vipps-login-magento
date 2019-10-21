@@ -19,67 +19,95 @@
 define([
    'jquery',
    'Magento_Ui/js/modal/modal',
-   'Magento_Customer/js/customer-data'
-], function ($, modal, storage) {
+   'Magento_Customer/js/customer-data',
+   'mage/storage',
+], function ($, modal, CustomerData, storage) {
     'use strict';
 
-    var cacheKey = 'vipps_login_data',
+    $.widget('mage.vippsLoginPopUp',{
+        /**
+         * Added clear timeout on trigger show
+         */
+        options: {
+            type: 'popup',
+            cacheKey: 'vipps_login_data',
+            idModal: '#popup-mpdal',
+            callUrl: 'vipps/login/addressUpdate',
+            paramCall: 'sync_address_mode',
+            responsive: true,
+            innerScroll: true,
+            buttons: [
+                {
+                    text: $.mage.__('No'),
+                    class: '',
+                    click: function () {
+                        this.closeModal();
+                        CustomerData.set('sync_address_mode',false)
+                    }
+                },
+                {
+                    text: $.mage.__('Yes'),
+                    class: '',
+                    click: function () {
+                        this.closeModal();
+                        CustomerData.set('sync_address_mode',true)
+                    }
+                }
+            ]
+        },
+        _init: function () {
+            var popup = modal(this.options, $(this.options.idModal));
+            var getKey = CustomerData.get('vippsPopUpShow');
+            var self = this;
 
+
+            if (this._getData().addressUpdated &&
+                getKey() !== true) {
+                $(this.options.idModal).modal("openModal").on('modalclosed', function() {
+                    self.sendData();
+                });
+                CustomerData.set('vippsPopUpShow',true);
+                $(this.options.idModal).show();
+            } else {
+                $(this.options.idModal).hide();
+            }
+
+        },
+        sendData: function () {
+            storage.post(
+                'vipps/login/addressUpdate',
+                {'sync_address_mode': CustomerData.get('sync_address_mode')()},
+                1,
+                'json'
+            );
+        },
         /**
          * @param {Object} data
          */
-        saveData = function (data) {
-            storage.set(cacheKey, data);
+        _saveData: function (data) {
+            CustomerData.set(this.options.cacheKey, data);
         },
 
         /**
          * @return {*}
          */
-        getData = function () {
-            var data = storage.get(cacheKey)();
+        _getData: function () {
+            var data = CustomerData.get(this.options.cacheKey)();
 
             if ($.isEmptyObject(data)) {
                 data = {
                     'addressUpdated': false
                 };
-                saveData(data);
+                this._saveData(data);
             }
 
             return data;
-        },
+        }
 
-        options = {
-            type: 'popup',
-            responsive: true,
-            innerScroll: true,
-            buttons: [
-                {
-                    text: $.mage.__('Cancel'),
-                    class: '',
-                    click: function () {
-                        this.closeModal();
-                    }
-                },
-                {
-                    text: $.mage.__('Only this time'),
-                    class: '',
-                    click: function () {
-                        this.closeModal();
-                    }
-                },
-                {
-                    text: $.mage.__('Update automatically'),
-                    class: '',
-                    click: function () {
-                        this.closeModal();
-                    }
-                }
-            ]
-        };
+    });
 
-    var popup = modal(options, $('#popup-mpdal'));
+    return $.mage.vippsLoginPopUp;
 
-    if (getData().addressUpdated) {
-        $("#popup-mpdal").modal("openModal");
-    }
 });
+
+
