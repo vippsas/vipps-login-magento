@@ -21,6 +21,7 @@ namespace Vipps\Login\CustomerData;
 use Magento\Customer\CustomerData\SectionSourceInterface;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Session\SessionManagerInterface;
+use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 
@@ -88,7 +89,9 @@ class VippsCustomer implements SectionSourceInterface
                 'street' => $vippsCustomerAddress->getStreetAddress(),
                 'id' => $vippsCustomerAddress->getEntityId()
             ];
-            if ($vippsCustomerAddress->getWasChanged()) {
+            if ($vippsCustomerAddress->getWasChanged() &&
+                $vippsCustomer->getSyncAddressMode() !== VippsCustomerInterface::NEVER_UPDATE
+            ) {
                 $result['addressUpdated'] = true;
             }
         }

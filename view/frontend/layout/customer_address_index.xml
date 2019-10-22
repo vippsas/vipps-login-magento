@@ -17,7 +17,7 @@
     <update handle="customer_account"/>
     <body>
         <referenceContainer name="content">
-            <block class="Vipps\Login\Block\Account\VippsAddress" name="vipps_address" template="Vipps_Login::account/vipps_address.phtml" cacheable="false" after="-"/>
+            <block class="Vipps\Login\Block\Account\AddressList" name="vipps_address" template="Vipps_Login::account/vipps_address.phtml" cacheable="false" after="-"/>
         </referenceContainer>
     </body>
 </page>

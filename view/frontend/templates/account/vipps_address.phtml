@@ -16,10 +16,10 @@
 
 // @codingStandardsIgnoreFile
 
-/** @var \Vipps\Login\Block\Account\VippsAddress $block */
+/** @var \Vipps\Login\Block\Account\AddressList $block */
 ?>
 <?php if ($vippsAddresses = $block->getVippsAddresses()): ?>
-    <div class="block block-addresses-list vipps-addresse">
+    <div class="block block-addresses-list vipps-addresses">
         <div class="block-title"><strong><?= $block->escapeHtml(__('Vipps Address Entries')) ?></strong></div>
         <div class="block-content">
             <ol class="items addresses">
@@ -33,7 +33,8 @@
                             <?= $address->getStreetAddress() ?><br />
                             <?= $address->getRegion() ?><br />
                             <?= $address->getPostalCode() ?><br />
-                            <?= $address->getCountry() ?><br />
+                            <?= $block->getCountryName($address->getCountry()) ?><br />
+                            T: <?= $block->renderPhone() ?><br />
                         </address>
                         <?php if (!$address->getCustomerAddressId()): ?>
                             <div class="item actions">
