@@ -177,7 +177,7 @@ class VippsCustomer extends AbstractExtensibleObject implements VippsCustomerInt
      */
     public function getSyncAddressMode()
     {
-        return $this->_get('sync_address_mode');
+        return (int)$this->_get('sync_address_mode');
     }
 
     /**
@@ -187,6 +187,6 @@ class VippsCustomer extends AbstractExtensibleObject implements VippsCustomerInt
      */
     public function setSyncAddressMode($value)
     {
-        return $this->setData('sync_address_mode', $value);
+        return $this->setData('sync_address_mode', (int)$value);
     }
 }

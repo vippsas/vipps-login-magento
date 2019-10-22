@@ -137,7 +137,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
 
         foreach ($vippsAddresses as $vippsAddress) {
             $this->assign($vippsAddress, $vippsCustomer, $addressesResult->getItems());
-            $this->convert($customer, $vippsCustomer, $vippsAddress, $hasDefault);
+            $this->convert($customer, $vippsCustomer, $vippsAddress, $hasDefault, false);
         }
     }
 
@@ -206,9 +206,10 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         CustomerInterface $customer,
         VippsCustomerInterface $vippsCustomer,
         VippsCustomerAddressInterface $vippsAddress,
-        bool $hasDefault
+        bool $hasDefault,
+        bool $forceConvert
     ) {
-        if (!$this->isConvertAllowed($vippsCustomer, $vippsAddress)) {
+        if (!$this->isConvertAllowed($vippsCustomer, $vippsAddress, $forceConvert)) {
             return false;
         }
 
@@ -428,17 +429,22 @@ class VippsAddressManagement implements VippsAddressManagementInterface
     /**
      * @param VippsCustomerInterface $vippsCustomer
      * @param VippsCustomerAddressInterface $vippsAddress
+     * @param bool $forceConvert
      *
      * @return bool
      */
     private function isConvertAllowed(
         VippsCustomerInterface $vippsCustomer,
-        VippsCustomerAddressInterface $vippsAddress
+        VippsCustomerAddressInterface $vippsAddress,
+        bool $forceConvert
     ) {
-        if (!$vippsAddress->getCustomerAddressId()) {
+        if ($forceConvert) {
             return true;
         }
 
+        if (!$vippsAddress->getCustomerAddressId()) {
+            return true;
+        }
 
         if (!$vippsAddress->getWasChanged()) {
             return false;

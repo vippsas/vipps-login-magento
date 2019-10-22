@@ -136,7 +136,7 @@ class AddressUpdate extends AccountBase
 
             $vippsAddressesResult = $this->vippsCustomerAddressRepository
                 ->getByVippsCustomer($vippsCustomer);
-            
+
             foreach ($vippsAddressesResult->getItems() as $item) {
                 if ($item->getWasChanged()) {
                     $this->vippsCustomerAddressRepository->save($item);
@@ -145,7 +145,8 @@ class AddressUpdate extends AccountBase
                             $customer,
                             $vippsCustomer,
                             $item,
-                            false
+                            false,
+                            true
                         );
                     }
                 }
