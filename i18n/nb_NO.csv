@@ -1,0 +1,73 @@
+"Welcome back, again","Welcome back, again"
+"Updated Successfully","Updated Successfully"
+"You are not linked to vipps account.","You are not linked to vipps account."
+"An error occurred.","An error occurred."
+"We can't delete the address right now.","We can't delete the address right now."
+"Your changes applied successfully.","Your changes applied successfully."
+"An error occurred during applying settings. Please, try again later.","An error occurred during applying settings. Please, try again later."
+"An error occurred. Please, try again later.","An error occurred. Please, try again later."
+"Your account was successfully confirmed.","Your account was successfully confirmed."
+"An error occurred during email confirmation.","An error occurred during email confirmation."
+"Please check your email for confirmation key.","Please check your email for confirmation key."
+"This email does not require confirmation.","This email does not require confirmation."
+"An error occurred trying to send email","An error occurred trying to send email"
+"Vipps Login Configuration","Vipps Login Configuration"
+"Login successful.","Login successful."
+"Invalid login or password.","Invalid login or password."
+"Invalid state key.","Invalid state key."
+"Please, try again later.","Please, try again later."
+"Your account was successfully linked.","Your account was successfully linked."
+"An error occurred during linking accounts.","An error occurred during linking accounts."
+"Your account was successfully unlinked.","Your account was successfully unlinked."
+"An error occurred during unbinding accounts. Please, try again later.","An error occurred during unbinding accounts. Please, try again later."
+"An error occurred trying to get token","An error occurred trying to get token"
+error_description,error_description
+"%1 Unauthorized","%1 Unauthorized"
+"%1 Bad Request","%1 Bad Request"
+"Account already confirmed","Account already confirmed"
+Register,Register
+"Register me by using Vipps","Register me by using Vipps"
+"... or you can use default way","... or you can use default way"
+"Sign in with Vipps","Logg inn med Vipps"
+"The easiest way to sign in. Anyone with Vipps can use Vipps to sign in.
+         Never again usernames and passwords – you just need to remember your phone number.
+         Vipps, and you are logged in.","Enklere innlogging finnes ikke. Alle som har Vipps kan også logge inn med Vipps.
+                                                 Aldri mer brukernavn og passord – du trenger bare å huske telefonnummeret ditt.
+                                                 Vipps, så er du logget inn."
+"When you update your addresses in Vipps, should we update our records?","Når du oppdaterer adressene dine i Vipps, skal vi oppdatere adressene vi har lagret om deg?"
+"Unlink account","Fjern tilknytning"
+"Vipps Address Entries","Vipps Address Entries"
+"Apply Address","Apply Address"
+Applied,Applied
+"Update address","Oppdater adresse"
+"Update automatically","Oppdater automatisk"
+"Ask before update","Spør først"
+"Do nothing","Ikke gjør noe"
+Save,Lagre
+Back,Tilbake
+"Your account is not linked to Vipps.","Your account is not linked to Vipps."
+"Use Vipps address","Use Vipps address"
+"Vipps Addresses","Vipps Addresses"
+"Select vipps address","Select vipps address"
+"* Required Fields","* Required Fields"
+"Looks, like your email %1 has been already registered. Confirm your password or send confirmation link to your email.","Looks, like your email %1 has been already registered. Confirm your password or send confirmation link to your email."
+Email,Email
+Password,Password
+"Sign In","Logg Inn"
+"Send confirmation link to email","Send confirmation link to email"
+"Sign in with","Logg inn med"
+"Log in","Logg inn"
+"Log in me by using Vipps","Logg inn med Vipps"
+"Vipps address was changed - would you like to update it?","Vipps address was changed - would you like to update it?"
+"Please confirm your %store_name account","Please confirm your %store_name account"
+"%name,","%name,"
+"Confirm that %customer_email is your email address to sign in. It’s easy – just click the button below.","Bekreft at e-postadressen din er %customer_email for å logge inn. Det er enkelt – bare klikk på knappen under."
+"Confirm my email address","Bekreft e-postadressen min"
+No,Nei
+Yes,Ja
+Vipps,Vipps
+Login,"Logg Inn"
+Environment,Environment
+Debug,Debug
+"Client ID","Klient ID"
+"Client Secret","Klient Hemmelig"

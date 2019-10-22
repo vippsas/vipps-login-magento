@@ -25,7 +25,9 @@ $syncMode = $block->getSyncAddressMode();
 <form class="form form-newsletter-manage" action="<?= $block->escapeUrl($block->getAction()) ?>" method="post" id="form-validate">
     <fieldset class="fieldset">
         <?= $block->getBlockHtml('formkey') ?>
-        <legend class="legend"><span><?= $block->escapeHtml(__('Address synchronization option')) ?></span></legend><br>
+        <legend class="legend"><span><?= $block->escapeHtml(__('Update address')) ?></span></legend><br>
+        <p><?= $block->escapeHtml(__('When you update your addresses in Vipps, should we update our records?')) ?></p>
+        <br>
         <div class="field choice">
             <input type="radio" name="sync_address_mode" id="auto_sync_address"
                    value="<?=VippsCustomerInterface::AUTO_UPDATE?>"
@@ -38,20 +40,20 @@ $syncMode = $block->getSyncAddressMode();
         <div class="field choice">
             <input type="radio" name="sync_address_mode" id="manual_sync_address"
                    value="<?=VippsCustomerInterface::MANUAL_UPDATE?>"
-                   title="<?= $block->escapeHtmlAttr(__('Ask, before update')) ?>"
+                   title="<?= $block->escapeHtmlAttr(__('Ask before update')) ?>"
                 <?php if ($syncMode == VippsCustomerInterface::MANUAL_UPDATE): ?> checked="checked"<?php endif; ?>
                    class="checkbox"
             >
-            <label for="manual_sync_address" class="label"><span><?= $block->escapeHtml(__('Ask, before update')) ?></span></label>
+            <label for="manual_sync_address" class="label"><span><?= $block->escapeHtml(__('Ask before update')) ?></span></label>
         </div>
         <div class="field choice">
             <input type="radio" name="sync_address_mode" id="never_sync_address"
                    value="<?=VippsCustomerInterface::NEVER_UPDATE?>"
-                   title="<?= $block->escapeHtmlAttr(__('Never update')) ?>"
+                   title="<?= $block->escapeHtmlAttr(__('Do nothing')) ?>"
                 <?php if ($syncMode == VippsCustomerInterface::NEVER_UPDATE): ?> checked="checked"<?php endif; ?>
                    class="checkbox"
             >
-            <label for="never_sync_address" class="label"><span><?= $block->escapeHtml(__('Never update')) ?></span></label>
+            <label for="never_sync_address" class="label"><span><?= $block->escapeHtml(__('Do nothing')) ?></span></label>
         </div>
     </fieldset>
     <div class="actions-toolbar">
