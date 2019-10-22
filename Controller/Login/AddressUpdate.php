@@ -131,16 +131,23 @@ class AddressUpdate extends AccountBase
                 throw new LocalizedException(__('You are not linked to vipps account.'));
             }
 
-            $syncType = $this->getRequest()->getParam('sync_address_mode');
-            $vippsCustomer->setSyncAddressMode($syncType);
+            $vippsCustomer->setSyncAddressMode($mode['sync_address_mode']);
             $this->vippsCustomerRepository->save($vippsCustomer);
 
-            if ($mode['sync_address_mode'] != VippsCustomerInterface::NEVER_UPDATE) {
-                $vippsAddressesResult = $this->vippsCustomerAddressRepository
-                    ->getByVippsCustomer($vippsCustomer);
-                foreach ($vippsAddressesResult->getItems() as $item) {
-                    if ($item->getWasChanged()) {
-                        $this->vippsAddressManagement->convert($customer, $vippsCustomer, $item, false);
+            $vippsAddressesResult = $this->vippsCustomerAddressRepository
+                ->getByVippsCustomer($vippsCustomer);
+
+            foreach ($vippsAddressesResult->getItems() as $item) {
+                if ($item->getWasChanged()) {
+                    $this->vippsCustomerAddressRepository->save($item);
+                    if ($mode['sync_address_mode'] !== VippsCustomerInterface::NEVER_UPDATE) {
+                        $this->vippsAddressManagement->convert(
+                            $customer,
+                            $vippsCustomer,
+                            $item,
+                            false,
+                            true
+                        );
                     }
                 }
             }

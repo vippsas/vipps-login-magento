@@ -85,14 +85,16 @@ interface VippsAddressManagementInterface
      * @param VippsCustomerInterface $vippsCustomer
      * @param VippsCustomerAddressInterface $vippsAddress
      * @param bool $hasDefault
+     * @param bool $forceConvert
      *
-     * @return bool|AddressInterface
+     * @return mixed
      */
     public function convert(
         CustomerInterface $customer,
         VippsCustomerInterface $vippsCustomer,
         VippsCustomerAddressInterface $vippsAddress,
-        bool $hasDefault
+        bool $hasDefault,
+        bool $forceConvert
     );
 
     /**

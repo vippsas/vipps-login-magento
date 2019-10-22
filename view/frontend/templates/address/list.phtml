@@ -17,15 +17,16 @@
 declare(strict_types=1);
 
 /** @var $block \Vipps\Login\Block\Account\VippsAddress */
+$isNewAddress = $block->isNewAddress();
 $addresses = $block->getVippsAddresses(true);
 /** @var $address \Vipps\Login\Api\Data\VippsCustomerAddressInterface */
 ?>
 
-<?php if (!empty($addresses)): ?>
+<?php if ($isNewAddress && !empty($addresses)): ?>
 <div id="vipps_addresses">
     <fieldset class="fieldset">
         <div class="field">
-            <label for="vipps_address" class="label"><span><?= $block->escapeHtml(__('Copy from Vipps')) ?></span></label>
+            <label for="vipps_address" class="label"><span><?= $block->escapeHtml(__('Use Vipps address')) ?></span></label>
             <select id="vipps_address" name="vipps_address"
                     title="<?= $block->escapeHtmlAttr(__('Vipps Addresses')) ?>"
                     class="validate-select">
@@ -37,12 +38,14 @@ $addresses = $block->getVippsAddresses(true);
         </div>
     </fieldset>
 </div>
+<?php endif ?>
 
 <script type="text/x-magento-init">
     {
         "*": {
-            "Vipps_Login/js/action/add-addreses": {}
+            "Vipps_Login/js/action/add-addreses": {
+                "vippsAddressId": "<?php echo $block->getVippsAddressId(); ?>"
+            }
         }
     }
 </script>
-<?php endif ?>

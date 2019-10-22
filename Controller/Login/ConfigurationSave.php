@@ -41,6 +41,7 @@ class ConfigurationSave extends AccountBase
      * @var Validator
      */
     private $formKeyValidator;
+
     /**
      * @var LoggerInterface
      */

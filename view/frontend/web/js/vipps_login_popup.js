@@ -38,19 +38,27 @@ define([
             innerScroll: true,
             buttons: [
                 {
-                    text: $.mage.__('No'),
+                    text: $.mage.__('Never'),
                     class: '',
                     click: function () {
                         this.closeModal();
-                        CustomerData.set('sync_address_mode',false)
+                        CustomerData.set('sync_address_mode', 2)
                     }
                 },
                 {
-                    text: $.mage.__('Yes'),
+                    text: $.mage.__('Only this time'),
                     class: '',
                     click: function () {
                         this.closeModal();
-                        CustomerData.set('sync_address_mode',true)
+                        CustomerData.set('sync_address_mode', 0)
+                    }
+                },
+                {
+                    text: $.mage.__('Yes, automatically'),
+                    class: '',
+                    click: function () {
+                        this.closeModal();
+                        CustomerData.set('sync_address_mode', 1)
                     }
                 }
             ]
@@ -76,7 +84,9 @@ define([
         sendData: function () {
             storage.post(
                 'vipps/login/addressUpdate',
-                {'sync_address_mode': CustomerData.get('sync_address_mode')()},
+                JSON.stringify({
+                        'sync_address_mode': CustomerData.get('sync_address_mode')()
+                    }),
                 1,
                 'json'
             );
