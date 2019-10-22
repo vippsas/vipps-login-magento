@@ -14,7 +14,7 @@ define([
             verifyPasswordForm: 'verify-password-form',
             verifyEmailForm: 'verify-email-form',
             urlLoginConfirmation: 'vipps/login/emailConfirmation',
-            urlPasswordConfirmation: 'vipps/login/passwordConfirmation'
+            urlPasswordConfirmation: 'vipps/login/passwordConfirm'
         },
         initialize: function () {
             this._super();
