@@ -17,7 +17,6 @@ define([
        },
        initialize: function () {
         this._super();
-        console.log('______', this.options.isCustomerLoggedIn())
 
        },
        checkLoginUser: function () {

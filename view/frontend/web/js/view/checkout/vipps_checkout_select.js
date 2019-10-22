@@ -27,7 +27,6 @@ define([
        },
        selectHolderChange: function (data, event) {
            this.selectedAddresse(event.target.selectedOptions[0].value);
-           console.log(event.target.selectedOptions[0].value)
 
        }
    });
