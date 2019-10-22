@@ -10,7 +10,14 @@
         margin-left: 10px;
     }
 }
-
+.vipps-login-error {
+    .login-container {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 300px;
+    }
+}
 
 .login-vipps-holder {
     display: flex;
@@ -53,25 +60,20 @@
     }
 }
 
+.account {
+    .vipps-addresses {
+        margin-top: 20px;
+    }
+    #vipps_addresses {
+        width: 48%;
+        margin-bottom: 15px;
+    }
+}
+
 .login-vipps-account {
     background: @vipps__backgound-box;
     padding: 25px;
     border-radius: 12px;
-
-    .vipps-btn {
-        display: flex;
-        background: @vipps__color;
-        padding: 15px 25px;
-        border-radius: 5px;
-        border: 0;
-
-        &:hover,
-        &:focus,
-        &:active {
-            background: lighten(@vipps__color, 10%);
-            border: 0;
-        }
-    }
 
     p {
         color: @cipps__text-color;
@@ -83,6 +85,40 @@
         width: 40px;
         height: 40px;
         background-size: cover;
+    }
+}
+
+.login-vipps-account {
+    .vipps-btn {
+        display: flex;
+        background: @vipps__color;
+        padding: 15px 25px;
+        border-radius: 12px;
+        border: 0;
+
+        &:hover,
+        &:focus,
+        &:active {
+            background: lighten(@vipps__color, 10%);
+            border: 0;
+        }
+    }
+}
+
+.login-vipps-holder {
+    .vipps-btn {
+        display: flex;
+        background: @vipps__color;
+        padding: 15px 25px;
+        border-radius: 25px;
+        border: 0;
+
+        &:hover,
+        &:focus,
+        &:active {
+            background: lighten(@vipps__color, 10%);
+            border: 0;
+        }
     }
 }
 
@@ -166,12 +202,10 @@
     }
 }
 
-@media (min-width: @screen__m ) {
-    .login-container {
-        display: flex;
-        justify-content: flex-start;
-        flex-flow: row wrap;
 
+@media (min-width: @screen__m ) {
+    .login-container,
+    .step-content {
         .login-vipps-holder {
             align-items: flex-start;
             order: 0;
@@ -181,6 +215,12 @@
                 text-align: left;
             }
         }
+    }
+
+    .login-container {
+        display: flex;
+        justify-content: flex-start;
+        flex-flow: row wrap;
 
         .block {
             width: 50%;

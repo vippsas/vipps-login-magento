@@ -1,0 +1,14 @@
+<!-- ko if: !checkLoginUser() -->
+<div class="login-vipps-holder">
+    <div class="login-vipps-holder-text">
+        <h2><span data-bind="i18n: 'Log in'"/></h2>
+        <p><span data-bind="i18n: 'Log in me by using Vipps'"/></p>
+    </div>
+    <div class="login-vipps">
+        <form data-bind="attr: { action: getBaseUrl() }" method="post">
+            <button type="submit" class="action create primary vipps-btn"><span data-bind="i18n: 'Login me with'"/><span class="icon-vipps"></span></button>
+        </form>
+    </div>
+    <p><span data-bind="i18n: 'Or you can use default way'"/></p>
+</div>
+<!-- /ko -->

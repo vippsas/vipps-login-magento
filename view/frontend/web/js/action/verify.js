@@ -44,7 +44,7 @@ define([
                     1,
                     'json'
                 ).done(function (response) {
-                    if (response.success) {
+                    if (response.error !== true) {
                         self.showMsgPopUp('Request was send',response.message)
                     } else {
                         self.showMsgPopUp('An error occurred',response.message);
@@ -56,7 +56,13 @@ define([
             if (formId.id === this.options.verifyPasswordForm) {
                 self.loadderShowOrHide(true);
                 loginAction(self.fetchData(self.options.verifyPasswordForm),
-                            self.options.urlPasswordConfirmation).always(function () {
+                            self.options.urlPasswordConfirmation).done(function (response) {
+                    if (response.error !== true) {
+                        self.showMsgPopUp('Request was send',response.message)
+                    } else {
+                        self.showMsgPopUp('An error occurred',response.message);
+                    }
+                }).always(function () {
                     self.loadderShowOrHide();
                 });
             }
