@@ -44,7 +44,7 @@ define([
                     1,
                     'json'
                 ).done(function (response) {
-                    if (response.success) {
+                    if (response.error !== true) {
                         self.showMsgPopUp('Request was send',response.message)
                     } else {
                         self.showMsgPopUp('An error occurred',response.message);
@@ -57,7 +57,7 @@ define([
                 self.loadderShowOrHide(true);
                 loginAction(self.fetchData(self.options.verifyPasswordForm),
                             self.options.urlPasswordConfirmation).done(function (response) {
-                    if (response.success) {
+                    if (response.error !== true) {
                         self.showMsgPopUp('Request was send',response.message)
                     } else {
                         self.showMsgPopUp('An error occurred',response.message);

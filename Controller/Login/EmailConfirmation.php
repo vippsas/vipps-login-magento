@@ -121,7 +121,7 @@ class EmailConfirmation extends Action
 
                 return $this->jsonFactory
                     ->create()
-                    ->setData(['success' => true, 'message' => __('Please check your email for confirmation key.')]);
+                    ->setData(['error' => false, 'message' => __('Please check your email for confirmation key.')]);
             } catch (InvalidTransitionException $e) {
                 $errorMessage = __('This email does not require confirmation.');
             } catch (AuthorizationException $e) {
