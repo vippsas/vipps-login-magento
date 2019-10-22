@@ -25,12 +25,13 @@ if ($block->isLinked()): ?>
 <div class="login-vipps-account">
     <form action="<?php echo $block->getUrl('vipps/login/unlink'); ?>" method="post">
         <div class="icon-login"></div>
-        <h3><?= $block->escapeHtml(__('Easier login with Vipps')) ?></h3>
-        <p><?= $block->escapeHtml(__('With Vipps you can log in with the pressure of all your devices.
-            Your existing username/email and password will continue to work.')) ?></p>
+        <h3><?= $block->escapeHtml(__('Sign in with Vipps')) ?></h3>
+        <p><?= $block->escapeHtml(__('The easiest way to sign in. Anyone with Vipps can use Vipps to sign in. 
+        Never again usernames and passwords – you just need to remember your phone number. 
+        Vipps, and you are logged in.')) ?></p>
         <button type="submit"
                class="action create primary vipps-btn">
-            <?= $block->escapeHtml(__('Stop keep going with')) ?>
+            <?= $block->escapeHtml(__('Unlink account')) ?>
             <span class="icon-vipps"></span>
         </button>
     </form>
@@ -41,12 +42,13 @@ if ($block->isLinked()): ?>
     <div class="login-vipps-account">
         <form action="<?php echo $block->getUrl('vipps/login/index'); ?>" method="post">
             <div class="icon-login"></div>
-            <h3><?= $block->escapeHtml(__('Easier login with Vipps')) ?></h3>
-            <p><?= $block->escapeHtml(__('With Vipps you can log in with the pressure of all your devices.
-            Your existing username/email and password will continue to work.')) ?></p>
+            <h3><?= $block->escapeHtml(__('Sign in with Vipps')) ?></h3>
+            <p><?= $block->escapeHtml(__('The easiest way to sign in. Anyone with Vipps can use Vipps to sign in.
+         Never again usernames and passwords – you just need to remember your phone number.
+         Vipps, and you are logged in.')) ?></p>
             <button type="submit"
                    class="action create primary vipps-btn">
-                <?= $block->escapeHtml(__('Keep going with')) ?>
+                <?= $block->escapeHtml(__('Sign in with')) ?>
                 <span class="icon-vipps"></span>
             </button>
         </form>
