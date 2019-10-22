@@ -60,6 +60,16 @@
     }
 }
 
+.account {
+    .vipps-addresses {
+        margin-top: 20px;
+    }
+    #vipps_addresses {
+        width: 48%;
+        margin-bottom: 15px;
+    }
+}
+
 .login-vipps-account {
     background: @vipps__backgound-box;
     padding: 25px;
@@ -78,7 +88,23 @@
     }
 }
 
-.login-vipps-account,
+.login-vipps-account {
+    .vipps-btn {
+        display: flex;
+        background: @vipps__color;
+        padding: 15px 25px;
+        border-radius: 12px;
+        border: 0;
+
+        &:hover,
+        &:focus,
+        &:active {
+            background: lighten(@vipps__color, 10%);
+            border: 0;
+        }
+    }
+}
+
 .login-vipps-holder {
     .vipps-btn {
         display: flex;
@@ -175,6 +201,7 @@
         }
     }
 }
+
 
 @media (min-width: @screen__m ) {
     .login-container,
