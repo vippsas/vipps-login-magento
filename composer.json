@@ -3,7 +3,7 @@
     "description": "Sign In/Sig up using vipps mobile application",
     "require": {
         "magento/framework": "102.*",
-        "magento/module-customer": "101.0.*",
+        "magento/module-customer": "102.0.*",
         "magento/module-store": "100.2.*",
         "magento/module-directory": "100.3.*",
         "monolog/monolog": "^1.17",
