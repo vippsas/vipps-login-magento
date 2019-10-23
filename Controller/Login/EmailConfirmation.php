@@ -18,7 +18,6 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
-use Magento\Framework\Exception\LocalizedException;
 use Psr\Log\LoggerInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\AccessTokenProvider;
@@ -29,6 +28,7 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Exception\State\InvalidTransitionException;
 use Magento\Framework\Exception\AuthorizationException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\SerializerInterface;
 
 /**

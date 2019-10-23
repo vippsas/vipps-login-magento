@@ -18,8 +18,6 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login\Redirect\Action;
 
-use Magento\Customer\Model\Customer;
-use Magento\Customer\Model\Session;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Controller\Result\RedirectFactory;
@@ -27,12 +25,14 @@ use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Customer\Model\CustomerRegistry;
+use Magento\Customer\Model\Customer;
+use Magento\Customer\Model\Session;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\TrustedAccountsLocator;
-use Psr\Log\LoggerInterface;
 use Vipps\Login\Model\RedirectUrlResolver;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Login

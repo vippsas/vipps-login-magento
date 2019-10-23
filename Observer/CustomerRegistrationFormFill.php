@@ -19,10 +19,10 @@ declare(strict_types=1);
 namespace Vipps\Login\Observer;
 
 use Magento\Framework\Event\Observer;
-use Vipps\Login\Api\Data\UserInfoInterface;
-use Magento\Framework\Session\SessionManagerInterface;
-use Vipps\Login\Model\TokenPayloadProvider;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Session\SessionManagerInterface;
+use Vipps\Login\Api\Data\UserInfoInterface;
+use Vipps\Login\Model\TokenPayloadProvider;
 use Vipps\Login\Api\Data\UserInfoInterfaceFactory;
 
 /**

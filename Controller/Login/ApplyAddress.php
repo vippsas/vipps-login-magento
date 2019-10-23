@@ -18,13 +18,13 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
-use Magento\Framework\Exception\NoSuchEntityException;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Model\VippsAccountManagement;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Class ApplyAddress

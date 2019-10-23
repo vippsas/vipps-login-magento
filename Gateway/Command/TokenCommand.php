@@ -18,13 +18,13 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Gateway\Command;
 
+use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\UrlInterface;
-use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
-use Magento\Framework\Serialize\SerializerInterface;
+use Psr\Log\LoggerInterface;
 use Firebase\JWT\JWT;
 use phpseclib\Crypt\RSA;
 use phpseclib\Math\BigInteger;
