@@ -7,7 +7,7 @@
         "magento/module-store": "101.0.*",
         "magento/module-directory": "100.3.*",
         "monolog/monolog": "^1.17",
-        "firebase/php-jwt": "^5.3",
+        "firebase/php-jwt": "^5.0",
         "phpseclib/phpseclib": "2.0.*",
         "psr/log": "~1.0"
     },
