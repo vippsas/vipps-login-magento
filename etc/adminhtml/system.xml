@@ -37,7 +37,7 @@
                 </field>
                 <field id="client_id" translate="label" type="obscure" sortOrder="81" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Client ID</label>
-                    <config_path>vipps/login/login_client_id</config_path>
+                    <config_path>vipps/login/client_id</config_path>
                     <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                 </field>
                 <field id="client_secret" translate="label" type="obscure" sortOrder="82" showInDefault="1" showInWebsite="1" showInStore="1">

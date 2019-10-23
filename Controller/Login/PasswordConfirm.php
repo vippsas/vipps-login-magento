@@ -185,6 +185,7 @@ class PasswordConfirm extends Action
         try {
             $credentials = $this->serializer->unserialize($this->getRequest()->getContent());
         } catch (\Exception $e) {
+            $this->logger->critical($e);
             return $resultRaw->setHttpResponseCode($httpBadRequestCode);
         }
 
@@ -228,12 +229,13 @@ class PasswordConfirm extends Action
                 'message' => $e->getMessage()
             ];
         } catch (LocalizedException $e) {
+            $this->logger->error($e);
             $response = [
                 'errors' => true,
                 'message' => $e->getMessage()
             ];
         } catch (\Throwable $e) {
-            $this->logger->error($e);
+            $this->logger->critical($e);
             $response = [
                 'errors' => true,
                 'message' => __('Invalid login or password.')
