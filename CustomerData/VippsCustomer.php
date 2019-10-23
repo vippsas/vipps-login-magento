@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Vipps\Login\CustomerData;
 
+use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\CustomerData\SectionSourceInterface;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Session\SessionManagerInterface;
@@ -46,20 +47,28 @@ class VippsCustomer implements SectionSourceInterface
     private $vippsCustomerAddressRepository;
 
     /**
+     * @var AddressRepositoryInterface
+     */
+    private $addressRepository;
+
+    /**
      * VippsCustomer constructor.
      *
      * @param SessionManagerInterface $customerSession
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
+     * @param AddressRepositoryInterface $addressRepository
      */
     public function __construct(
         SessionManagerInterface $customerSession,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
-        VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
+        VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
+        AddressRepositoryInterface $addressRepository
     ) {
         $this->customerSession = $customerSession;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
+        $this->addressRepository = $addressRepository;
     }
 
     /**
@@ -90,9 +99,26 @@ class VippsCustomer implements SectionSourceInterface
                 'id' => $vippsCustomerAddress->getEntityId()
             ];
             if ($vippsCustomerAddress->getWasChanged() &&
-                $vippsCustomer->getSyncAddressMode() !== VippsCustomerInterface::NEVER_UPDATE
+                $vippsCustomerAddress->getCustomerAddressId() &&
+                $vippsCustomer->getSyncAddressMode() === VippsCustomerInterface::MANUAL_UPDATE
             ) {
                 $result['addressUpdated'] = true;
+                $result['newAddress'] = [
+                    'country_id' => $vippsCustomerAddress->getCountry(),
+                    'postalcode' => $vippsCustomerAddress->getPostalCode(),
+                    'city' => $vippsCustomerAddress->getRegion(),
+                    'telephone' => $vippsCustomer->getTelephone(),
+                    'street' => $vippsCustomerAddress->getStreetAddress()
+                ];
+
+                $magentoAddress = $this->addressRepository->getById($vippsCustomerAddress->getCustomerAddressId());
+                $result['oldAddress'] = [
+                    'country_id' => $magentoAddress->getCountryId(),
+                    'postalcode' => $magentoAddress->getPostcode(),
+                    'city' => $magentoAddress->getCity(),
+                    'telephone' => $magentoAddress->getTelephone(),
+                    'street' => $magentoAddress->getStreet(),
+                ];
             }
         }
 

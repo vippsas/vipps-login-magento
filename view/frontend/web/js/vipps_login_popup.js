@@ -20,7 +20,7 @@ define([
    'jquery',
    'Magento_Ui/js/modal/modal',
    'Magento_Customer/js/customer-data',
-   'mage/storage',
+   'mage/storage'
 ], function ($, modal, CustomerData, storage) {
     'use strict';
 
