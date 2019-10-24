@@ -18,16 +18,17 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model\Customer;
 
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Customer\Model\Config\Share;
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Customer\Model\ResourceModel\Grid\CollectionFactory as GridCollectionFactory;
+use Magento\Customer\Model\ResourceModel\Grid\Collection as GridCollection;
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Api\FilterBuilder;
 use Magento\Framework\Api\Search\FilterGroupBuilder;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Customer\Model\ResourceModel\Grid\CollectionFactory as GridCollectionFactory;
-use Magento\Customer\Model\ResourceModel\Grid\Collection as GridCollection;
-use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Framework\Exception\LocalizedException;
 
 /**
  * Class AccountsProvider
@@ -69,6 +70,10 @@ class AccountsProvider
      * @var CustomerRepositoryInterface
      */
     private $customerRepository;
+    /**
+     * @var Share
+     */
+    private $configShare;
 
     /**
      * AccountsProvider constructor.
@@ -80,6 +85,7 @@ class AccountsProvider
      * @param FilterGroupBuilder $filterGroupBuilder
      * @param FilterBuilder $filterBuilder
      * @param CustomerRepositoryInterface $customerRepository
+     * @param Share $configShare
      */
     public function __construct(
         StoreManagerInterface $storeManager,
@@ -88,7 +94,8 @@ class AccountsProvider
         CollectionProcessorInterface $collectionProcessor,
         FilterGroupBuilder $filterGroupBuilder,
         FilterBuilder $filterBuilder,
-        CustomerRepositoryInterface $customerRepository
+        CustomerRepositoryInterface $customerRepository,
+        Share $configShare
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->storeManager = $storeManager;
@@ -97,6 +104,7 @@ class AccountsProvider
         $this->filterGroupBuilder = $filterGroupBuilder;
         $this->filterBuilder = $filterBuilder;
         $this->customerRepository = $customerRepository;
+        $this->configShare = $configShare;
     }
 
     /**
@@ -114,8 +122,16 @@ class AccountsProvider
         }
 
         if ($emails) {
-            $searchCriteria = $this->searchCriteriaBuilder->addFilter('email', array_unique($emails), 'in')->create();
-            $result = $this->customerRepository->getList($searchCriteria);
+            $this->searchCriteriaBuilder->addFilter('email', array_unique($emails), 'in');
+            if ($this->configShare->isWebsiteScope()) {
+                $this->searchCriteriaBuilder->addFilter(
+                    'website_id',
+                    $this->storeManager->getWebsite()->getId(),
+                    'eq'
+                );
+            }
+
+            $result = $this->customerRepository->getList($this->searchCriteriaBuilder->create());
             return $result->getItems();
         }
 
@@ -123,9 +139,10 @@ class AccountsProvider
     }
 
     /**
-     * @param string $phone
+     * @param $phone
      *
      * @return array
+     * @throws LocalizedException
      */
     private function findEmailsByPhone($phone)
     {
@@ -136,12 +153,20 @@ class AccountsProvider
         /** @var GridCollection $collection */
         $collection = $this->gridCollectionFactory->create();
 
-        $this->filterGroupBuilder->addFilter($this->filterBuilder->setField('billing_telephone')
-            ->setValue($this->preparePhonePattern($phone))
-            ->setConditionType('like')
-            ->create());
+        $this->searchCriteriaBuilder->addFilter(
+            'billing_telephone',
+            $this->preparePhonePattern($phone),
+            'like'
+        );
 
-        $this->searchCriteriaBuilder->setFilterGroups([$this->filterGroupBuilder->create()]);
+        if ($this->configShare->isWebsiteScope()) {
+            $this->searchCriteriaBuilder->addFilter(
+                'website_id',
+                $this->storeManager->getWebsite()->getId(),
+                'eq'
+            );
+        }
+
         $this->collectionProcessor->process($this->searchCriteriaBuilder->create(), $collection);
 
         $result = [];
