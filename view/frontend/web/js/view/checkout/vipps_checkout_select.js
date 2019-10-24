@@ -20,12 +20,19 @@ define([
            postCode: 'postalcode',
            city: 'city',
            telephone: 'telephone',
-           countryId: 'country_id'
+           countryId: 'country_id',
+           showHideSelect: null
        },
        initialize: function () {
         this._super();
-        this.observe(['dataList','selectedAddresse']);
-
+        this.observe(['dataList','selectedAddresse','showHideSelect']);
+        this.checklinkedAccount();
+       },
+       checklinkedAccount: function () {
+            var addresessKey = CustomerData.get('vipps_login_data')();
+            if(addresessKey.linked) {
+                this.showHideSelect(true);
+            }
        },
        getDataList: function() {
            var listAddresses = CustomerData.get('vipps_login_data')();
