@@ -17,10 +17,6 @@
     <body>
         <attribute name="class" value="account"/>
 
-        <referenceContainer name="sidebar.main">
-            <block class="Vipps\Login\Block\Account\Link" name="vipps_login_links" template="Vipps_Login::account/link.phtml" cacheable="false"/>
-        </referenceContainer>
-
         <referenceBlock name="customer_account_navigation">
             <block class="Magento\Customer\Block\Account\SortLinkInterface" name="customer-account-navigation-vipps-login-management">
                 <arguments>

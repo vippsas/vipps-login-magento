@@ -105,7 +105,8 @@
     }
 }
 
-.login-vipps-holder {
+.login-vipps-holder,
+.login-vipps {
     .vipps-btn {
         display: flex;
         background: @vipps__color;
@@ -119,6 +120,17 @@
             background: lighten(@vipps__color, 10%);
             border: 0;
         }
+    }
+}
+
+.account-sign-in {
+    &.my-account {
+        width: 100%;
+        margin-bottom: 40px;
+    }
+
+    .vipps-btn {
+        margin-bottom: 20px;
     }
 }
 
@@ -202,6 +214,44 @@
     }
 }
 
+.vipps-link-wrap {
+    width: 100%;
+    margin-top: 20px;
+    border-top: 1px solid @vipps__border-color;
+    &.unlink {
+        a {
+            color: @vipps__color-red;
+        }
+    }
+    a {
+        margin-top: 10px;
+        display: inline-block;
+        color: @vipps__color;
+    }
+}
+
+.vipps-popup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    #popup-mpdal {
+        p {
+            margin-bottom: 20px;
+        }
+
+        ul {
+            padding-left: 0px;
+            li {
+                list-style-type: none;
+            }
+        }
+    }
+
+    .remember-choice-holder {
+        float: left;
+    }
+}
 
 @media (min-width: @screen__m ) {
     .login-container,
@@ -217,26 +267,16 @@
         }
     }
 
+    .customer-account-create {
+        .login-container {
+            justify-content: flex-start;
+        }
+    }
+
     .login-container {
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
         flex-flow: row wrap;
-
-        .block {
-            width: 50%;
-
-            &-customer-login {
-                order: 2;
-            }
-
-            &-new-customer {
-                order: 1;
-            }
-
-            &-static-block {
-                order: 3;
-            }
-        }
     }
 
     .login-vipps-account {

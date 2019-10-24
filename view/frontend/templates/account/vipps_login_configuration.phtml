@@ -62,5 +62,8 @@ $syncMode = $block->getSyncAddressMode();
     </div>
 </form>
 <?php else: ?>
-    <?= $block->escapeHtml(__('Your account is not linked to Vipps.')) ?>
+    <p><?= $block->escapeHtml(__('The easiest way to sign in. Anyone with Vipps can use Vipps to sign in. Never again usernames and passwords – you just need to remember your phone number. Vipps, and you are logged in.')) ?></p>
+    <div class="account-sign-in">
+        <?= $block->getChildHtml('vipps_form_login_button') ?>
+    </div>
 <?php endif;?>
