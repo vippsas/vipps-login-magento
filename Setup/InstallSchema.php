@@ -18,11 +18,11 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Setup;
 
+use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-use Magento\Framework\DB\Ddl\Table;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 
 /**
  * @codeCoverageIgnore
@@ -114,8 +114,8 @@ class InstallSchema implements InstallSchemaInterface
                 ['unsigned' => true, 'nullable' => true],
                 'Confirmation Expiration Time'
         )->addIndex(
-            $installer->getIdxName($vippsCustomerEntityTableName, ['telephone', 'website_id', 'linked']),
-            ['telephone', 'website_id', 'linked']
+            $installer->getIdxName($vippsCustomerEntityTableName, ['telephone', 'linked', 'website_id']),
+            ['telephone', 'linked', 'website_id']
         )->addIndex(
             $installer->getIdxName(
                 'vipps_customer',

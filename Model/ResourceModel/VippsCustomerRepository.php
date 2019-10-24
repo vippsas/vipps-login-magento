@@ -26,7 +26,9 @@ use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\Data\VippsCustomerSearchResultsInterfaceFactory;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Model\ResourceModel\VippsCustomer\CollectionFactory;
+use Vipps\Login\Model\ResourceModel\VippsCustomer\Collection;
 use Vipps\Login\Model\VippsCustomerFactory as ModelFactory;
+use Vipps\Login\Model\ResourceModel\VippsCustomer as VippsCustomerResource;
 
 /**
  * Class VippsCustomerRepository
@@ -60,6 +62,19 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
     private $modelFactory;
 
     /**
+     * @var VippsCustomerResource
+     */
+    private $vippsCustomerResource;
+
+    /**
+     * @var array
+     */
+    private $instances = [
+        'ids' => [],
+        'customer_entity_ids' => []
+    ];
+
+    /**
      * VippsCustomerRepository constructor.
      *
      * @param CollectionProcessorInterface $collectionProcessor
@@ -67,19 +82,22 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
      * @param CollectionFactory $collectionFactory
      * @param ExtensibleDataObjectConverter $extensibleDataObjectConverter
      * @param ModelFactory $modelFactory
+     * @param VippsCustomerResource $vippsCustomerResource
      */
     public function __construct(
         CollectionProcessorInterface $collectionProcessor,
         VippsCustomerSearchResultsInterfaceFactory $searchResultsFactory,
         CollectionFactory $collectionFactory,
         ExtensibleDataObjectConverter $extensibleDataObjectConverter,
-        ModelFactory $modelFactory
+        ModelFactory $modelFactory,
+        VippsCustomerResource $vippsCustomerResource
     ) {
         $this->collectionProcessor = $collectionProcessor;
         $this->searchResultsFactory = $searchResultsFactory;
         $this->collectionFactory = $collectionFactory;
         $this->extensibleDataObjectConverter = $extensibleDataObjectConverter;
         $this->modelFactory = $modelFactory;
+        $this->vippsCustomerResource = $vippsCustomerResource;
     }
 
     /**
@@ -97,10 +115,14 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
         );
 
         /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
-        $vippsCustomer = $this->modelFactory->create(['data' => $modelData]);
-        $vippsCustomer->save();
+        $vippsCustomerModel = $this->modelFactory->create(['data' => $modelData]);
+        $this->vippsCustomerResource->save($vippsCustomerModel);
 
-        return $vippsCustomer->getDataModel();
+        $vippsCustomer = $vippsCustomerModel->getDataModel();
+
+        $this->cacheVippsCustomer($vippsCustomer);
+
+        return $vippsCustomer;
     }
 
     /**
@@ -110,9 +132,11 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
      */
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $searchCriteria)
     {
+        /** @var Collection $collection */
         $collection = $this->collectionFactory->create();
         $this->collectionProcessor->process($searchCriteria, $collection);
 
+        /** @var \Vipps\Login\Api\Data\VippsCustomerSearchResultsInterface $searchResults */
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setTotalCount($collection->getSize());
 
@@ -130,14 +154,26 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
      * @param int $id
      *
      * @return VippsCustomerInterface
+     * @throws NoSuchEntityException
      */
     public function getById($id)
     {
-        /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
-        $vippsCustomer = $this->modelFactory->create();
-        $vippsCustomer->load($id);
+        if (isset($this->instances['ids'][$id])) {
+            return $this->instances['ids'][$id];
+        }
 
-        return $vippsCustomer->getDataModel();
+        /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
+        $vippsCustomerModel = $this->modelFactory->create();
+        $this->vippsCustomerResource->load($vippsCustomerModel, $id, 'entity_id');
+        if (!$vippsCustomerModel->getEntityId()) {
+            throw NoSuchEntityException::singleField('entity_id', $id);
+        }
+
+        $vippsCustomer = $vippsCustomerModel->getDataModel();
+
+        $this->cacheVippsCustomer($vippsCustomer);
+
+        return $vippsCustomer;
     }
 
     /**
@@ -148,14 +184,31 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
      */
     public function getByCustomer(CustomerInterface $customer)
     {
-        /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
-        $vippsCustomer = $this->modelFactory->create();
-        $vippsCustomer->load($customer->getId(), 'customer_entity_id');
-        if (!$vippsCustomer->getId()) {
-            // customer does not exist
-            throw NoSuchEntityException::singleField('customer_entity_id', $customer->getId());
+        $customerId = $customer->getId();
+        if (isset($this->instances['customer_entity_ids'][$customerId])) {
+            return $this->instances['customer_entity_ids'][$customerId];
         }
 
-        return $vippsCustomer->getDataModel();
+        /** @var \Vipps\Login\Model\VippsCustomer $vippsCustomer */
+        $vippsCustomerModel = $this->modelFactory->create();
+        $this->vippsCustomerResource->load($vippsCustomerModel, $customerId, 'customer_entity_id');
+        if (!$vippsCustomerModel->getEntityId()) {
+            throw NoSuchEntityException::singleField('customer_entity_id', $customerId);
+        }
+
+        $vippsCustomer = $vippsCustomerModel->getDataModel();
+
+        $this->cacheVippsCustomer($vippsCustomer);
+
+        return $vippsCustomer;
+    }
+
+    /**
+     * @param VippsCustomerInterface $vippsCustomer
+     */
+    private function cacheVippsCustomer(VippsCustomerInterface $vippsCustomer)
+    {
+        $this->instances['ids'][$vippsCustomer->getEntityId()] = $vippsCustomer;
+        $this->instances['customer_entity_ids'][$vippsCustomer->getCustomerEntityId()] = $vippsCustomer;
     }
 }

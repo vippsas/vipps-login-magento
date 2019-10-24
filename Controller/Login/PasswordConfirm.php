@@ -19,7 +19,6 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
-use Magento\Customer\Model\Account\Redirect as AccountRedirect;
 use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Exception\EmailNotConfirmedException;
@@ -78,11 +77,6 @@ class PasswordConfirm extends Action
      * @var RawFactory
      */
     private $resultRawFactory;
-
-    /**
-     * @var AccountRedirect
-     */
-    private $accountRedirect;
 
     /**
      * @var ScopeConfigInterface

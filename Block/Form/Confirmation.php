@@ -19,7 +19,6 @@ declare(strict_types=1);
 namespace Vipps\Login\Block\Form;
 
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Store\Model\ScopeInterface;
@@ -39,11 +38,6 @@ class Confirmation extends Template
     private $tokenPayloadProvider;
 
     /**
-     * @var UrlInterface
-     */
-    private $urlBuilder;
-
-    /**
      * @var AccountsProvider
      */
     private $accountsProvider;
@@ -53,20 +47,17 @@ class Confirmation extends Template
      *
      * @param Context $context
      * @param TokenProviderInterface $tokenPayloadProvider
-     * @param UrlInterface $urlBuilder
      * @param AccountsProvider $accountsProvider
      * @param array $data
      */
     public function __construct(
         Context $context,
         TokenProviderInterface $tokenPayloadProvider,
-        UrlInterface $urlBuilder,
         AccountsProvider $accountsProvider,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->tokenPayloadProvider = $tokenPayloadProvider;
-        $this->urlBuilder = $urlBuilder;
         $this->accountsProvider = $accountsProvider;
     }
 
@@ -86,7 +77,7 @@ class Confirmation extends Template
      */
     public function getAjaxLoginUrl()
     {
-        return $this->urlBuilder->getRouteUrl('vipps/login/passwordConfirm');
+        return $this->_urlBuilder->getRouteUrl('vipps/login/passwordConfirm');
     }
 
     /**
@@ -94,7 +85,7 @@ class Confirmation extends Template
      */
     public function getAjaxEmailConfirmationUrl()
     {
-        return $this->urlBuilder->getRouteUrl('vipps/login/emailConfirmation');
+        return $this->_urlBuilder->getRouteUrl('vipps/login/emailConfirmation');
     }
 
     /**
