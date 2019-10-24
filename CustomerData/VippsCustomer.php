@@ -76,7 +76,7 @@ class VippsCustomer implements SectionSourceInterface
      */
     public function getSectionData()
     {
-        $result = [];
+        $result['linked'] = false;
         if (!$this->customerSession->isLoggedIn()) {
             return $result;
         }
@@ -88,6 +88,7 @@ class VippsCustomer implements SectionSourceInterface
             return $result;
         }
 
+        $result['linked'] = true;
         $addressResult = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
         foreach ($addressResult->getItems() as $vippsCustomerAddress) {
             $result['addresses'][] = [
@@ -117,11 +118,25 @@ class VippsCustomer implements SectionSourceInterface
                     'postalcode' => $magentoAddress->getPostcode(),
                     'city' => $magentoAddress->getCity(),
                     'telephone' => $magentoAddress->getTelephone(),
-                    'street' => $magentoAddress->getStreet(),
+                    'street' => $this->formatAddress($magentoAddress->getStreet()),
                 ];
             }
         }
 
         return $result;
+    }
+
+    /**
+     * @param $magentoAddress
+     *
+     * @return string
+     */
+    private function formatAddress($magentoAddress)
+    {
+        if (is_array($magentoAddress)) {
+            $magentoAddress = implode(PHP_EOL, $magentoAddress);
+        }
+
+        return $magentoAddress;
     }
 }

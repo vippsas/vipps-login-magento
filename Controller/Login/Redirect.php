@@ -18,8 +18,6 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Message\ManagerInterface;
 use Psr\Log\LoggerInterface;
 use Vipps\Login\Controller\Login\Redirect\ActionsPool;
 use Vipps\Login\Gateway\Command\TokenCommand;
@@ -31,6 +29,8 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect as MagentoRedirect;
 use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Message\ManagerInterface;
 
 /**
  * Class Redirect

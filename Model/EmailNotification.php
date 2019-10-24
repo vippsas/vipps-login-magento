@@ -18,15 +18,15 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model;
 
-use Magento\Framework\DataObjectFactory;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
-use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Framework\DataObjectFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ScopeResolverInterface;
 use Magento\Framework\Mail\Template\TransportBuilder;
 use Magento\Framework\Reflection\DataObjectProcessor;
 use Magento\Framework\Exception\MailException;
 use Magento\Customer\Helper\View as CustomerViewHelper;
+use Magento\Customer\Api\Data\CustomerInterface;
 
 /**
  * Class EmailNotification

@@ -24,10 +24,10 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Session\SessionManagerInterface;
-use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @codeCoverageIgnore

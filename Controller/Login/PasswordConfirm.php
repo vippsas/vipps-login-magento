@@ -19,11 +19,11 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Customer\Model\Account\Redirect as AccountRedirect;
 use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Model\Session;
 use Magento\Framework\Exception\EmailNotConfirmedException;
 use Magento\Framework\Exception\InvalidEmailOrPasswordException;
-use Magento\Customer\Model\Account\Redirect as AccountRedirect;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\App\Action\Context;
@@ -185,6 +185,7 @@ class PasswordConfirm extends Action
         try {
             $credentials = $this->serializer->unserialize($this->getRequest()->getContent());
         } catch (\Exception $e) {
+            $this->logger->critical($e);
             return $resultRaw->setHttpResponseCode($httpBadRequestCode);
         }
 
@@ -228,12 +229,13 @@ class PasswordConfirm extends Action
                 'message' => $e->getMessage()
             ];
         } catch (LocalizedException $e) {
+            $this->logger->error($e);
             $response = [
                 'errors' => true,
                 'message' => $e->getMessage()
             ];
         } catch (\Throwable $e) {
-            $this->logger->error($e);
+            $this->logger->critical($e);
             $response = [
                 'errors' => true,
                 'message' => __('Invalid login or password.')

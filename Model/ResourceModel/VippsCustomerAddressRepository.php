@@ -18,7 +18,6 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model\ResourceModel;
 
-use Magento\Customer\Api\Data\CustomerInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\ExtensibleDataObjectConverter;
 use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;

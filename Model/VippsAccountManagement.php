@@ -18,10 +18,7 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model;
 
-use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Exception\State\InvalidTransitionException;
-use Magento\Framework\Math\Random;
+
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterfaceFactory;
@@ -31,6 +28,10 @@ use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\State\InputMismatchException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\State\InvalidTransitionException;
+use Magento\Framework\Math\Random;
+use Magento\Customer\Api\Data\CustomerInterface;
 
 /**
  * Class VippsCustomer
