@@ -111,7 +111,6 @@ class Index extends Action
 
         $vippsRedirectUrl = $this->apiEndpoints->getAuthorizationEndpoint()
             . '?' . implode('&', $params);
-        file_put_contents('test.tx', $vippsRedirectUrl);
         $refererUrl = $this->_redirect->getRefererUrl();
         $this->customerSession->setVippsRedirectUrl($refererUrl);
 
