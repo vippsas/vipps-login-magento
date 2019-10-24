@@ -3,7 +3,10 @@
 ?>
 
 <div id="popup-mpdal" style="display: none;" >
-    <?php echo $block->escapeHtml(__('Vipps address was changed - would you like to update it?')); ?>
+    <h2><?php echo $block->escapeHtml(__('Updated address?')); ?></h2>
+    <p><?php echo $block->escapeHtml(__('Vipps address was changed - would you like to update it?')); ?></p>
+    <div class="vipps-address"></div>
+    <div class="old-address"></div>
 </div>
 
 <script type="text/x-magento-init">

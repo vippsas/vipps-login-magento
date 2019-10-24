@@ -22,6 +22,8 @@ $syncMode = $block->getSyncAddressMode();
 ?>
 
 <?php if ($block->isLinked()): ?>
+
+
 <form class="form form-newsletter-manage" action="<?= $block->escapeUrl($block->getAction()) ?>" method="post" id="form-validate">
     <fieldset class="fieldset">
         <?= $block->getBlockHtml('formkey') ?>
