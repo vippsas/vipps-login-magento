@@ -71,10 +71,10 @@ class VippsAddress extends Template
     {
         $customerModel = $this->customerSession->getCustomer();
         $customer = $customerModel->getDataModel();
-        if ($this->vippsAccountManagement->isLinked($customer)){
+        if ($this->vippsAccountManagement->isLinked($customer)) {
             $addresses = $this->vippsAccountManagement->getAddresses($customer);
             if ($onlyNotLinked) {
-                $addresses = array_filter($addresses, function ($item){
+                $addresses = array_filter($addresses, function ($item) {
                     /** @var $item VippsCustomerAddressInterface  */
                     return $item->getCustomerAddressId() ? false : true;
                 });

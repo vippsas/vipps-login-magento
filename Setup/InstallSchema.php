@@ -108,11 +108,11 @@ class InstallSchema implements InstallSchemaInterface
             [],
             'Confirmation Key'
         )->addColumn(
-                'confirmation_exp',
-                Table::TYPE_INTEGER,
-                null,
-                ['unsigned' => true, 'nullable' => true],
-                'Confirmation Expiration Time'
+            'confirmation_exp',
+            Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true, 'nullable' => true],
+            'Confirmation Expiration Time'
         )->addIndex(
             $installer->getIdxName($vippsCustomerEntityTableName, ['telephone', 'linked', 'website_id']),
             ['telephone', 'linked', 'website_id']

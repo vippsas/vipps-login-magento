@@ -22,7 +22,7 @@ $addresses = $block->getVippsAddresses(true);
 /** @var $address \Vipps\Login\Api\Data\VippsCustomerAddressInterface */
 ?>
 
-<?php if ($isNewAddress && !empty($addresses)): ?>
+<?php if ($isNewAddress && !empty($addresses)) : ?>
 <div id="vipps_addresses">
     <fieldset class="fieldset">
         <div class="field">
@@ -31,8 +31,8 @@ $addresses = $block->getVippsAddresses(true);
                     title="<?= $block->escapeHtmlAttr(__('Vipps Addresses')) ?>"
                     class="validate-select">
                 <option value=""><?= $block->escapeHtml(__('Select vipps address')) ?></option>
-                <?php foreach ($addresses as $address): ?>
-                    <option value="<?=$address->getEntityId()?>"><?= $block->escapeHtml($address->getFormatted()) ?></option>
+                <?php foreach ($addresses as $address) : ?>
+                    <option value="<?=$block->escapeHtml($address->getEntityId())?>"><?= $block->escapeHtml($address->getFormatted()) ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -44,7 +44,7 @@ $addresses = $block->getVippsAddresses(true);
     {
         "*": {
             "Vipps_Login/js/action/add-addreses": {
-                "vippsAddressId": "<?php echo $block->getVippsAddressId(); ?>"
+                "vippsAddressId": "<?= $block->escapeHtml($block->getVippsAddressId()); ?>"
             }
         }
     }

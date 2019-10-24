@@ -241,7 +241,6 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
         return true;
     }
 
-
     /**
      * @param VippsCustomerInterface $vippsCustomer
      *
@@ -252,7 +251,7 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
     {
         $vippsAddressResult = $this->getByVippsCustomer($vippsCustomer);
 
-        foreach($vippsAddressResult->getItems() as $item) {
+        foreach ($vippsAddressResult->getItems() as $item) {
             $this->delete($item);
         }
 
