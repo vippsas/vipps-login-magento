@@ -19,6 +19,7 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model\Customer;
 
+use Magento\Customer\Model\Config\Share;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Model\StoreManagerInterface;
@@ -46,6 +47,10 @@ class TrustedAccountsLocator
      * @var VippsCustomerRepository
      */
     private $vippsCustomerRepository;
+    /**
+     * @var Share
+     */
+    private $configShare;
 
     /**
      * TrustedAccountsLocator constructor.
@@ -53,15 +58,18 @@ class TrustedAccountsLocator
      * @param StoreManagerInterface $storeManager
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
+     * @param Share $configShare
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        VippsCustomerRepositoryInterface $vippsCustomerRepository
+        VippsCustomerRepositoryInterface $vippsCustomerRepository,
+        Share $configShare
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
         $this->storeManager = $storeManager;
+        $this->configShare = $configShare;
     }
 
     /**
@@ -74,10 +82,14 @@ class TrustedAccountsLocator
     {
         $this->searchCriteriaBuilder->addFilter('telephone', $phone);
         $this->searchCriteriaBuilder->addFilter('linked', true);
-        $this->searchCriteriaBuilder->addFilter(
-            'website_id',
-            $this->storeManager->getWebsite()->getWebsiteId()
-        );
+
+        if ($this->configShare->isWebsiteScope()) {
+            $this->searchCriteriaBuilder->addFilter(
+                'website_id',
+                $this->storeManager->getWebsite()->getId(),
+                'eq'
+            );
+        }
 
         $searchCriteria = $this->searchCriteriaBuilder->create();
         return $this->vippsCustomerRepository->getList($searchCriteria);

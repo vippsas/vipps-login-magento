@@ -237,8 +237,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $magentoAddress->setStreet($street);
         $magentoAddress->setTelephone($vippsCustomer->getTelephone());
 
-        if (
-            !$hasDefault &&
+        if (!$hasDefault &&
             $vippsAddress->getAddressType() == VippsCustomerAddressInterface::ADDRESS_TYPE_HOME
         ) {
             $magentoAddress->setIsDefaultShipping(true);

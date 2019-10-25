@@ -18,7 +18,6 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model;
 
-
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterfaceFactory;

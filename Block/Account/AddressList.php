@@ -90,10 +90,10 @@ class AddressList extends Template
     {
         $customerModel = $this->customerSession->getCustomer();
         $customer = $customerModel->getDataModel();
-        if ($this->vippsAccountManagement->isLinked($customer)){
+        if ($this->vippsAccountManagement->isLinked($customer)) {
             $addresses = $this->vippsAccountManagement->getAddresses($customer);
             if ($onlyNotLinked) {
-                $addresses = array_filter($addresses, function ($item){
+                $addresses = array_filter($addresses, function ($item) {
                     /** @var $item VippsCustomerAddressInterface  */
                     return $item->getCustomerAddressId() ? false : true;
                 });
@@ -148,7 +148,7 @@ class AddressList extends Template
             $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customerModel->getDataModel());
             $phone = $vippsCustomer->getTelephone();
         } catch (NoSuchEntityException $e) {
-
+            $this->_logger->error($e->getMessage());
         }
 
         return "<a href=\"tel:$phone\">$phone</a>";

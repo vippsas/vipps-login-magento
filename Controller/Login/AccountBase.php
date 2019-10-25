@@ -27,7 +27,8 @@ use Magento\Framework\Exception\NotFoundException;
 use Magento\Customer\Model\Session;
 
 /**
- * Customers newsletter subscription controller
+ * Class AccountBase
+ * @package Vipps\Login\Controller\Login\Account
  */
 abstract class AccountBase extends Action
 {

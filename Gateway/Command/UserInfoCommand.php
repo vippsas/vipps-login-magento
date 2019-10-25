@@ -110,7 +110,6 @@ class UserInfoCommand
                         ? __($body['error_description'])
                         : __('%1 Unauthorized', $status);
                     throw new AuthorizationException($message, null, $status);
-                    break;
                 default:
                     $message = $body['error_description']
                         ? __($body['error_description'])
@@ -120,7 +119,6 @@ class UserInfoCommand
         }
 
         $message = $body['error_description'] ?? 'An error occurred trying to fetch user info';
-        // @todo add log error
-        throw new \Exception($message);
+        throw new LocalizedException(__($message));
     }
 }
