@@ -13,9 +13,6 @@
  * IN THE SOFTWARE
  */
 
-/**
- * @api
- */
 define([
            'jquery',
            'Magento_Ui/js/modal/modal',
