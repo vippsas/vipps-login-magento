@@ -89,30 +89,30 @@ class VippsCustomer implements SectionSourceInterface
         }
 
         $result['linked'] = true;
-        $addressResult = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
-        foreach ($addressResult->getItems() as $vippsCustomerAddress) {
+        $addresses = $this->vippsCustomerAddressRepository->getNotLinkedAddresses($vippsCustomer);
+        foreach ($addresses as $address) {
             $result['addresses'][] = [
-                'country_id' => $vippsCustomerAddress->getCountry(),
-                'postalcode' => $vippsCustomerAddress->getPostalCode(),
-                'city' => $vippsCustomerAddress->getRegion(),
+                'country_id' => $address->getCountry(),
+                'postalcode' => $address->getPostalCode(),
+                'city' => $address->getRegion(),
                 'telephone' => $vippsCustomer->getTelephone(),
-                'street' => $vippsCustomerAddress->getStreetAddress(),
-                'id' => $vippsCustomerAddress->getEntityId()
+                'street' => $address->getStreetAddress(),
+                'id' => $address->getEntityId()
             ];
-            if ($vippsCustomerAddress->getWasChanged() &&
-                $vippsCustomerAddress->getCustomerAddressId() &&
+            if ($address->getWasChanged() &&
+                $address->getCustomerAddressId() &&
                 $vippsCustomer->getSyncAddressMode() === VippsCustomerInterface::MANUAL_UPDATE
             ) {
                 $result['addressUpdated'] = true;
                 $result['newAddress'] = [
-                    'country_id' => $vippsCustomerAddress->getCountry(),
-                    'postalcode' => $vippsCustomerAddress->getPostalCode(),
-                    'city' => $vippsCustomerAddress->getRegion(),
+                    'country_id' => $address->getCountry(),
+                    'postalcode' => $address->getPostalCode(),
+                    'city' => $address->getRegion(),
                     'telephone' => $vippsCustomer->getTelephone(),
-                    'street' => $vippsCustomerAddress->getStreetAddress()
+                    'street' => $address->getStreetAddress()
                 ];
 
-                $magentoAddress = $this->addressRepository->getById($vippsCustomerAddress->getCustomerAddressId());
+                $magentoAddress = $this->addressRepository->getById($address->getCustomerAddressId());
                 $result['oldAddress'] = [
                     'country_id' => $magentoAddress->getCountryId(),
                     'postalcode' => $magentoAddress->getPostcode(),

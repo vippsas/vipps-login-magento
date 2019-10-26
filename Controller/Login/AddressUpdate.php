@@ -138,17 +138,16 @@ class AddressUpdate extends AccountBase
                 ->getByVippsCustomer($vippsCustomer);
 
             foreach ($vippsAddressesResult->getItems() as $item) {
-                if ($item->getWasChanged()) {
-                    $this->vippsCustomerAddressRepository->save($item);
-                    if ($mode['sync_address_mode'] !== VippsCustomerInterface::NEVER_UPDATE) {
-                        $this->vippsAddressManagement->convert(
-                            $customer,
-                            $vippsCustomer,
-                            $item,
-                            false,
-                            true
-                        );
-                    }
+                if ($item->getWasChanged() &&
+                    $mode['sync_address_mode'] !== VippsCustomerInterface::NEVER_UPDATE
+                ) {
+                    $this->vippsAddressManagement->convert(
+                        $customer,
+                        $vippsCustomer,
+                        $item,
+                        false,
+                        true
+                    );
                 }
             }
         } catch (LocalizedException $e) {

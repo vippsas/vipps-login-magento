@@ -14,11 +14,9 @@
  *    IN THE SOFTWARE
  */
 
-// @codingStandardsIgnoreFile
-
 /** @var \Vipps\Login\Block\Account\AddressList $block */
 ?>
-<?php if ($vippsAddresses = $block->getVippsAddresses()): ?>
+<?php if ($vippsAddresses = $block->getNotLinkedVippsAddresses()): ?>
     <div class="block block-addresses-list vipps-addresses">
         <div class="block-title"><strong><?= $block->escapeHtml(__('Vipps Address Entries')) ?></strong></div>
         <div class="block-content">
@@ -30,11 +28,11 @@
                                 <?= $block->escapeHtml(ucfirst($address->getAddressType())) ?>
                             </strong>
                             <br />
-                            <?= $address->getStreetAddress() ?><br />
-                            <?= $address->getRegion() ?><br />
-                            <?= $address->getPostalCode() ?><br />
-                            <?= $block->getCountryName($address->getCountry()) ?><br />
-                            T: <?= $block->renderPhone() ?><br />
+                            <?= $block->escapeHtml($address->getStreetAddress()) ?><br />
+                            <?= $block->escapeHtml($address->getRegion()) ?><br />
+                            <?= $block->escapeHtml($address->getPostalCode()) ?><br />
+                            <?= $block->escapeHtml($block->getCountryName($address->getCountry())) ?><br />
+                         T: <a href="tel:<?= $block->escapeHtml($block->renderPhone()) ?>"><?= $block->escapeHtml($block->renderPhone()) ?></a><br />
                         </address>
                         <?php if (!$address->getCustomerAddressId()): ?>
                             <div class="item actions">

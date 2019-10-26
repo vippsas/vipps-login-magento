@@ -21,6 +21,7 @@ namespace Vipps\Login\Plugin;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Model\Session;
+use Magento\Quote\Model\ResourceModel\Quote\Address\CollectionFactory;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Session\SessionManagerInterface;
@@ -58,10 +59,16 @@ class AddressSave
      * @var VippsAddressManagementInterface
      */
     private $vippsAddressManagement;
+
     /**
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var CollectionFactory
+     */
+    private $collectionFactory;
 
     /**
      * AddressSave constructor.
@@ -71,6 +78,7 @@ class AddressSave
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      * @param VippsAddressManagementInterface $vippsAddressManagement
+     * @param CollectionFactory $collectionFactory
      * @param LoggerInterface $logger
      */
     public function __construct(
@@ -79,6 +87,7 @@ class AddressSave
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
         VippsAddressManagementInterface $vippsAddressManagement,
+        CollectionFactory $collectionFactory,
         LoggerInterface $logger
     ) {
         $this->request = $request;
@@ -87,6 +96,7 @@ class AddressSave
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
         $this->vippsAddressManagement = $vippsAddressManagement;
         $this->logger = $logger;
+        $this->collectionFactory = $collectionFactory;
     }
 
     /**
@@ -97,20 +107,20 @@ class AddressSave
      */
     public function afterSave(AddressRepositoryInterface $subject, AddressInterface $address)
     {
-        $addressId = $this->request->getParam('vipps_address_id');
-        if ($addressId) {
+        $vippsAddressId = $this->request->getParam('vipps_address_id');
+        if (!empty($vippsAddressId) ) {
             $customerModel = $this->customerSession->getCustomer();
             try {
                 $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customerModel->getDataModel());
-                $vippsAddress = $this->vippsCustomerAddressRepository->getById($addressId);
-                if ($vippsAddress->getVippsCustomerId() != $vippsCustomer->getEntityId() &&
-                    $this->vippsAddressManagement->areTheSame($vippsAddress, $vippsCustomer, $address)
+                $vippsAddress = $this->vippsCustomerAddressRepository->getById($address->getId());
+                if ($vippsAddress->getVippsCustomerId() != $vippsCustomer->getEntityId() ||
+                    !$this->vippsAddressManagement->areTheSame($vippsAddress, $vippsCustomer, $address)
                 ) {
                     return $address;
                 }
                 $this->vippsAddressManagement->link($vippsAddress, $address);
             } catch (NoSuchEntityException $e) {
-                $this->logger->error($e);
+                $this->logger->debug($e);
             } catch (\Throwable $e) {
                 $this->logger->critical($e);
             }

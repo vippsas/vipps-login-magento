@@ -41,6 +41,8 @@ class InstallSchema implements InstallSchemaInterface
 
         $this->createVippsCustomerAddressTable($installer);
 
+        $this->createQuoteVippsCustomerAddressRelation($installer);
+
         $installer->endSetup();
     }
 
@@ -250,6 +252,71 @@ class InstallSchema implements InstallSchemaInterface
             Table::ACTION_SET_NULL
         )->setComment(
             'Vipps Customer Address Table'
+        );
+
+        $installer->getConnection()->createTable($table);
+    }
+
+    /**
+     * @param SchemaSetupInterface $installer
+     *
+     * @throws \Zend_Db_Exception
+     */
+    public function createQuoteVippsCustomerAddressRelation(SchemaSetupInterface $installer)
+    {
+        $vippsQuoteAddressesRelationTable = $installer->getConnection()
+            ->getTableName('vipps_quote_addresses_relation');
+
+        $quoteAddressTable = $installer->getConnection()
+            ->getTableName('quote_address');
+
+        $vippsCustomerAddress = $installer->getConnection()
+            ->getTableName('vipps_customer_address');
+
+        $table = $installer->getConnection()->newTable(
+            $vippsQuoteAddressesRelationTable
+        )->addColumn(
+            'id',
+            Table::TYPE_INTEGER,
+            null,
+            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+            'Id'
+        )->addColumn(
+            'quote_address_id',
+            Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true, 'nullable' => false],
+            'Quote Address Id'
+        )->addColumn(
+            'vipps_customer_address_id',
+            Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true, 'nullable' => true],
+            'Customer Address Entity Id'
+        )->addForeignKey(
+            $installer->getFkName(
+                $vippsQuoteAddressesRelationTable,
+                'quote_address_id',
+                $quoteAddressTable,
+                'address_id'
+            ),
+            'quote_address_id',
+            $quoteAddressTable,
+            'address_id',
+            Table::ACTION_CASCADE
+        )->addForeignKey(
+            $installer->getFkName(
+                $vippsQuoteAddressesRelationTable,
+                'vipps_customer_address_id',
+                $vippsCustomerAddress,
+                'entity_id'
+            ),
+            'vipps_customer_address_id',
+            $vippsCustomerAddress,
+            'entity_id',
+            Table::ACTION_CASCADE
+        )->setComment(
+            'Vipps Quote Addresses Relation Table'
         );
 
         $installer->getConnection()->createTable($table);

@@ -48,6 +48,13 @@ interface VippsCustomerAddressRepositoryInterface
     public function getByVippsCustomer(\Vipps\Login\Api\Data\VippsCustomerInterface $customer);
 
     /**
+     * @param Data\VippsCustomerInterface $customer
+     *
+     * @return array|\Vipps\Login\Api\Data\VippsCustomerAddressInterface[]
+     */
+    public function getNotLinkedAddresses(\Vipps\Login\Api\Data\VippsCustomerInterface $customer);
+
+    /**
      * Retrieve vipps customer records which match a specified criteria.
      *
      * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria

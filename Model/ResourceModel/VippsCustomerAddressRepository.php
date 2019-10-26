@@ -193,6 +193,21 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
     }
 
     /**
+     * @param VippsCustomerInterface $vippsCustomer
+     *
+     * @return array|VippsCustomerAddressInterface[]
+     */
+    public function getNotLinkedAddresses(\Vipps\Login\Api\Data\VippsCustomerInterface $vippsCustomer)
+    {
+        $result = $this->getByVippsCustomer($vippsCustomer);
+        $addresses = array_filter($result->getItems(), function ($item) {
+            /** @var $item VippsCustomerAddressInterface  */
+            return $item->getCustomerAddressId() ? false : true;
+        });
+        return $addresses;
+    }
+
+    /**
      * @param SearchCriteriaInterface $searchCriteria
      *
      * @return VippsCustomerAddressSearchResultsInterface

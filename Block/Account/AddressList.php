@@ -25,6 +25,7 @@ use Magento\Directory\Model\CountryFactory;
 use Magento\Customer\Model\Session;
 use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
+use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 
 /**
@@ -52,12 +53,17 @@ class AddressList extends Template
      * @var VippsCustomerRepositoryInterface
      */
     private $vippsCustomerRepository;
+    /**
+     * @var VippsCustomerAddressRepositoryInterface
+     */
+    private $vippsCustomerAddressRepository;
 
     /**
      * AddressList constructor.
      *
      * @param VippsAccountManagementInterface $vippsAccountManagement
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
+     * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      * @param SessionManagerInterface $customerSession
      * @param Template\Context $context
      * @param CountryFactory $countryFactory
@@ -66,6 +72,7 @@ class AddressList extends Template
     public function __construct(
         VippsAccountManagementInterface $vippsAccountManagement,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
+        VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
         SessionManagerInterface $customerSession,
         Template\Context $context,
         CountryFactory $countryFactory,
@@ -76,29 +83,22 @@ class AddressList extends Template
         $this->customerSession = $customerSession;
         $this->countryFactory = $countryFactory;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
+        $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
     }
 
     /**
-     * @param bool $onlyNotLinked
-     *
      * @return array|\Vipps\Login\Api\Data\VippsCustomerAddressInterface[]
      * @throws \Magento\Framework\Exception\InputException
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Magento\Framework\Exception\State\InputMismatchException
      */
-    public function getVippsAddresses($onlyNotLinked = false)
+    public function getNotLinkedVippsAddresses()
     {
         $customerModel = $this->customerSession->getCustomer();
         $customer = $customerModel->getDataModel();
         if ($this->vippsAccountManagement->isLinked($customer)) {
-            $addresses = $this->vippsAccountManagement->getAddresses($customer);
-            if ($onlyNotLinked) {
-                $addresses = array_filter($addresses, function ($item) {
-                    /** @var $item VippsCustomerAddressInterface  */
-                    return $item->getCustomerAddressId() ? false : true;
-                });
-            }
-            return $addresses;
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+            return $this->vippsCustomerAddressRepository->getNotLinkedAddresses($vippsCustomer);
         }
 
         return [];
@@ -151,6 +151,6 @@ class AddressList extends Template
             $this->_logger->error($e->getMessage());
         }
 
-        return "<a href=\"tel:$phone\">$phone</a>";
+        return $phone;
     }
 }

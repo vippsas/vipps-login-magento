@@ -93,11 +93,4 @@ interface VippsAccountManagementInterface
      * @throws LocalizedException
      */
     public function getPair(UserInfoInterface $userInfo, CustomerInterface $customer);
-
-    /**
-     * @param CustomerInterface $customer
-     *
-     * @return VippsCustomerAddressInterface[]
-     */
-    public function getAddresses(CustomerInterface $customer);
 }

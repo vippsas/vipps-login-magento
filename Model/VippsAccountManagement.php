@@ -215,22 +215,4 @@ class VippsAccountManagement implements VippsAccountManagementInterface
 
         return $this->vippsCustomerRepository->save($vippsCustomer);
     }
-
-    /**
-     * @param CustomerInterface $customer
-     *
-     * @return \Vipps\Login\Api\Data\VippsCustomerAddressInterface[]
-     */
-    public function getAddresses(CustomerInterface $customer)
-    {
-        try {
-            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
-        } catch (NoSuchEntityException $e) {
-            return [];
-        }
-
-        $result = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
-
-        return $result->getItems();
-    }
 }

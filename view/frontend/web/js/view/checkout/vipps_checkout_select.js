@@ -21,6 +21,7 @@ define([
            city: 'city',
            telephone: 'telephone',
            countryId: 'country_id',
+           vippsInputId: 'custom_attributes[vipps_address_id]',
            showHideSelect: null
        },
        initialize: function () {
@@ -62,6 +63,8 @@ define([
                    $(self.options.shippingForm).find('select[name='+ self.options.countryId + ']').val(selectedAddresse[key]).change();
                }
            }
+           var dataOption = $('#' + self.options.selectHolder + " option:selected")[0].value;
+           self.insertHiddenInput(dataOption);
        },
        /**
         * @return {number} position of needed array
@@ -73,6 +76,13 @@ define([
            });
            return data.indexOf(value);
        },
+       /**
+        * @return {text} itemText
+        */
+       insertHiddenInput: function (itemValue) {
+           $(this.options.shippingForm).
+               find("input[name='" + this.options.vippsInputId + "']").val(itemValue).change();
+       }
    });
    }
 );
