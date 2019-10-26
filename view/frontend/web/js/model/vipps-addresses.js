@@ -18,11 +18,11 @@
  */
 define([
        'underscore',
-       'uiRegistry',
-       'Magento_Ui/js/form/element/select',
        'jquery',
-       'ko'
-   ], function (_, registry, Select, $, ko) {
+       'Magento_Customer/js/customer-data',
+       'uiRegistry',
+       'Magento_Ui/js/form/element/select'
+   ], function (_,  $, CustomerData, registry, Select) {
        'use strict';
 
         return Select.extend({
@@ -31,77 +31,64 @@ define([
                      update: '${ $.parentName }.vipps_addresses_list:value'
                  }
              },
-             options: {
+             elements: {
                  selectHolder: 'vipps_address',
                  shippingForm: '#co-shipping-form',
                  streetField: 'street',
-                 postCode: 'postalcode',
+                 postCode: 'postcode',
                  city: 'city',
                  telephone: 'telephone',
-                 countryId: 'country_id',
-                 vippsInputId: 'custom_attributes[vipps_address_id]',
-                 showHideSelect: null
-             },
-
-             /**
-              * Extends instance with defaults, extends config with formatted values
-              *     and options, and invokes initialize method of AbstractElement class.
-              *     If instance's 'customEntry' property is set to true, calls 'initInput'
-              */
-             initialize: function () {
-                 this._super();
-
-                 return this;
-             },
-             /** @inheritdoc */
-             initObservable: function () {
-                 this._super();
-
-                 return this;
+                 region: 'region',
+                 countryId: 'country_id'
              },
              onUpdate: function (value) {
-                 console.log('Selected Value: ' + value);
+                 this.setDataForm(value)
              },
-
-
-             selectHolderChange: function () {
-                 var self = this;
-
-                 $(self.options.shippingForm).find('select[name='+ self.options.vippsInputId + ']').change(function (option) {
-                     //var dataOption = $('#' + self.options.selectHolder + " option:selected")[0].value;
-                     //var addressePos = self.findData(dataOption, addressesList);
-                     //self.changeValue(addressesList[addressePos]);
-                     //self.insertHiddenInput(dataOption);
-                     console.log('sss');
-                 })
-             },
-             setDataForm: function (selectedId) {
+             setDataForm: function (value) {
                  var self = this,
-                     addresessKey = CustomerData.get('vipps_login_data')(),
-                     addressesList = addresessKey.addresses,
-                     preselectAddresse = this.findData(selectedId,addressesList),
-                     selectedAddresse = addressesList[preselectAddresse];
+                     vippsData = CustomerData.get('vipps_login_data')(),
+                     addressesList = vippsData.addresses,
+                     selectedAddress = this.findData(value, addressesList);
 
-                 for (var key in selectedAddresse) {
-                     if (key !== self.options.streetField ||
-                         key !== self.options.postCode ||
-                         key !== self.options.countryId) {
-                         $(self.options.shippingForm).find('input[name='+key+']').val(selectedAddresse[key]).change();
-                     } if (key === self.options.streetField) {
-                         $(self.options.shippingForm).find('.field.street input').eq(0).val(selectedAddresse[key]).change();
-                     } if (key === self.options.postCode) {
-                         $(self.options.shippingForm).find('input[name=postcode]').val(selectedAddresse[key]).change();
-                     } if (key === self.options.countryId) {
-                         $(self.options.shippingForm).find('select[name='+ self.options.countryId + ']').val(selectedAddresse[key]).change();
+                 for (var key in selectedAddress) {
+                     if (key === self.elements.countryId) {
+                         $('form select[name='+ self.elements.countryId + ']')
+                             .val('US').change();
+                         $('form select[name='+ self.elements.countryId + ']')
+                             .val(selectedAddress[key]).change();
+                         continue;
+                     }
+
+                     if (key === self.elements.postCode ||
+                         key === self.elements.city ||
+                         key === self.elements.region ||
+                         key === self.elements.telephone
+                     ) {
+                         $('form input[name='+key+']')
+                             .val(selectedAddress[key]).change();
+                         continue;
+                     }
+
+                     if (key === self.elements.streetField) {
+                         var streetArr = selectedAddress[key].split('\n');
+                         for (var index in streetArr) {
+                             $('fieldset.field.street input').eq(index)
+                                 .val(streetArr[index]).change();
+                         }
                      }
                  }
-                 var dataOption = $('#' + self.options.selectHolder + " option:selected")[0].value;
-                 self.insertHiddenInput(dataOption);
              },
-             filter: function (value, field) {
-                 console.log();
+             /**
+              * @return {number} position of needed array
+              * @return {array} array of list
+              */
+             findData: function (value, dataList) {
+                 var data = dataList.map( function(item) {
+                     return item.id;
+                 });
+                 var index = data.indexOf(value);
 
-                 //this.setOptions(result);
+                 return dataList[index];
              }
         });
 });

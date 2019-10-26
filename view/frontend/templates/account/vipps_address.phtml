@@ -16,7 +16,7 @@
 
 /** @var \Vipps\Login\Block\Account\AddressList $block */
 ?>
-<?php if ($vippsAddresses = $block->getNotLinkedVippsAddresses()): ?>
+<?php if ($vippsAddresses = $block->getVippsAddresses()): ?>
     <div class="block block-addresses-list vipps-addresses">
         <div class="block-title"><strong><?= $block->escapeHtml(__('Vipps Address Entries')) ?></strong></div>
         <div class="block-content">

@@ -34,7 +34,7 @@ define([
                 if (billingAddress.customAttributes !== undefined) {
 
                     billingAddress['extension_attributes']['vipps_address_id'] =
-                        billingAddress.customAttributes['vipps_address_id'];
+                        billingAddress.customAttributes['vipps_address_box'];
                 }
             }
 

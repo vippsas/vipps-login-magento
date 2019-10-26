@@ -13,31 +13,28 @@
  * IN THE SOFTWARE
  */
 
-/*jshint browser:true jquery:true*/
-/*global alert*/
 define([
-           'jquery',
-           'mage/utils/wrapper',
-           'Magento_Checkout/js/model/quote'
+       'jquery',
+       'mage/utils/wrapper',
+       'Magento_Checkout/js/model/quote'
        ], function ($, wrapper, quote) {
     'use strict';
 
     return function (setShippingInformationAction) {
+        return wrapper.wrap(setShippingInformationAction, function (originalAction, messageContainer) {
 
-        return wrapper.wrap(setShippingInformationAction, function (originalAction) {
-
-            var shippingAddress = quote.shippingAddress();
-
-            if (shippingAddress['extension_attributes'] === undefined) {
-                shippingAddress['extension_attributes'] = {};
+            if (messageContainer.custom_attributes !== null &&
+                messageContainer.custom_attributes !== undefined
+            ) {
+                $.each(messageContainer.custom_attributes , function( key, value ) {
+                    messageContainer['custom_attributes'][key] = {
+                        'attribute_code':key,
+                        'value':value
+                    };
+                });
             }
 
-            if (shippingAddress.customAttributes !== undefined) {
-                shippingAddress['extension_attributes']['vipps_address_id'] =
-                    shippingAddress.customAttributes['vipps_address_box'];
-            }
-
-            return originalAction();
+            return originalAction(messageContainer);
         });
     };
 });

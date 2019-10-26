@@ -53,6 +53,7 @@ class AddressList extends Template
      * @var VippsCustomerRepositoryInterface
      */
     private $vippsCustomerRepository;
+
     /**
      * @var VippsCustomerAddressRepositoryInterface
      */
@@ -87,18 +88,21 @@ class AddressList extends Template
     }
 
     /**
-     * @return array|\Vipps\Login\Api\Data\VippsCustomerAddressInterface[]
+     * @return array|\Vipps\Login\Api\Data\VippsCustomerAddressSearchResultsInterface
+     * @throws NoSuchEntityException
      * @throws \Magento\Framework\Exception\InputException
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Magento\Framework\Exception\State\InputMismatchException
      */
-    public function getNotLinkedVippsAddresses()
+    public function getVippsAddresses()
     {
         $customerModel = $this->customerSession->getCustomer();
         $customer = $customerModel->getDataModel();
         if ($this->vippsAccountManagement->isLinked($customer)) {
             $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
-            return $this->vippsCustomerAddressRepository->getNotLinkedAddresses($vippsCustomer);
+            $vippsAddressResult = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
+            $vippsAddresses = $vippsAddressResult->getItems();
+            return $vippsAddresses;
         }
 
         return [];

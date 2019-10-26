@@ -93,8 +93,9 @@ class VippsCustomer implements SectionSourceInterface
         foreach ($addresses as $address) {
             $result['addresses'][] = [
                 'country_id' => $address->getCountry(),
-                'postalcode' => $address->getPostalCode(),
+                'postcode' => $address->getPostalCode(),
                 'city' => $address->getRegion(),
+                'region' => $address->getRegion(),
                 'telephone' => $vippsCustomer->getTelephone(),
                 'street' => $address->getStreetAddress(),
                 'id' => $address->getEntityId()

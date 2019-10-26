@@ -16,10 +16,16 @@
 var config = {
     config: {
         mixins: {
+            'Magento_Checkout/js/action/set-billing-address': {
+                'Vipps_Login/js/action/set-billing-address-mixin': true
+            },
             'Magento_Checkout/js/action/set-shipping-information': {
                 'Vipps_Login/js/action/set-shipping-information-mixin': true
             },
-            'Magento_Checkout/js/action/set-billing-address': {
+            'Magento_Checkout/js/action/create-shipping-address': {
+                'Vipps_Login/js/action/set-billing-address-mixin': true
+            },
+            'Magento_Checkout/js/action/place-order': {
                 'Vipps_Login/js/action/set-billing-address-mixin': true
             },
             'Magento_Checkout/js/action/create-billing-address': {

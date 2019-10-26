@@ -134,7 +134,7 @@ class LayoutProcessor implements LayoutProcessorInterface
         if (isset($jsLayout['components']['checkout']['children']['steps']['children']['shipping-step'])) {
             $jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']
             ['children']['shippingAddress']['children']['shipping-address-fieldset']['children']
-            ['vipps_address_box'] = $this->getVippsAddressComponent('shippingAddress.custom_attributes.vipps_address_id');
+            ['vipps_address_box'] = $this->getVippsAddressComponent('shippingAddress.custom_attributes.vipps_address_box');
         }
 
         return $jsLayout;
@@ -158,7 +158,7 @@ class LayoutProcessor implements LayoutProcessorInterface
                        ['payments-list']['children'][$paymentCode . '-form'])) {
                 continue;
             }
-            $scope = 'billingAddress' . $paymentCode . '.custom_attributes.vipps_address_id';
+            $scope = 'billingAddress' . $paymentCode . '.custom_attributes.vipps_address_box';
 
             $jsLayout['components']['checkout']['children']['steps']['children']
             ['billing-step']['children']['payment']['children']
