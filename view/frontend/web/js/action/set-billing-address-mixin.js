@@ -31,7 +31,11 @@ define([
                     billingAddress['extension_attributes'] = {};
                 }
 
-                if (billingAddress.customAttributes !== undefined) {
+                if (billingAddress.customAttributes !== undefined &&
+                    billingAddress.customAttributes['vipps_address_box'] !== undefined
+                ) {
+                    billingAddress.customAttributes['vipps_address_box'] =
+                        parseInt(billingAddress.customAttributes['vipps_address_box']);
 
                     billingAddress['extension_attributes']['vipps_address_id'] =
                         billingAddress.customAttributes['vipps_address_box'];

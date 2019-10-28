@@ -32,7 +32,12 @@ define([
                 shippingAddress['extension_attributes'] = {};
             }
 
-            if (shippingAddress.customAttributes !== undefined) {
+            if (shippingAddress.customAttributes !== undefined &&
+                shippingAddress.customAttributes['vipps_address_box'] !== undefined
+            ) {
+                shippingAddress.customAttributes['vipps_address_box'] =
+                    parseInt(shippingAddress.customAttributes['vipps_address_box']);
+
                 shippingAddress['extension_attributes']['vipps_address_id'] =
                     shippingAddress.customAttributes['vipps_address_box'];
             }

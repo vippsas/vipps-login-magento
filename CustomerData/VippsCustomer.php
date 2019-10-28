@@ -89,8 +89,8 @@ class VippsCustomer implements SectionSourceInterface
         }
 
         $result['linked'] = true;
-        $addresses = $this->vippsCustomerAddressRepository->getNotLinkedAddresses($vippsCustomer);
-        foreach ($addresses as $address) {
+        $addressesResult = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
+        foreach ($addressesResult->getItems() as $address) {
             $result['addresses'][] = [
                 'country_id' => $address->getCountry(),
                 'postcode' => $address->getPostalCode(),

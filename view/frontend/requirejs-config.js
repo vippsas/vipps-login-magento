@@ -27,6 +27,9 @@ var config = {
             },
             'Magento_Checkout/js/action/create-billing-address': {
                 'Vipps_Login/js/action/set-billing-address-mixin': true
+            },
+            'Magento_Checkout/js/model/address-converter': {
+                'Vipps_Login/js/model/address-converter-mixin': true
             }
         }
     }

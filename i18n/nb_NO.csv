@@ -1,5 +1,6 @@
 "Confirm your email","Bekreft e-posten din"
 "Updated successfully","Oppdatert"
+"Login successfully","Oppdatert"
 "You are not linked to a Vipps profile.","Du er ikke tilknyttet en Vipps-profil."
 "An error occurred.","Det oppstod en feil."
 "We can't delete the address right now.","Vi kan ikke slette adressen din nå."
@@ -26,9 +27,10 @@ error_description,error_description
 "%1 Bad Request","%1 Ugyldig forespørsel"
 "Account already confirmed","Kontoen er allerede bekreftet"
 "Create Account","Opprett ny konto"
+"Vipps Login Configuration","Vipps Logg Inn Konfigurasjon"
 "Create Account with Vipps","Opprett ny konto med Vipps"
 "or register with email","eller registrer deg med e-post"
-"Unlink my account","Fjern tilknytning"
+"Unlink my account from Vipps","Fjern tilknytning fra Vipps"
 "Addresses from Vipps","Adresser fra Vipps"
 "Apply address","Bruk adresse"
 "Applied","I bruk"
@@ -37,19 +39,20 @@ error_description,error_description
 "Update automatically","Oppdater automatisk"
 "Ask before update","Spør først"
 "Do nothing","Ikke gjør noe"
+Password,Passord
 Save,Lagre
 Back,Tilbake
 "The easiest way to sign in. No need to worry about forgetting your username and password – all you need to login is your phone number. Vipps, and you are logged in.","Enklere innlogging finnes ikke. Aldri mer brukernavn og passord – du trenger bare å huske telefonnummeret ditt. Vipps, så er du logget inn."
 "Use address from Vipps","Bruk adresse fra Vipps"
 "Addresses from Vipps","Adresser fra Vipps"
-"Select address from Vipps","Bruk adresse fra Vipps"
+"Select address","Bruk adresse"
 "Something went wrong","Noe gikk galt"
 "* Required Fields","* Obligatoriske felt"
-"It looks like your email %1 has been already registered. Confirm your password or send confirmation link to your email.","Det ser ut som at du har en profil med e-posten %1 allerede. For å bekrefte profilen din, send en bekreftelseslenke til e-posten din eller skriv inn passordet ditt."
+"Looks, like your email %1 has been already registered. Confirm your password or send confirmation link to your email.","Det ser ut som at du har en profil med e-posten %1 allerede. For å bekrefte profilen din, send en bekreftelseslenke til e-posten din eller skriv inn passordet ditt."
 Email,E-post
 "or enter your password","eller skriv inn passordet ditt"
-"Sign in","Logg inn"
-"Send a confirmation link to my email","Send meg bekreftelseslenke på e-post"
+"Sign In","Logg inn"
+"Send confirmation link to email","Send meg bekreftelseslenke på e-post"
 "Sign in with","Logg inn med"
 "Updated address?","Oppdater adresse?"
 "You’ve updated your addresses in Vipps since your last visit.  Should we update our records?","Du har oppdatert adressene dine i Vipps siden ditt siste besøk. Skal vi oppdatere adressene vi har lagret om deg?"
@@ -60,7 +63,6 @@ Email,E-post
 "Sign in with Vipps","Logg inn med Vipps"
 "Sign in with","Logg inn med"
 "or use email","eller bruk e-post"
-"Copy from Vipps","Kopier fra Vipps"
 Update,Oppdater
 "New address from Vipps","Ny adresse fra Vipps"
 "Old address","Lagret adresse"
@@ -72,3 +74,4 @@ Debug,Feilsøk
 "Client ID","Client ID"
 "Client Secret","Client Secret"
 "Sign in with Vipps","Logg inn med Vipps"
+"Vipps Address Entries","Vipps adresser"

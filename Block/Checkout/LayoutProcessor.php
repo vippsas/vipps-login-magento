@@ -111,7 +111,7 @@ class LayoutProcessor implements LayoutProcessorInterface
                 $jsLayout = $this->processShippingAddress($jsLayout);
                 $jsLayout = $this->processBillingAddress($jsLayout);
 
-                $addressOptions[] = ['value' => '', 'label' => __('Select vipps address')];
+                $addressOptions[] = ['value' => '', 'label' => __('Select address')];
                 foreach ($addresses as $address) {
                     $addressOptions[] = ['value' => $address->getEntityId(), 'label' => $address->getFormatted()];
                 }
@@ -188,7 +188,7 @@ class LayoutProcessor implements LayoutProcessorInterface
                 'elementTmpl' => 'ui/form/element/select',
             ],
             'dataScope' => $scope,
-            'label' => 'Use Vipps',
+            'label' => 'Use address from Vipps',
             'provider' => 'checkoutProvider',
             'sortOrder' => 0,
             'validation' => [

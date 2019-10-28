@@ -94,11 +94,11 @@ class ConfigurationSave extends AccountBase
             $vippsCustomer->setSyncAddressMode($syncType);
             $this->vippsCustomerRepository->save($vippsCustomer);
 
-            $this->messageManager->addSuccessMessage(__('Your changes applied successfully.'));
+            $this->messageManager->addSuccessMessage(__('Updated successfully'));
             return $redirect;
         } catch (\Throwable $e) {
             $this->messageManager->addErrorMessage(
-                __('An error occurred during applying settings. Please, try again later.')
+                __('An error occurred when applying settings. Please, try again later.')
             );
             $this->logger->critical($e);
         }
