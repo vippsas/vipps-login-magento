@@ -3,11 +3,6 @@
 /** @var \Vipps\Login\Block\Form\Verification $block */
 ?>
 
-<div class="login-vipps-holder">
-    <div class="login-vipps-holder-text">
-        <h2><?= $block->escapeHtml(__('Log in')) ?></h2>
-        <p><?= $block->escapeHtml(__('Log in me by using Vipps')) ?></p>
-    </div>
+<div class="account-sign-in my-account">
     <?= $block->getChildHtml('vipps_form_login_button') ?>
-    <p><?= $block->escapeHtml(__('... or you can use default way')) ?></p>
 </div>

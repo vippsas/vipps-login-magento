@@ -14,8 +14,6 @@
  *    IN THE SOFTWARE
  */
 
-// @codingStandardsIgnoreFile
-
 /** @var \Vipps\Login\Block\Account\AddressList $block */
 ?>
 <?php if ($vippsAddresses = $block->getVippsAddresses()): ?>
@@ -30,16 +28,16 @@
                                 <?= $block->escapeHtml(ucfirst($address->getAddressType())) ?>
                             </strong>
                             <br />
-                            <?= $address->getStreetAddress() ?><br />
-                            <?= $address->getRegion() ?><br />
-                            <?= $address->getPostalCode() ?><br />
-                            <?= $block->getCountryName($address->getCountry()) ?><br />
-                            T: <?= $block->renderPhone() ?><br />
+                            <?= $block->escapeHtml($address->getStreetAddress()) ?><br />
+                            <?= $block->escapeHtml($address->getRegion()) ?><br />
+                            <?= $block->escapeHtml($address->getPostalCode()) ?><br />
+                            <?= $block->escapeHtml($block->getCountryName($address->getCountry())) ?><br />
+                         T: <a href="tel:<?= $block->escapeHtml($block->renderPhone()) ?>"><?= $block->escapeHtml($block->renderPhone()) ?></a><br />
                         </address>
                         <?php if (!$address->getCustomerAddressId()): ?>
                             <div class="item actions">
                                 <a class="action edit" href="<?= $block->escapeUrl($block->getUrl('vipps/login/applyAddress', ['id' => $address->getEntityId()])) ?>">
-                                    <span><?= $block->escapeHtml(__('Apply Address')) ?></span>
+                                    <span><?= $block->escapeHtml(__('Apply address')) ?></span>
                                 </a>
                             </div>
                         <?php else: ?>

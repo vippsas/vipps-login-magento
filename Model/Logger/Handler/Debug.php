@@ -18,7 +18,8 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model\Logger\Handler;
 
-use Magento\Framework\{Filesystem\DriverInterface, Logger\Handler\Base};
+use Magento\Framework\Filesystem\DriverInterface;
+use Magento\Framework\Logger\Handler\Base;
 use Monolog\Logger;
 use Vipps\Login\Model\ConfigInterface;
 

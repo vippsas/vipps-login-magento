@@ -90,6 +90,6 @@ class Config implements ConfigInterface
             $storeId = $this->storeManager->getStore()->getId();
         }
 
-        return $this->scopeConfig->getValue($path,ScopeInterface::SCOPE_STORE, $storeId);
+        return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $storeId);
     }
 }

@@ -121,10 +121,9 @@ class Redirect extends Action
             $this->storeToken($token);
 
             $result = $this->actionsPool->execute($token);
-            if (!$result instanceof ResultInterface) {
-                throw new \Exception('Redirect action was not defined.');
+            if ($result instanceof ResultInterface) {
+                return $result;
             }
-            return $result;
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage($e);
             $this->logger->critical($e->getMessage());

@@ -13,12 +13,14 @@
  *    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  *    IN THE SOFTWARE
  */
+
+/** @var $block \Vipps\Login\Block\Account\Link */
+declare(strict_types=1);
 ?>
 
 <div class="error-page">
     <div class="icon-vipps-error">
-        <img src="<?php echo $this->getViewFileUrl('Vipps_Login::images/vipps-logo-error.svg'); ?>" alt="">
+        <img src="<?= $block->escapeUrl($block->getViewFileUrl('Vipps_Login::images/vipps-logo-error.svg')); ?>" alt="">
     </div>
     <h2><?= $block->escapeHtml(__('Oh snap, something went wrong')) ?></h2>
-    <p><?= $block->escapeHtml(__('Reason___________')) ?></p>
 </div>

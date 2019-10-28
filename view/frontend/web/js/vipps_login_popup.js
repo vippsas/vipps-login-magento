@@ -13,18 +13,16 @@
  * IN THE SOFTWARE
  */
 
-/**
- * @api
- */
 define([
-   'jquery',
-   'Magento_Ui/js/modal/modal',
-   'Magento_Customer/js/customer-data',
-   'mage/storage'
-], function ($, modal, CustomerData, storage) {
+           'jquery',
+           'Magento_Ui/js/modal/modal',
+           'Magento_Customer/js/customer-data',
+           'mage/storage',
+           'mage/translate'
+       ], function ($, modal, CustomerData, storage, $t) {
     'use strict';
 
-    $.widget('mage.vippsLoginPopUp',{
+    $.widget('mage.vippsLoginPopUp', {
         /**
          * Added clear timeout on trigger show
          */
@@ -36,9 +34,12 @@ define([
             paramCall: 'sync_address_mode',
             responsive: true,
             innerScroll: true,
+            modalClass: 'vipps-popup',
+            checkboxId: '#remember_choice',
+            accountClass: '.account',
             buttons: [
                 {
-                    text: $.mage.__('Never'),
+                    text: $.mage.__('Do nothing'),
                     class: '',
                     click: function () {
                         this.closeModal();
@@ -46,19 +47,11 @@ define([
                     }
                 },
                 {
-                    text: $.mage.__('Only this time'),
+                    text: $.mage.__('Update'),
                     class: '',
                     click: function () {
                         this.closeModal();
                         CustomerData.set('sync_address_mode', 0)
-                    }
-                },
-                {
-                    text: $.mage.__('Yes, automatically'),
-                    class: '',
-                    click: function () {
-                        this.closeModal();
-                        CustomerData.set('sync_address_mode', 1)
                     }
                 }
             ]
@@ -68,14 +61,15 @@ define([
             var getKey = CustomerData.get('vippsPopUpShow');
             var self = this;
 
-
             if (this._getData().addressUpdated &&
+                $(this.options.accountClass).length &&
                 getKey() !== true) {
-                $(this.options.idModal).modal("openModal").on('modalclosed', function() {
+                self.setDataAddr();
+                $(self.options.idModal).modal("openModal").on('modalclosed', function () {
                     self.sendData();
                 });
+                $(self.options.idModal).show();
                 CustomerData.set('vippsPopUpShow',true);
-                $(this.options.idModal).show();
             } else {
                 $(this.options.idModal).hide();
             }
@@ -85,8 +79,9 @@ define([
             storage.post(
                 'vipps/login/addressUpdate',
                 JSON.stringify({
-                        'sync_address_mode': CustomerData.get('sync_address_mode')()
-                    }),
+                                   'sync_address_mode': CustomerData.get('sync_address_mode')(),
+                                   'sync_address_remeber': CustomerData.get('sync_address_remeber')()
+                               }),
                 1,
                 'json'
             );
@@ -112,6 +107,47 @@ define([
             }
 
             return data;
+        },
+        setDataAddr: function () {
+            var addresses = CustomerData.get(this.options.cacheKey)();
+            var customerName = CustomerData.get('customer')();
+            if (addresses.newAddress || addresses.oldAddress) {
+                $(this.options.idModal).find('.vipps-address').append(
+                    '<ul>' +
+                    '<li><strong>' + $t('New address from Vipps') + '</strong></li>' +
+                    '<li>' + customerName.fullname + '</li>' +
+                    '<li>' + addresses.newAddress.street + '</li>' +
+                    '<li>' + addresses.newAddress.postalcode + '<span>' + addresses.newAddress.city + '</span></li>'
+                    + '</h2>'
+                );
+
+                $(this.options.idModal).find('.old-address').append(
+                    '<ul>' +
+                    '<li><strong>' + $t('Old address') + '</strong></li>' +
+                    '<li>' + customerName.fullname + '</li>' +
+                    '<li>' + addresses.oldAddress.street + '</li>' +
+                    '<li>' + addresses.oldAddress.postalcode + '<span>' + addresses.oldAddress.city + '</span></li>'
+                    + '</h2>'
+                );
+
+                $('.' + this.options.modalClass).find('.modal-footer').prepend(
+                    '<label for="remember_choice" class="remember-choice-holder">' +
+                    '<input type="checkbox" name="remember_choice" id="remember_choice">' +
+                    $t('Remember my choice') + '</label>'
+                );
+                this.checboxHandler();
+            }
+
+        },
+        checboxHandler: function () {
+            var checkbox = $(this.options.checkboxId);
+            checkbox.on('change', function () {
+                if (this.checked) {
+                    CustomerData.set('sync_address_remeber', true);
+                } else {
+                    CustomerData.set('sync_address_remeber', false);
+                }
+            });
         }
 
     });

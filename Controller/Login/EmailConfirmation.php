@@ -130,12 +130,12 @@ class EmailConfirmation extends Action
                 $errorMessage = $e->getMessage();
             } catch (\Exception $e) {
                 $this->logger->critical($e);
-                $errorMessage = __('An error occurred trying to send email');
+                $errorMessage = __('An error occurred when trying to send email.');
             }
         }
 
         return $this->jsonFactory
             ->create()
-            ->setData(['error' => true, 'message' => $errorMessage ?? __('An error occurred trying to send email')]);
+            ->setData(['error' => true, 'message' => $errorMessage ?? __('An error occurred when trying to send email.')]);
     }
 }

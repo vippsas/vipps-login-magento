@@ -109,18 +109,18 @@ class AddressUpdate extends AccountBase
         /** @var Raw $resultRaw */
         $resultRaw = $this->resultRawFactory->create();
         try {
-            $mode = $this->serializer->unserialize($this->getRequest()->getContent());
+            $syncData = $this->serializer->unserialize($this->getRequest()->getContent());
         } catch (\Exception $e) {
             return $resultRaw->setHttpResponseCode($httpBadRequestCode);
         }
 
-        if (!$this->isValid($mode)) {
+        if (!$this->isValid($syncData)) {
             return $resultRaw->setHttpResponseCode($httpBadRequestCode);
         }
 
         $response = [
             'errors' => false,
-            'message' => __('Updated Successfully')
+            'message' => __('Updated successfully')
         ];
 
         try {
@@ -128,27 +128,28 @@ class AddressUpdate extends AccountBase
             $customer = $customerModel->getDataModel();
             $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
             if (!$vippsCustomer->getEntityId()) {
-                throw new LocalizedException(__('You are not linked to vipps account.'));
+                throw new LocalizedException(__('You are not linked to a Vipps profile.'));
             }
 
-            $vippsCustomer->setSyncAddressMode($mode['sync_address_mode']);
-            $this->vippsCustomerRepository->save($vippsCustomer);
+            if ($syncData['sync_address_remeber']) {
+                $vippsCustomer->setSyncAddressMode($syncData['sync_address_mode']);
+                $this->vippsCustomerRepository->save($vippsCustomer);
+            }
 
             $vippsAddressesResult = $this->vippsCustomerAddressRepository
                 ->getByVippsCustomer($vippsCustomer);
 
             foreach ($vippsAddressesResult->getItems() as $item) {
-                if ($item->getWasChanged()) {
-                    $this->vippsCustomerAddressRepository->save($item);
-                    if ($mode['sync_address_mode'] !== VippsCustomerInterface::NEVER_UPDATE) {
-                        $this->vippsAddressManagement->convert(
-                            $customer,
-                            $vippsCustomer,
-                            $item,
-                            false,
-                            true
-                        );
-                    }
+                if ($item->getWasChanged() &&
+                    $syncData['sync_address_mode'] !== VippsCustomerInterface::NEVER_UPDATE
+                ) {
+                    $this->vippsAddressManagement->convert(
+                        $customer,
+                        $vippsCustomer,
+                        $item,
+                        false,
+                        true
+                    );
                 }
             }
         } catch (LocalizedException $e) {

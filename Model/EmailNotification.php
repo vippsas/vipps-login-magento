@@ -121,11 +121,11 @@ class EmailNotification
         ];
 
         $transport = $this->transportBuilder
-            ->setTemplateIdentifier('vipps_login_confirmation') //@todo use -> $this->scopeConfig->getValue($template, 'store', $storeId)
+            ->setTemplateIdentifier('vipps_login_confirmation')
             ->setTemplateOptions(['area' => 'frontend', 'store' => $store->getId()])
             ->setTemplateVars($templateParams)
             ->setFrom('support', $store)
-            ->addTo($customer->getEmail(), $customer->getFirstname() . ' ' . $customer->getLastname()) //@todo fix later
+            ->addTo($customer->getEmail(), $customer->getFirstname() . ' ' . $customer->getLastname())
             ->getTransport();
 
         $transport->sendMessage();

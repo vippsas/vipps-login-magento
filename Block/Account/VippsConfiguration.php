@@ -78,6 +78,7 @@ class VippsConfiguration extends Template
 
     /**
      * @return int
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function getSyncAddressMode()
     {

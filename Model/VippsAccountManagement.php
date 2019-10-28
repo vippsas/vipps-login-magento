@@ -18,7 +18,6 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model;
 
-
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterfaceFactory;
@@ -98,9 +97,13 @@ class VippsAccountManagement implements VippsAccountManagementInterface
      */
     public function resendConfirmation(UserInfoInterface $userInfo, CustomerInterface $customer)
     {
-        $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
-        if ($vippsCustomer->getLinked()) {
-            throw new InvalidTransitionException(__('Account already confirmed'));
+        try {
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+            if ($vippsCustomer->getLinked()) {
+                throw new InvalidTransitionException(__('Account already confirmed'));
+            }
+        } catch (NoSuchEntityException $e) {
+            //$this->lo
         }
 
         $vippsCustomer = $this->getPair($userInfo, $customer);
@@ -215,23 +218,5 @@ class VippsAccountManagement implements VippsAccountManagementInterface
         $vippsCustomer->setTelephone($userInfo->getPhoneNumber());
 
         return $this->vippsCustomerRepository->save($vippsCustomer);
-    }
-
-    /**
-     * @param CustomerInterface $customer
-     *
-     * @return \Vipps\Login\Api\Data\VippsCustomerAddressInterface[]
-     */
-    public function getAddresses(CustomerInterface $customer)
-    {
-        try {
-            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
-        } catch (NoSuchEntityException $e) {
-            return [];
-        }
-
-        $result = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
-
-        return $result->getItems();
     }
 }

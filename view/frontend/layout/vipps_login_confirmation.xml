@@ -5,12 +5,9 @@
   -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
-        <referenceBlock name="columns.top">
-            <block class="Vipps\Login\Block\Form\Confirmation" name="vipps_icon_confirmation" template="Vipps_Login::form/icon-confirmation.phtml" before="page.main.title"/>
-        </referenceBlock>
         <referenceContainer name="content">
             <!--vipps.login.confirmation.form-->
-            <container name="vipps.login.confirmation" label="Confirmation Login Container" htmlTag="div" htmlClass="login-container">
+            <container name="vipps.login.confirmation" label="Confirmation Login Container" htmlTag="div" htmlClass="login-container confirm">
                 <block
                     class="Vipps\Login\Block\Form\Confirmation"
                     name="vipps_login_confirmation_from"

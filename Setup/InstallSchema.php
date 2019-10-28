@@ -18,11 +18,11 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Setup;
 
+use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
 use Magento\Framework\Setup\SchemaSetupInterface;
-use Magento\Framework\DB\Ddl\Table;
-use Magento\Framework\DB\Adapter\AdapterInterface;
 
 /**
  * @codeCoverageIgnore
@@ -40,6 +40,8 @@ class InstallSchema implements InstallSchemaInterface
         $this->createVippsCustomerTable($installer);
 
         $this->createVippsCustomerAddressTable($installer);
+
+        $this->createQuoteVippsCustomerAddressRelation($installer);
 
         $installer->endSetup();
     }
@@ -108,14 +110,14 @@ class InstallSchema implements InstallSchemaInterface
             [],
             'Confirmation Key'
         )->addColumn(
-                'confirmation_exp',
-                Table::TYPE_INTEGER,
-                null,
-                ['unsigned' => true, 'nullable' => true],
-                'Confirmation Expiration Time'
+            'confirmation_exp',
+            Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true, 'nullable' => true],
+            'Confirmation Expiration Time'
         )->addIndex(
-            $installer->getIdxName($vippsCustomerEntityTableName, ['telephone', 'website_id', 'linked']),
-            ['telephone', 'website_id', 'linked']
+            $installer->getIdxName($vippsCustomerEntityTableName, ['telephone', 'linked', 'website_id']),
+            ['telephone', 'linked', 'website_id']
         )->addIndex(
             $installer->getIdxName(
                 'vipps_customer',
@@ -250,6 +252,71 @@ class InstallSchema implements InstallSchemaInterface
             Table::ACTION_SET_NULL
         )->setComment(
             'Vipps Customer Address Table'
+        );
+
+        $installer->getConnection()->createTable($table);
+    }
+
+    /**
+     * @param SchemaSetupInterface $installer
+     *
+     * @throws \Zend_Db_Exception
+     */
+    public function createQuoteVippsCustomerAddressRelation(SchemaSetupInterface $installer)
+    {
+        $vippsQuoteAddressesRelationTable = $installer->getConnection()
+            ->getTableName('vipps_quote_addresses_relation');
+
+        $quoteAddressTable = $installer->getConnection()
+            ->getTableName('quote_address');
+
+        $vippsCustomerAddress = $installer->getConnection()
+            ->getTableName('vipps_customer_address');
+
+        $table = $installer->getConnection()->newTable(
+            $vippsQuoteAddressesRelationTable
+        )->addColumn(
+            'id',
+            Table::TYPE_INTEGER,
+            null,
+            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+            'Id'
+        )->addColumn(
+            'quote_address_id',
+            Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true, 'nullable' => false],
+            'Quote Address Id'
+        )->addColumn(
+            'vipps_customer_address_id',
+            Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true, 'nullable' => true],
+            'Customer Address Entity Id'
+        )->addForeignKey(
+            $installer->getFkName(
+                $vippsQuoteAddressesRelationTable,
+                'quote_address_id',
+                $quoteAddressTable,
+                'address_id'
+            ),
+            'quote_address_id',
+            $quoteAddressTable,
+            'address_id',
+            Table::ACTION_CASCADE
+        )->addForeignKey(
+            $installer->getFkName(
+                $vippsQuoteAddressesRelationTable,
+                'vipps_customer_address_id',
+                $vippsCustomerAddress,
+                'entity_id'
+            ),
+            'vipps_customer_address_id',
+            $vippsCustomerAddress,
+            'entity_id',
+            Table::ACTION_CASCADE
+        )->setComment(
+            'Vipps Quote Addresses Relation Table'
         );
 
         $installer->getConnection()->createTable($table);

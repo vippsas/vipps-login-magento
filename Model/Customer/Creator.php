@@ -113,7 +113,7 @@ class Creator
             $customer->setLastname($userInfo->getFamilyName());
 
             return $this->accountManagement->createAccount($customer);
-        } catch(AlreadyExistsException $e) {
+        } catch (AlreadyExistsException $e) {
             return $this->customerRepository->get($userInfo->getEmail());
         }
     }
