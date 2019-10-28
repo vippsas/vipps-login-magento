@@ -48,7 +48,7 @@ Back,Tilbake
 "Select address","Bruk adresse"
 "Something went wrong","Noe gikk galt"
 "* Required Fields","* Obligatoriske felt"
-"It looks like you have an account with the email %1 already. To confirm you profile, send a confirmation link to your email or enter your password.","Det ser ut som at du har en profil med e-posten %1 allerede. For å bekrefte profilen din, send en bekreftelseslenke til e-posten din eller skriv inn passordet ditt."
+"Looks, like your email %1 has been already registered. Confirm your password or send confirmation link to your email.","Det ser ut som at du har en profil med e-posten %1 allerede. For å bekrefte profilen din, send en bekreftelseslenke til e-posten din eller skriv inn passordet ditt."
 Email,E-post
 "or enter your password","eller skriv inn passordet ditt"
 "Sign In","Logg inn"
