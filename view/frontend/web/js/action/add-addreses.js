@@ -37,7 +37,6 @@ define([
             this._super();
             this.selectHolderChange();
             this.insertHiddenInput(config.vippsAddressId);
-
         },
         selectHolderChange: function () {
             var self = this;

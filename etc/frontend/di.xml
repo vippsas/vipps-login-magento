@@ -173,17 +173,6 @@
         </arguments>
     </type>
 
-    <type name="Magento\Customer\Api\AddressRepositoryInterface">
-        <plugin name="Vipps\Login\Plugin\AddressSave" type="Vipps\Login\Plugin\AddressSave"/>
-    </type>
-
-    <type name="Vipps\Login\Plugin\AddressSave">
-        <arguments>
-            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
-            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
-        </arguments>
-    </type>
-
     <type name="Magento\Customer\Api\AccountManagementInterface">
         <plugin name="Vipps\Login\Plugin\Customer\Api\AccountManagement"
                 type="Vipps\Login\Plugin\Customer\Api\AccountManagement" />
@@ -211,4 +200,20 @@
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
     </type>
+
+    <type name="Magento\Checkout\Block\Onepage">
+        <arguments>
+            <argument name="layoutProcessors" xsi:type="array">
+                <item name="vipps-address-component" xsi:type="object">Vipps\Login\Block\Checkout\LayoutProcessor</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Checkout\LayoutProcessor">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
 </config>

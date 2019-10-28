@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Vipps
+ * Copyright 2018 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -13,28 +13,31 @@
  * IN THE SOFTWARE
  */
 
-
+/*jshint browser:true jquery:true*/
+/*global alert*/
 define([
-   'jquery',
-   'uiComponent',
-   'Magento_Customer/js/model/customer',
-   'mage/url',
-], function ($, Component, customer, url) {
-   'use strict';
+           'jquery',
+           'mage/utils/wrapper',
+           'Magento_Checkout/js/model/quote'
+       ], function ($, wrapper, quote) {
+    'use strict';
 
-   return Component.extend({
-       options: {
-           isCustomerLoggedIn: customer.isLoggedIn,
-       },
-       initialize: function () {
-        this._super();
+    return function (setShippingInformationAction) {
 
-       },
-       checkLoginUser: function () {
-           return this.options.isCustomerLoggedIn()
-       },
-       getBaseUrl: function() {
-           return url.build('vipps/login/index');
-       }
-   });
+        return wrapper.wrap(setShippingInformationAction, function (originalAction) {
+
+            var shippingAddress = quote.shippingAddress();
+
+            if (shippingAddress['extension_attributes'] === undefined) {
+                shippingAddress['extension_attributes'] = {};
+            }
+
+            if (shippingAddress.customAttributes !== undefined) {
+                shippingAddress['extension_attributes']['vipps_address_id'] =
+                    shippingAddress.customAttributes['vipps_address_box'];
+            }
+
+            return originalAction();
+        });
+    };
 });

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-  ~ Copyright 2019 Vipps
+  ~ Copyright 2018 Vipps
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
   ~ documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -13,19 +13,8 @@
   ~ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
   ~ IN THE SOFTWARE
   -->
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd" label="Customer My Account (All Pages)" design_abstraction="custom">
-    <body>
-        <attribute name="class" value="account"/>
-
-        <referenceBlock name="customer_account_navigation">
-            <block class="Magento\Customer\Block\Account\SortLinkInterface" name="customer-account-navigation-vipps-login-management">
-                <arguments>
-                    <argument name="path" xsi:type="string">vipps/login/manage</argument>
-                    <argument name="label" xsi:type="string" translate="true">Sign in with Vipps</argument>
-                    <argument name="sortOrder" xsi:type="number">30</argument>
-                </arguments>
-            </block>
-        </referenceBlock>
-
-    </body>
-</page>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="sales_quote_address_save_after">
+        <observer name="vipps_login_sales_quote_address_save_after" instance="Vipps\Login\Observer\SaveQuoteAddressAfter" />
+    </event>
+</config>

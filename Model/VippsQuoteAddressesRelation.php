@@ -1,5 +1,6 @@
-/*
- * Copyright 2019 Vipps
+<?php
+/**
+ * Copyright 2018 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -13,28 +14,28 @@
  * IN THE SOFTWARE
  */
 
+declare(strict_types=1);
 
-define([
-   'jquery',
-   'uiComponent',
-   'Magento_Customer/js/model/customer',
-   'mage/url',
-], function ($, Component, customer, url) {
-   'use strict';
+namespace Vipps\Login\Model;
 
-   return Component.extend({
-       options: {
-           isCustomerLoggedIn: customer.isLoggedIn,
-       },
-       initialize: function () {
-        this._super();
+use Magento\Framework\Model\AbstractModel;
+use Vipps\Login\Model\ResourceModel\VippsQuoteAddressesRelation as VippsQuoteAddressesRelationResource;
 
-       },
-       checkLoginUser: function () {
-           return this.options.isCustomerLoggedIn()
-       },
-       getBaseUrl: function() {
-           return url.build('vipps/login/index');
-       }
-   });
-});
+/**
+ * Class VippsQuoteAddressesRelation
+ * @package Vipps\Login\Model
+ */
+class VippsQuoteAddressesRelation extends AbstractModel
+{
+    /**
+     * Init resource model and id field
+     *
+     * @return void
+     */
+    protected function _construct()
+    {
+        parent::_construct();
+        $this->_init(VippsQuoteAddressesRelationResource::class);
+        $this->setIdFieldName('id');
+    }
+}
