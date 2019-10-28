@@ -48,14 +48,14 @@ Back,Tilbake
 "Select address","Bruk adresse"
 "Something went wrong","Noe gikk galt"
 "* Required Fields","* Obligatoriske felt"
-"Looks, like your email %1 has been already registered. Confirm your password or send confirmation link to your email.","Det ser ut som at du har en profil med e-posten %1 allerede. For å bekrefte profilen din, send en bekreftelseslenke til e-posten din eller skriv inn passordet ditt."
+"It looks like you have an account with the email %1 already. To confirm you profile, send a confirmation link to your email or enter your password.","Det ser ut som at du har en profil med e-posten %1 allerede. For å bekrefte profilen din, send en bekreftelseslenke til e-posten din eller skriv inn passordet ditt."
 Email,E-post
 "or enter your password","eller skriv inn passordet ditt"
 "Sign In","Logg inn"
 "Send confirmation link to email","Send meg bekreftelseslenke på e-post"
 "Sign in with","Logg inn med"
 "Updated address?","Oppdater adresse?"
-"You’ve updated your addresses in Vipps since your last visit.  Should we update our records?","Du har oppdatert adressene dine i Vipps siden ditt siste besøk. Skal vi oppdatere adressene vi har lagret om deg?"
+"You've updated your addresses in Vipps since your last visit.  Should we update our records?","Du har oppdatert adressene dine i Vipps siden ditt siste besøk. Skal vi oppdatere adressene vi har lagret om deg?"
 "Please confirm your email at %store_name","Bekreft e-posten din hos %store_name"
 "Confirm that %customer_email is your email address to complete sign in. It’s easy – just click the button below.","Bekreft at e-postadressen din er %customer_email for å fullføre innloggingen. Det er enkelt – bare klikk på knappen under."
 "Confirm now","Bekreft nå"

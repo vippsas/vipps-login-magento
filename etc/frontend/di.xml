@@ -134,6 +134,12 @@
         </arguments>
     </type>
 
+    <type name="Vipps\Login\Block\Cart\Button">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
     <type name="Vipps\Login\Block\Account\VippsAddress">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>

@@ -19,7 +19,7 @@ $emails = $block->getEmails();
             <?= $block->getBlockHtml('formkey') ?>
             <fieldset class="fieldset login" data-hasrequired="<?= $block->escapeHtmlAttr(__('* Required Fields')) ?>">
                 <div class="field note">
-                    <?= __('Looks, like your email %1 has been already registered. Confirm your password or send confirmation link to your email.', '<b>' . $block->escapeHtmlAttr(current($emails)) . '</b>') ?>
+                    <?= __("It looks like you have an account with the email %1 already. To confirm you profile, send a confirmation link to your email or enter your password.", '<b>' . $block->escapeHtmlAttr(current($emails)) . '</b>') ?>
                 </div>
                     <input type="hidden" name="username" value="<?= $block->escapeHtmlAttr(current($emails)) ?>" <?php if ($block->isAutocompleteDisabled()): ?> autocomplete="off"<?php endif; ?> id="email1" type="email" class="input-text" title="<?= $block->escapeHtmlAttr(__('Email')) ?>" data-validate="{required:true, 'validate-email':true}">
                 <div class="field password required">

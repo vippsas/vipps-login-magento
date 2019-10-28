@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -35,9 +35,6 @@ define([
             if (shippingAddress.customAttributes !== undefined &&
                 shippingAddress.customAttributes['vipps_address_box'] !== undefined
             ) {
-                shippingAddress.customAttributes['vipps_address_box'] =
-                    parseInt(shippingAddress.customAttributes['vipps_address_box']);
-
                 shippingAddress['extension_attributes']['vipps_address_id'] =
                     shippingAddress.customAttributes['vipps_address_box'];
             }

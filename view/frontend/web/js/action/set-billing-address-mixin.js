@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -34,9 +34,6 @@ define([
                 if (billingAddress.customAttributes !== undefined &&
                     billingAddress.customAttributes['vipps_address_box'] !== undefined
                 ) {
-                    billingAddress.customAttributes['vipps_address_box'] =
-                        parseInt(billingAddress.customAttributes['vipps_address_box']);
-
                     billingAddress['extension_attributes']['vipps_address_id'] =
                         billingAddress.customAttributes['vipps_address_box'];
                 }

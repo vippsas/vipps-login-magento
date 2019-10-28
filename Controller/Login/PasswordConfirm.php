@@ -189,7 +189,7 @@ class PasswordConfirm extends Action
 
         $response = [
             'errors' => false,
-            'message' => __('Login successful.')
+            'message' => __('You are logged in.')
         ];
 
         try {
