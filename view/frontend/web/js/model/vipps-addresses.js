@@ -58,18 +58,6 @@ define([
                  }
              },
              /**
-              * @return {number} position of needed array
-              * @return {array} array of list
-              */
-             findData: function (value, dataList) {
-                 var data = dataList.map( function(item) {
-                     return item.id;
-                 });
-                 var index = data.indexOf(value);
-
-                 return dataList[index];
-             },
-             /**
               * {@inheritdoc}
               *
               * @param {Array} data
