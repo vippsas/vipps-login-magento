@@ -95,7 +95,6 @@ class VippsCustomer implements SectionSourceInterface
                 'country_id' => $address->getCountry(),
                 'postcode' => $address->getPostalCode(),
                 'city' => $address->getRegion(),
-                'region' => $address->getRegion(),
                 'telephone' => $vippsCustomer->getTelephone(),
                 'street' => $address->getStreetAddress(),
                 'id' => $address->getEntityId()

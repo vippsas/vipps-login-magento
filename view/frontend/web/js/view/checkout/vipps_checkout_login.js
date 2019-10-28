@@ -24,8 +24,6 @@ define([
        },
        getBaseUrl: function() {
            return url.build('vipps/login/index');
-       },
-
+       }
    });
-   }
-);
+});

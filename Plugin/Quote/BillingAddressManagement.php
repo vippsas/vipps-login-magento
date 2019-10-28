@@ -82,11 +82,17 @@ class BillingAddressManagement
             try {
                 $vippsAddressId = $extAttributes->getVippsAddressId();
                 if ($vippsAddressId) {
-                    //todo check if address is available for customer
                     $vippsQuoteAddress = $this->vippsQuoteAddressesFactory->create();
-                    $vippsQuoteAddress->setQuoteAddressId($addressId);
-                    $vippsQuoteAddress->setVippsCustomerAddressId($vippsAddressId);
-                    $this->resourceModel->save($vippsQuoteAddress);
+                    $this->resourceModel->load(
+                        $vippsQuoteAddress,
+                        $vippsAddressId,
+                        'vipps_customer_address_id'
+                    );
+                    if (!$vippsQuoteAddress->getId()) {
+                        $vippsQuoteAddress->setQuoteAddressId($address->getId());
+                        $vippsQuoteAddress->setVippsCustomerAddressId($vippsAddressId);
+                        $this->resourceModel->save($vippsQuoteAddress);
+                    }
                 }
             } catch (\Exception $e) {
                 $this->logger->critical($e->getMessage());

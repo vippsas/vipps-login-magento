@@ -340,16 +340,10 @@ class VippsAddressManagement implements VippsAddressManagementInterface
             return false;
         }
 
-        $region = '';
-        $magentoRegion = $magentoAddress->getRegion();
-        if ($magentoRegion instanceof RegionInterface) {
-            $region = $magentoRegion->getRegion();
-        }
-
         /*
          * remove whitespaces
          */
-        $region = preg_replace('/\W/', '', $region);
+        $region = preg_replace('/\W/', '', $magentoAddress->getCity());
         $vippsRegion = preg_replace('/\W/', '', $vippsAddress->getRegion());
         if (strcasecmp($vippsRegion, $region) !== 0) {
             return false;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -32,50 +32,27 @@ define([
                  }
              },
              elements: {
-                 selectHolder: 'vipps_address',
-                 shippingForm: '#co-shipping-form',
-                 streetField: 'street',
-                 postCode: 'postcode',
+                 postcode: 'postcode',
                  city: 'city',
                  telephone: 'telephone',
-                 region: 'region',
-                 countryId: 'country_id'
+                 country_id: 'country_id'
              },
              onUpdate: function (value) {
-                 this.setDataForm(value)
-             },
-             setDataForm: function (value) {
                  var self = this,
                      vippsData = CustomerData.get('vipps_login_data')(),
                      addressesList = vippsData.addresses,
                      selectedAddress = this.findData(value, addressesList);
 
-                 for (var key in selectedAddress) {
-                     if (key === self.elements.countryId) {
-                         $('form select[name='+ self.elements.countryId + ']')
-                             .val('US').change();
-                         $('form select[name='+ self.elements.countryId + ']')
-                             .val(selectedAddress[key]).change();
-                         continue;
+                 for (var prop in self.elements) {
+                     var uiElem = registry.get(this.parentName + '.' + self.elements[prop]);
+                     if (uiElem !== undefined) {
+                         uiElem.value(selectedAddress[prop]);
                      }
+                 }
 
-                     if (key === self.elements.postCode ||
-                         key === self.elements.city ||
-                         key === self.elements.region ||
-                         key === self.elements.telephone
-                     ) {
-                         $('form input[name='+key+']')
-                             .val(selectedAddress[key]).change();
-                         continue;
-                     }
-
-                     if (key === self.elements.streetField) {
-                         var streetArr = selectedAddress[key].split('\n');
-                         for (var index in streetArr) {
-                             $('fieldset.field.street input').eq(index)
-                                 .val(streetArr[index]).change();
-                         }
-                     }
+                 var uiElemStreet = registry.get(this.parentName + '.street');
+                 if (uiElemStreet !== undefined) {
+                     uiElemStreet.getChild(0).value(selectedAddress['street']);
                  }
              },
              /**

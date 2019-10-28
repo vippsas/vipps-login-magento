@@ -89,7 +89,7 @@ class ShippingAddressManagement
                     );
 
                     if (!$vippsQuoteAddress->getId()) {
-                        $vippsQuoteAddress->setQuoteAddressId($quoteAddress->getId());
+                        $vippsQuoteAddress->setQuoteAddressId($address->getId());
                         $vippsQuoteAddress->setVippsCustomerAddressId($vippsAddressId);
                         $this->resourceModel->save($vippsQuoteAddress);
                     }

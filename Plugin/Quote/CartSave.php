@@ -159,7 +159,6 @@ class CartSave
                 'vqar.quote_address_id = address_id',
                 ['vipps_customer_address_id']
             );
-
         /** @var Address $address */
         foreach ($collection as $address) {
             if (!$address->isDeleted() &&
