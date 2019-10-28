@@ -19,13 +19,9 @@ declare(strict_types=1);
 ?>
 <?php if (!$block->isVippsLoggedIn()) : ?>
     <div class="login-vipps-holder new-account" id="register-area">
-        <div class="login-vipps-holder-text">
-            <h2><?= $block->escapeHtml(__('Register')) ?></h2>
-            <p><?= $block->escapeHtml(__('Register me by using Vipps')) ?></p>
-        </div>
         <?= $block->getChildHtml('vipps_form_register_button') ?>
         <div class="link-toogle">
-            <p><?= $block->escapeHtml(__('... or you can use default way')) ?></p>
+            <span>or </span><p><?= $block->escapeHtml(__('register with email')) ?></p>
         </div>
     </div>
 <?php endif; ?>
