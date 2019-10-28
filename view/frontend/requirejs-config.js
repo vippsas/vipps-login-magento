@@ -13,28 +13,24 @@
  * IN THE SOFTWARE
  */
 
-
-define([
-   'jquery',
-   'uiComponent',
-   'Magento_Customer/js/model/customer',
-   'mage/url',
-], function ($, Component, customer, url) {
-   'use strict';
-
-   return Component.extend({
-       options: {
-           isCustomerLoggedIn: customer.isLoggedIn,
-       },
-       initialize: function () {
-        this._super();
-
-       },
-       checkLoginUser: function () {
-           return this.options.isCustomerLoggedIn()
-       },
-       getBaseUrl: function() {
-           return url.build('vipps/login/index');
-       }
-   });
-});
+var config = {
+    config: {
+        mixins: {
+            'Magento_Checkout/js/action/set-billing-address': {
+                'Vipps_Login/js/action/set-billing-address-mixin': true
+            },
+            'Magento_Checkout/js/action/set-shipping-information': {
+                'Vipps_Login/js/action/set-shipping-information-mixin': true
+            },
+            'Magento_Checkout/js/action/place-order': {
+                'Vipps_Login/js/action/set-billing-address-mixin': true
+            },
+            'Magento_Checkout/js/action/create-billing-address': {
+                'Vipps_Login/js/action/set-billing-address-mixin': true
+            },
+            'Magento_Checkout/js/model/address-converter': {
+                'Vipps_Login/js/model/address-converter-mixin': true
+            }
+        }
+    }
+};

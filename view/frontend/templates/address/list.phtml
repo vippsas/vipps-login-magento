@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 /** @var $block \Vipps\Login\Block\Account\VippsAddress */
 $isNewAddress = $block->isNewAddress();
-$addresses = $block->getVippsAddresses(true);
+$addresses = $block->getVippsAddresses();
 /** @var $address \Vipps\Login\Api\Data\VippsCustomerAddressInterface */
 ?>
 
@@ -26,11 +26,11 @@ $addresses = $block->getVippsAddresses(true);
 <div id="vipps_addresses">
     <fieldset class="fieldset">
         <div class="field">
-            <label for="vipps_address" class="label"><span><?= $block->escapeHtml(__('Use Vipps address')) ?></span></label>
+            <label for="vipps_address" class="label"><span><?= $block->escapeHtml(__('Use address from Vipps')) ?></span></label>
             <select id="vipps_address" name="vipps_address"
                     title="<?= $block->escapeHtmlAttr(__('Vipps Addresses')) ?>"
                     class="validate-select">
-                <option value=""><?= $block->escapeHtml(__('Select vipps address')) ?></option>
+                <option value=""><?= $block->escapeHtml(__('Select address')) ?></option>
                 <?php foreach ($addresses as $address) : ?>
                     <option value="<?=$block->escapeHtml($address->getEntityId())?>"><?= $block->escapeHtml($address->getFormatted()) ?></option>
                 <?php endforeach; ?>

@@ -66,7 +66,7 @@ class Confirmation extends Template
      */
     protected function _prepareLayout()
     {
-        $this->pageConfig->getTitle()->set(__('Welcome back, again'));
+        $this->pageConfig->getTitle()->set(__('Confirm your email'));
         return parent::_prepareLayout();
     }
 

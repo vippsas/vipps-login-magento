@@ -15,13 +15,13 @@ and to permit persons to whom the Software is furnished to do so, subject to the
 <div id="vipps_addresses">
     <fieldset class="fieldset">
         <div class="field">
-            <label for="vipps_address" class="label"><span data-bind="i18n: 'Copy from Vipps'"/></label>
+            <label for="vipps_address" class="label"><span data-bind="i18n: 'Use address from Vipps'"/></label>
             <select id="vipps_address" name="vipps_address"
                     data-bind="
                     event:{ change: selectHolderChange},
                     attr: {'title': $t('Vipps Addresses')}"
                     class="validate-select">
-                <option value="" data-bind="i18n: 'Select vipps address'"></option>
+                <option value="" data-bind="i18n: 'Select address'"></option>
                 <!-- ko foreach: getDataList() -->
                         <option data-bind="attr: {'value': id}, html: street + ' ' + postalcode" />
                 <!--/ko-->

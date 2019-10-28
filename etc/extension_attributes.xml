@@ -28,4 +28,12 @@
         </attribute>
         <attribute code="vipps_linked" type="int" />
     </extension_attributes>
+
+    <extension_attributes for="Magento\Quote\Api\Data\AddressInterface">
+        <attribute code="vipps_address_id" type="string" />
+    </extension_attributes>
+
+    <extension_attributes for="Magento\Customer\Api\Data\AddressInterface">
+        <attribute code="vipps_address_id" type="int" />
+    </extension_attributes>
 </config>

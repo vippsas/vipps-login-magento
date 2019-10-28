@@ -37,7 +37,6 @@ define([
             this._super();
             this.selectHolderChange();
             this.insertHiddenInput(config.vippsAddressId);
-
         },
         selectHolderChange: function () {
             var self = this;
@@ -47,8 +46,10 @@ define([
             $('#' + this.options.selectHolder).change(function () {
                 var dataOption = $('#' + self.options.selectHolder + " option:selected")[0].value;
                 var addressePos = self.findData(dataOption, addressesList);
-                self.changeValue(addressesList[addressePos]);
-                self.insertHiddenInput(dataOption);
+                if (addressePos !== null) {
+                    self.changeValue(addressesList[addressePos]);
+                    self.insertHiddenInput(dataOption);
+                }
             })
         },
         /**
@@ -56,6 +57,9 @@ define([
          * @return {array} array of list
          */
         findData: function (value, dataList) {
+            if (dataList === undefined) {
+                return null;
+            }
             var data = dataList.map( function(item) {
                 return item.id;
             });
