@@ -132,7 +132,7 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
 
         $vippsAddress = $vippsAddressModel->getDataModel();
 
-        $this->cacheVippsCustomerAddress($vippsAddress);
+        //$this->cacheVippsCustomerAddress($vippsAddress);
 
         return $vippsAddress;
     }
@@ -158,7 +158,7 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
 
         $vippsCustomerAddress = $vippsCustomerAddressModel->getDataModel();
 
-        $this->cacheVippsCustomerAddress($vippsCustomerAddress);
+        //$this->cacheVippsCustomerAddress($vippsCustomerAddress);
 
         return $vippsCustomerAddress;
     }
@@ -170,15 +170,15 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
      */
     public function getByVippsCustomer(VippsCustomerInterface $vippsCustomer)
     {
-        if (isset($this->instances['vipps_customer_ids'][$vippsCustomer->getEntityId()])) {
+/*        if (isset($this->instances['vipps_customer_ids'][$vippsCustomer->getEntityId()])) {
             $records = $this->instances['vipps_customer_ids'][$vippsCustomer->getEntityId()];
-            /** @var VippsCustomerAddressSearchResultsInterface $searchResults */
+            /** @var VippsCustomerAddressSearchResultsInterface $searchResults
             $searchResults = $this->searchResultsFactory->create();
             $searchResults->setTotalCount(count($records));
             $searchResults->setItems($records);
 
             return $searchResults;
-        }
+        }*/
 
         $this->searchCriteriaBuilder->addFilter('vipps_customer_id', $vippsCustomer->getEntityId());
         $searchCriteria = $this->searchCriteriaBuilder->create();
@@ -186,7 +186,7 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
         $searchResult = $this->getList($searchCriteria);
 
         foreach ($searchResult->getItems() as $item) {
-            $this->cacheVippsCustomerAddress($item);
+            //$this->cacheVippsCustomerAddress($item);
         }
 
         return $searchResult;
@@ -235,8 +235,8 @@ class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryIn
         $vippsCustomerAddressModel = $this->modelFactory->create(['data' => $modelData]);
         $this->resourceModel->delete($vippsCustomerAddressModel);
 
-        unset($this->instances['ids'][$vippsCustomerAddress->getEntityId()]);
-        unset($this->instances['vipps_customer_ids'][$vippsCustomerAddress->getVippsCustomerId()]);
+        //unset($this->instances['ids'][$vippsCustomerAddress->getEntityId()]);
+        //unset($this->instances['vipps_customer_ids'][$vippsCustomerAddress->getVippsCustomerId()]);
 
         return true;
     }

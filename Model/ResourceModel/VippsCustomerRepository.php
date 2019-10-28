@@ -120,7 +120,7 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
 
         $vippsCustomer = $vippsCustomerModel->getDataModel();
 
-        $this->cacheVippsCustomer($vippsCustomer);
+        //$this->cacheVippsCustomer($vippsCustomer);
 
         return $vippsCustomer;
     }
@@ -171,7 +171,7 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
 
         $vippsCustomer = $vippsCustomerModel->getDataModel();
 
-        $this->cacheVippsCustomer($vippsCustomer);
+        //$this->cacheVippsCustomer($vippsCustomer);
 
         return $vippsCustomer;
     }
@@ -198,7 +198,7 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
 
         $vippsCustomer = $vippsCustomerModel->getDataModel();
 
-        $this->cacheVippsCustomer($vippsCustomer);
+        //$this->cacheVippsCustomer($vippsCustomer);
 
         return $vippsCustomer;
     }
