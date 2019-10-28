@@ -97,9 +97,13 @@ class VippsAccountManagement implements VippsAccountManagementInterface
      */
     public function resendConfirmation(UserInfoInterface $userInfo, CustomerInterface $customer)
     {
-        $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
-        if ($vippsCustomer->getLinked()) {
-            throw new InvalidTransitionException(__('Account already confirmed'));
+        try {
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+            if ($vippsCustomer->getLinked()) {
+                throw new InvalidTransitionException(__('Account already confirmed'));
+            }
+        } catch (NoSuchEntityException $e) {
+            //$this->lo
         }
 
         $vippsCustomer = $this->getPair($userInfo, $customer);
