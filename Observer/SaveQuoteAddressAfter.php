@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2018 Vipps
+ * Copyright 2019 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -14,15 +14,21 @@
  * IN THE SOFTWARE
  */
 
+declare(strict_types=1);
+
 namespace Vipps\Login\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Framework\Event\Observer;
 use Magento\Quote\Model\Quote\Address;
 use Vipps\Login\Model\ResourceModel\VippsQuoteAddressesRelation as ResourceModel;
 use Vipps\Login\Model\VippsQuoteAddressesRelationFactory;
 use Psr\Log\LoggerInterface;
 
-
+/**
+ * Class SaveQuoteAddressAfter
+ * @package Vipps\Login\Observer
+ */
 class SaveQuoteAddressAfter implements ObserverInterface
 {
     /**
@@ -58,9 +64,9 @@ class SaveQuoteAddressAfter implements ObserverInterface
     }
 
     /**
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param Observer $observer
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
         /* @var Address $quoteAddress */
         $quoteAddress = $observer->getEvent()->getData('quote_address');

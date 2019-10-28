@@ -19,10 +19,9 @@
 define([
        'underscore',
        'jquery',
-       'Magento_Customer/js/customer-data',
        'uiRegistry',
        'Magento_Ui/js/form/element/select'
-   ], function (_,  $, CustomerData, registry, Select) {
+   ], function (_,  $, registry, Select) {
        'use strict';
 
         return Select.extend({
@@ -37,22 +36,25 @@ define([
                  telephone: 'telephone',
                  country_id: 'country_id'
              },
+             addressData: [],
              onUpdate: function (value) {
-                 var self = this,
-                     vippsData = CustomerData.get('vipps_login_data')(),
-                     addressesList = vippsData.addresses,
-                     selectedAddress = this.findData(value, addressesList);
+                 var self = this;
 
-                 for (var prop in self.elements) {
-                     var uiElem = registry.get(this.parentName + '.' + self.elements[prop]);
-                     if (uiElem !== undefined) {
-                         uiElem.value(selectedAddress[prop]);
+                 if (this.addressData.length > 0 ) {
+                     var selectedAddress = this.addressData[value];
+                     if (selectedAddress !== undefined) {
+                         for (var prop in self.elements) {
+                             var uiElem = registry.get(this.parentName + '.' + self.elements[prop]);
+                             if (uiElem !== undefined) {
+                                 uiElem.value(selectedAddress[prop]);
+                             }
+                         }
+
+                         var uiElemStreet = registry.get(this.parentName + '.street');
+                         if (uiElemStreet !== undefined) {
+                             uiElemStreet.getChild(0).value(selectedAddress['street']);
+                         }
                      }
-                 }
-
-                 var uiElemStreet = registry.get(this.parentName + '.street');
-                 if (uiElemStreet !== undefined) {
-                     uiElemStreet.getChild(0).value(selectedAddress['street']);
                  }
              },
              /**
@@ -66,6 +68,21 @@ define([
                  var index = data.indexOf(value);
 
                  return dataList[index];
+             },
+             /**
+              * {@inheritdoc}
+              *
+              * @param {Array} data
+              * @returns {Object} Chainable
+              */
+             setOptions: function (data) {
+                 var self = this;
+                 data.forEach(function(option){
+                     if (option.address !== undefined) {
+                         self.addressData[option.value] = option.address;
+                     }
+                 });
+                 return this._super();
              }
         });
 });

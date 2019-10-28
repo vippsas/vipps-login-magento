@@ -113,7 +113,17 @@ class LayoutProcessor implements LayoutProcessorInterface
 
                 $addressOptions[] = ['value' => '', 'label' => __('Select address')];
                 foreach ($addresses as $address) {
-                    $addressOptions[] = ['value' => $address->getEntityId(), 'label' => $address->getFormatted()];
+                    $addressOptions[] = [
+                        'value' => $address->getEntityId(),
+                        'label' => $address->getFormatted(),
+                        'address' => [
+                            'country_id' => $address->getCountry(),
+                            'postcode' => $address->getPostalCode(),
+                            'city' => $address->getRegion(),
+                            'telephone' => $vippsCustomer->getTelephone(),
+                            'street' => $address->getStreetAddress()
+                        ]
+                    ];
                 }
                 $jsLayout['components']['checkoutProvider']['dictionaries']['vipps_addresses_list'] = $addressOptions;
             }
