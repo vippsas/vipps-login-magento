@@ -145,30 +145,24 @@ class CartSave
     /**
      * @param int $quoteId
      *
-     * @return Address[]
+     * @return Collection
      */
     private function retrieveVippsRelatedAddresses($quoteId)
     {
-        $vippsRelatedAddresses = [];
         /** @var Collection $collection */
         $collection = $this->collectionFactory->create();
         $collection->setQuoteFilter($quoteId);
         $collection->getSelect()
-            ->joinLeft(
+            ->reset('columns')
+            ->columns(['customer_address_id'])
+            ->joinInner(
                 ['vqar' => $collection->getTable('vipps_quote_addresses_relation')],
                 'vqar.quote_address_id = address_id',
                 ['vipps_customer_address_id']
-            );
-        /** @var Address $address */
-        foreach ($collection as $address) {
-            if (!$address->isDeleted() &&
-                $address->getCustomerAddressId() &&
-                $address->getVippsCustomerAddressId()
-            ) {
-                $vippsRelatedAddresses[] = $address;
-            }
-        }
+            )
+            ->where('customer_address_id IS NOT NULL')
+            ->where('vipps_customer_address_id IS NOT NULL');
 
-        return $vippsRelatedAddresses;
+        return $collection;
     }
 }

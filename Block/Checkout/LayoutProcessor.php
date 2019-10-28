@@ -188,7 +188,7 @@ class LayoutProcessor implements LayoutProcessorInterface
                 'elementTmpl' => 'ui/form/element/select',
             ],
             'dataScope' => $scope,
-            'label' => 'Use address from Vipps',
+            'label' => __('Use address from Vipps'),
             'provider' => 'checkoutProvider',
             'sortOrder' => 0,
             'validation' => [

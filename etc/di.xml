@@ -60,14 +60,6 @@
         </arguments>
     </type>
 
-    <type name="Magento\Quote\Model\ShippingAddressManagementInterface">
-        <plugin name="vippsShippingAddressManagePlugin" type="Vipps\Login\Plugin\Quote\ShippingAddressManagement" sortOrder="50"/>
-    </type>
-
-    <type name="Magento\Quote\Api\BillingAddressManagementInterface">
-        <plugin name="vippsBillingAddressManagePlugin" type="Vipps\Login\Plugin\Quote\BillingAddressManagement" sortOrder="50"/>
-    </type>
-
     <type name="Vipps\Login\Plugin\Quote\ShippingAddressManagement">
         <arguments>
             <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
