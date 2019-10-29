@@ -18,7 +18,7 @@ define([
    'jquery',
    'uiComponent',
    'Magento_Customer/js/model/customer',
-   'mage/url',
+   'mage/url'
 ], function ($, Component, customer, url) {
    'use strict';
 

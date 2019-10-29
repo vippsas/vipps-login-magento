@@ -68,7 +68,6 @@ class Button extends Template
         // we need to hide vipps/login button
         $isLoggedIn = $this->customerSession->isLoggedIn();
         if (!$isLoggedIn &&
-            $this->config->getValue('payment/vipps/express_checkout') &&
             !$this->config->getValue('payment/vipps/checkout_cart_display')
         ) {
             return parent::getChildHtml('vipps_form_login_button');
