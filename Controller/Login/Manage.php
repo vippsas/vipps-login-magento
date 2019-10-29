@@ -33,7 +33,7 @@ class Manage extends AccountBase
     public function execute()
     {
         $this->_view->loadLayout();
-        $this->_view->getPage()->getConfig()->getTitle()->set(__('Vipps Login Configuration'));
+        $this->_view->getPage()->getConfig()->getTitle()->set(__('Sign in with Vipps'));
         $this->_view->renderLayout();
     }
 }
