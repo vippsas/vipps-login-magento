@@ -62,7 +62,7 @@ Email,E-post
 "Log in","Logg inn"
 "Sign in with Vipps","Logg inn med Vipps"
 "Sign in with","Logg inn med"
-"Continue with","Fortsett med med"
+"Continue with","Fortsett med"
 "or","eller"
 "or use email","eller bruk e-post"
 Update,Oppdater
@@ -79,3 +79,4 @@ Debug,Feilsøk
 "Vipps Address Entries","Vipps adresser"
 "Confirm my email address","Bekreft e-postadressen min"
 "Request was send","Forespørsel ble sendt"
+"User cancelled the login", "Bruker avbrøt innloggingen"

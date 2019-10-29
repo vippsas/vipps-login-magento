@@ -21,6 +21,7 @@ namespace Vipps\Login\Controller\Login;
 use Psr\Log\LoggerInterface;
 use Vipps\Login\Controller\Login\Redirect\ActionsPool;
 use Vipps\Login\Gateway\Command\TokenCommand;
+use Vipps\Login\Model\RedirectUrlResolver;
 use Vipps\Login\Model\StateKey;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Context;
@@ -70,6 +71,11 @@ class Redirect extends Action
     private $logger;
 
     /**
+     * @var RedirectUrlResolver
+     */
+    private $redirectUrlResolver;
+
+    /**
      * Redirect constructor.
      *
      * @param Context $context
@@ -78,8 +84,8 @@ class Redirect extends Action
      * @param StateKey $stateKey
      * @param ActionsPool $actionsPool
      * @param ManagerInterface $messageManager
+     * @param RedirectUrlResolver $redirectUrlResolver
      * @param LoggerInterface $logger
-     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
@@ -88,6 +94,7 @@ class Redirect extends Action
         StateKey $stateKey,
         ActionsPool $actionsPool,
         ManagerInterface $messageManager,
+        RedirectUrlResolver $redirectUrlResolver,
         LoggerInterface $logger
     ) {
         parent::__construct($context);
@@ -98,6 +105,7 @@ class Redirect extends Action
         $this->context = $context;
         $this->logger = $logger;
         $this->messageManager = $messageManager;
+        $this->redirectUrlResolver = $redirectUrlResolver;
     }
 
     /**
@@ -110,6 +118,13 @@ class Redirect extends Action
         $resultRedirect = $this->resultRedirectFactory->create();
 
         try {
+            if (empty($code) && $this->_request->getParam('error')) {
+                $errorDescription = $this->_request->getParam('error_description');
+                $this->messageManager->addErrorMessage(__($errorDescription));
+                $resultRedirect->setUrl($this->redirectUrlResolver->getRedirectUrl());
+                return $resultRedirect;
+            }
+
             if (!$this->stateKey->isValid($state)) {
                 throw new LocalizedException(__('Invalid state key.'));
             }

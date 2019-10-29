@@ -29,8 +29,7 @@
                             </strong>
                             <br />
                             <?= $block->escapeHtml($address->getStreetAddress()) ?><br />
-                            <?= $block->escapeHtml($address->getRegion()) ?><br />
-                            <?= $block->escapeHtml($address->getPostalCode()) ?><br />
+                            <?= $block->escapeHtml($address->getRegion()) ?>, <?= $block->escapeHtml($address->getPostalCode())?><br />
                             <?= $block->escapeHtml($block->getCountryName($address->getCountry())) ?><br />
                          T: <a href="tel:<?= $block->escapeHtml($block->renderPhone()) ?>"><?= $block->escapeHtml($block->renderPhone()) ?></a><br />
                         </address>

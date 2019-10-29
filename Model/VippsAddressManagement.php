@@ -22,8 +22,6 @@ use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\Api\Data\AddressInterface;
 use Magento\Customer\Api\Data\AddressInterfaceFactory;
 use Magento\Customer\Api\Data\CustomerInterface;
-use Magento\Customer\Api\Data\RegionInterface;
-use Magento\Customer\Api\Data\RegionInterfaceFactory;
 use Magento\Customer\Model\Metadata\FormFactory;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
@@ -74,11 +72,6 @@ class VippsAddressManagement implements VippsAddressManagementInterface
     private $addressDataFactory;
 
     /**
-     * @var RegionInterfaceFactory
-     */
-    private $regionDataFactory;
-
-    /**
      * @var FormFactory
      */
     private $formFactory;
@@ -91,7 +84,6 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      * @param SearchCriteriaBuilder $searchCriteriaBuilder
      * @param AddressRepositoryInterface $addressRepository
      * @param AddressInterfaceFactory $addressDataFactory
-     * @param RegionInterfaceFactory $regionDataFactory
      * @param FormFactory $formFactory
      * @param Random $mathRand
      */
@@ -101,7 +93,6 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         SearchCriteriaBuilder $searchCriteriaBuilder,
         AddressRepositoryInterface $addressRepository,
         AddressInterfaceFactory $addressDataFactory,
-        RegionInterfaceFactory $regionDataFactory,
         FormFactory $formFactory,
         Random $mathRand
     ) {
@@ -111,7 +102,6 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->addressRepository = $addressRepository;
         $this->addressDataFactory = $addressDataFactory;
-        $this->regionDataFactory = $regionDataFactory;
         $this->formFactory = $formFactory;
     }
 
@@ -221,16 +211,11 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         }
 
         $magentoAddress->setCustomerId($customer->getId());
-        $magentoAddress->setCity($vippsAddress->getRegion());//todo check value
+        $magentoAddress->setCity($vippsAddress->getRegion());
         $magentoAddress->setCountryId($vippsAddress->getCountry());
         $magentoAddress->setFirstname($customer->getFirstname());
         $magentoAddress->setLastname($customer->getLastname());
         $magentoAddress->setPostcode($vippsAddress->getPostalCode());
-
-        /** @var \Magento\Customer\Api\Data\RegionInterface $regionDataObject */
-        $regionDataObject = $this->regionDataFactory->create();
-        $regionDataObject->setRegion($vippsAddress->getRegion());
-        $magentoAddress->setRegion($regionDataObject);
 
         $street = explode(PHP_EOL, $vippsAddress->getStreetAddress());
 
@@ -343,9 +328,9 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         /*
          * remove whitespaces
          */
-        $region = preg_replace('/\W/', '', $magentoAddress->getCity());
+        $city = preg_replace('/\W/', '', $magentoAddress->getCity());
         $vippsRegion = preg_replace('/\W/', '', $vippsAddress->getRegion());
-        if (strcasecmp($vippsRegion, $region) !== 0) {
+        if (strcasecmp($vippsRegion, $city) !== 0) {
             return false;
         }
 
