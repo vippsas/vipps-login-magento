@@ -67,14 +67,6 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
     private $vippsCustomerResource;
 
     /**
-     * @var array
-     */
-    private $instances = [
-        'ids' => [],
-        'customer_entity_ids' => []
-    ];
-
-    /**
      * VippsCustomerRepository constructor.
      *
      * @param CollectionProcessorInterface $collectionProcessor
@@ -119,8 +111,6 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
         $this->vippsCustomerResource->save($vippsCustomerModel);
 
         $vippsCustomer = $vippsCustomerModel->getDataModel();
-
-        //$this->cacheVippsCustomer($vippsCustomer);
 
         return $vippsCustomer;
     }
@@ -171,8 +161,6 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
 
         $vippsCustomer = $vippsCustomerModel->getDataModel();
 
-        //$this->cacheVippsCustomer($vippsCustomer);
-
         return $vippsCustomer;
     }
 
@@ -198,17 +186,6 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
 
         $vippsCustomer = $vippsCustomerModel->getDataModel();
 
-        //$this->cacheVippsCustomer($vippsCustomer);
-
         return $vippsCustomer;
-    }
-
-    /**
-     * @param VippsCustomerInterface $vippsCustomer
-     */
-    private function cacheVippsCustomer(VippsCustomerInterface $vippsCustomer)
-    {
-        $this->instances['ids'][$vippsCustomer->getEntityId()] = $vippsCustomer;
-        $this->instances['customer_entity_ids'][$vippsCustomer->getCustomerEntityId()] = $vippsCustomer;
     }
 }

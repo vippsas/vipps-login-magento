@@ -144,7 +144,9 @@ class LayoutProcessor implements LayoutProcessorInterface
         if (isset($jsLayout['components']['checkout']['children']['steps']['children']['shipping-step'])) {
             $jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']
             ['children']['shippingAddress']['children']['shipping-address-fieldset']['children']
-            ['vipps_address_box'] = $this->getVippsAddressComponent('shippingAddress.custom_attributes.vipps_address_box');
+            ['vipps_address_box'] = $this->getVippsAddressComponent(
+                'shippingAddress.custom_attributes.vipps_address_box'
+            );
         }
 
         return $jsLayout;

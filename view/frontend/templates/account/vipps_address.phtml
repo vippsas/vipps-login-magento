@@ -16,12 +16,12 @@
 
 /** @var \Vipps\Login\Block\Account\AddressList $block */
 ?>
-<?php if ($vippsAddresses = $block->getVippsAddresses()): ?>
+<?php if ($vippsAddresses = $block->getVippsAddresses()) : ?>
     <div class="block block-addresses-list vipps-addresses">
         <div class="block-title"><strong><?= $block->escapeHtml(__('Vipps Address Entries')) ?></strong></div>
         <div class="block-content">
             <ol class="items addresses">
-                <?php foreach ($vippsAddresses as $address): ?>
+                <?php foreach ($vippsAddresses as $address) : ?>
                     <li class="item">
                         <address>
                             <strong class="box-title">
@@ -34,13 +34,13 @@
                             <?= $block->escapeHtml($block->getCountryName($address->getCountry())) ?><br />
                          T: <a href="tel:<?= $block->escapeHtml($block->renderPhone()) ?>"><?= $block->escapeHtml($block->renderPhone()) ?></a><br />
                         </address>
-                        <?php if (!$address->getCustomerAddressId()): ?>
+                        <?php if (!$address->getCustomerAddressId()) : ?>
                             <div class="item actions">
                                 <a class="action edit" href="<?= $block->escapeUrl($block->getUrl('vipps/login/applyAddress', ['id' => $address->getEntityId()])) ?>">
                                     <span><?= $block->escapeHtml(__('Apply address')) ?></span>
                                 </a>
                             </div>
-                        <?php else: ?>
+                        <?php else : ?>
                             <div class="item actions">
                                 <span><?= $block->escapeHtml(__('Applied')) ?></span>
                             </div>
