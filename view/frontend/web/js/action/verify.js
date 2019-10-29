@@ -20,7 +20,8 @@ define([
     'mage/storage',
     'Magento_Ui/js/modal/alert',
     'uiComponent',
-],function($, loginAction, fullScreenLoader, storage, alert,Component) {
+    'mage/translate'
+],function($, loginAction, fullScreenLoader, storage, alert,Component, $t) {
     'use strict';
     var self = this;
 
@@ -60,9 +61,9 @@ define([
                     'json'
                 ).done(function (response) {
                     if (response.error !== true) {
-                        self.showMsgPopUp('Request was send',response.message)
+                        self.showMsgPopUp($t('Request was send'),response.message)
                     } else {
-                        self.showMsgPopUp('An error occurred',response.message);
+                        self.showMsgPopUp($t('An error occurred'),response.message);
                     }
                 }).always(function () {
                     self.loadderShowOrHide();
@@ -73,9 +74,9 @@ define([
                 loginAction(self.fetchData(self.options.verifyPasswordForm),
                             self.options.urlPasswordConfirmation).done(function (response) {
                     if (response.error !== true) {
-                        self.showMsgPopUp('Request was send',response.message)
+                        self.showMsgPopUp($t('Request was send'),response.message)
                     } else {
-                        self.showMsgPopUp('An error occurred',response.message);
+                        self.showMsgPopUp($t('An error occurred'),response.message);
                     }
                 }).always(function () {
                     self.loadderShowOrHide();

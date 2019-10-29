@@ -17,18 +17,6 @@
                                             <item name="children" xsi:type="array">
                                                 <item name="shippingAddress" xsi:type="array">
                                                     <item name="children" xsi:type="array">
-<!--                                                        <item name="before-fields" xsi:type="array">
-                                                            <item name="children" xsi:type="array">
-                                                                <item name="vipps_selecet_addresse" xsi:type="array">
-                                                                    <item name="component" xsi:type="string">Vipps_Login/js/view/checkout/vipps_checkout_select</item>
-                                                                    <item name="displayArea" xsi:type="string">vipps-select</item>
-                                                                    <item name="config" xsi:type="array">
-                                                                        <item name="template" xsi:type="string">Vipps_Login/vipps-checkout-login/select-addresse-by-vipps</item>
-                                                                        <item name="title" xsi:type="string">Vipps select addresse</item>
-                                                                    </item>
-                                                                </item>
-                                                            </item>
-                                                        </item>-->
                                                         <item name="customer-email" xsi:type="array">
                                                             <item name="children" xsi:type="array">
                                                                 <item name="before-login-form" xsi:type="array">

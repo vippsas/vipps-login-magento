@@ -29,7 +29,7 @@ error_description,error_description
 "Create Account","Opprett ny konto"
 "Vipps Login Configuration","Vipps Logg Inn Konfigurasjon"
 "Create Account with Vipps","Opprett ny konto med Vipps"
-"or register with email","eller registrer deg med e-post"
+"register with email","registrer deg med e-post"
 "Unlink my account from Vipps","Fjern tilknytning fra Vipps"
 "Addresses from Vipps","Adresser fra Vipps"
 "Apply address","Bruk adresse"
@@ -57,11 +57,13 @@ Email,E-post
 "Updated address?","Oppdater adresse?"
 "You've updated your addresses in Vipps since your last visit.  Should we update our records?","Du har oppdatert adressene dine i Vipps siden ditt siste besøk. Skal vi oppdatere adressene vi har lagret om deg?"
 "Please confirm your email at %store_name","Bekreft e-posten din hos %store_name"
-"Confirm that %customer_email is your email address to complete sign in. It’s easy – just click the button below.","Bekreft at e-postadressen din er %customer_email for å fullføre innloggingen. Det er enkelt – bare klikk på knappen under."
+"Confirm that %customer_email is your email address to sign in. It’s easy – just click the button below.","Bekreft at e-postadressen din er %customer_email for å fullføre innloggingen. Det er enkelt – bare klikk på knappen under."
 "Confirm now","Bekreft nå"
 "Log in","Logg inn"
 "Sign in with Vipps","Logg inn med Vipps"
 "Sign in with","Logg inn med"
+"Continue with","Fortsett med"
+"or","eller"
 "or use email","eller bruk e-post"
 Update,Oppdater
 "New address from Vipps","Ny adresse fra Vipps"
@@ -75,3 +77,6 @@ Debug,Feilsøk
 "Client Secret","Client Secret"
 "Sign in with Vipps","Logg inn med Vipps"
 "Vipps Address Entries","Vipps adresser"
+"Confirm my email address","Bekreft e-postadressen min"
+"Request was send","Forespørsel ble sendt"
+"User cancelled the login", "Bruker avbrøt innloggingen"
