@@ -21,7 +21,7 @@ declare(strict_types=1);
     <div class="login-vipps-holder new-account" id="register-area">
         <?= $block->getChildHtml('vipps_form_register_button') ?>
         <div class="link-toogle">
-            <span>or </span><p><?= $block->escapeHtml(__('register with email')) ?></p>
+            <span><?= $block->escapeHtml(__('or')) ?></span><p><?= $block->escapeHtml(__('register with email')) ?></p>
         </div>
     </div>
 <?php endif; ?>
