@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Vipps
+ * Copyright 2018 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -13,28 +13,24 @@
  * IN THE SOFTWARE
  */
 
-
 define([
-   'jquery',
-   'uiComponent',
-   'Magento_Customer/js/model/customer',
-   'mage/url',
-], function ($, Component, customer, url) {
-   'use strict';
+       'jquery',
+       'mage/utils/wrapper',
+       'Magento_Checkout/js/model/quote'
+       ], function ($, wrapper, quote) {
+    'use strict';
 
-   return Component.extend({
-       options: {
-           isCustomerLoggedIn: customer.isLoggedIn,
-       },
-       initialize: function () {
-        this._super();
+    return function (setShippingInformationAction) {
+        return wrapper.wrap(setShippingInformationAction, function (originalAction, messageContainer) {
 
-       },
-       checkLoginUser: function () {
-           return this.options.isCustomerLoggedIn()
-       },
-       getBaseUrl: function() {
-           return url.build('vipps/login/index');
-       }
-   });
+            if (messageContainer.custom_attributes !== null &&
+                messageContainer.custom_attributes !== undefined
+            ) {
+                    messageContainer['custom_attributes']['vipps_address_id'] =
+                        {'attribute_code':key,'value':value};
+            }
+
+            return originalAction(messageContainer);
+        });
+    };
 });

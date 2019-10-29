@@ -23,6 +23,8 @@ use Magento\Framework\View\Element\Template;
 use Magento\Customer\Model\Session;
 use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
+use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
+use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 
 /**
  * Class VippsAddress
@@ -39,47 +41,53 @@ class VippsAddress extends Template
      * @var SessionManagerInterface|Session
      */
     private $customerSession;
+    /**
+     * @var VippsCustomerRepositoryInterface
+     */
+    private $vippsCustomerRepository;
+    /**
+     * @var VippsCustomerAddressRepositoryInterface
+     */
+    private $vippsCustomerAddressRepository;
 
     /**
      * VippsAddress constructor.
      *
      * @param VippsAccountManagementInterface $vippsAccountManagement
      * @param SessionManagerInterface $customerSession
+     * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
+     * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      * @param Template\Context $context
      * @param array $data
      */
     public function __construct(
         VippsAccountManagementInterface $vippsAccountManagement,
         SessionManagerInterface $customerSession,
+        VippsCustomerRepositoryInterface $vippsCustomerRepository,
+        VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
         Template\Context $context,
         array $data = []
     ) {
         parent::__construct($context, $data);
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->customerSession = $customerSession;
+        $this->vippsCustomerRepository = $vippsCustomerRepository;
+        $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
     }
 
     /**
-     * @param bool $onlyNotLinked
-     *
      * @return array|\Vipps\Login\Api\Data\VippsCustomerAddressInterface[]
      * @throws \Magento\Framework\Exception\InputException
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Magento\Framework\Exception\State\InputMismatchException
      */
-    public function getVippsAddresses($onlyNotLinked = false)
+    public function getVippsAddresses()
     {
         $customerModel = $this->customerSession->getCustomer();
         $customer = $customerModel->getDataModel();
         if ($this->vippsAccountManagement->isLinked($customer)) {
-            $addresses = $this->vippsAccountManagement->getAddresses($customer);
-            if ($onlyNotLinked) {
-                $addresses = array_filter($addresses, function ($item) {
-                    /** @var $item VippsCustomerAddressInterface  */
-                    return $item->getCustomerAddressId() ? false : true;
-                });
-            }
-            return $addresses;
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+            return $this->vippsCustomerAddressRepository->getNotLinkedAddresses($vippsCustomer);
         }
 
         return [];

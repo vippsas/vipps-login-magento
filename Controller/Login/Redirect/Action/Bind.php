@@ -121,7 +121,7 @@ class Bind implements ActionInterface
 
             $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer);
 
-            $this->messageManager->addSuccessMessage(__('Your account was successfully linked.'));
+            $this->messageManager->addSuccessMessage(__('Your account was successfully linked with Vipps.'));
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage($e);
             $this->logger->critical($e);

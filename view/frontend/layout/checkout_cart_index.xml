@@ -13,18 +13,18 @@
   ~ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
   ~ IN THE SOFTWARE
   -->
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <update handle="customer_account"/>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="content">
-
-            <block class="Vipps\Login\Block\Account\VippsConfiguration" name="vipps_configuration" template="Vipps_Login::account/vipps_login_configuration.phtml" cacheable="false">
-                <block class="Magento\Framework\View\Element\Template"
-                       name="vipps_form_login_button"
-                       template="Vipps_Login::form/login/button.phtml"
-                       before="-"/>
-            </block>
-            <block class="Vipps\Login\Block\Account\Link" name="vipps_login_links" template="Vipps_Login::account/link.phtml" cacheable="false"/>w
+            <referenceBlock name="checkout.cart.methods.bottom">
+                <referenceContainer name="checkout.cart.methods">
+                    <block class="Vipps\Login\Block\Cart\Button" name="vipps_cart_button">
+                        <block class="Magento\Framework\View\Element\Template"
+                               name="vipps_form_login_button"
+                               template="Vipps_Login::form/login/button.phtml"/>
+                    </block>
+                </referenceContainer>
+            </referenceBlock>
         </referenceContainer>
     </body>
 </page>

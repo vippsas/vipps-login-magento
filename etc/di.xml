@@ -49,4 +49,38 @@
         </arguments>
     </virtualType>
 
+    <type name="Magento\Customer\Api\AddressRepositoryInterface">
+        <plugin name="Vipps\Login\Plugin\AddressSave" type="Vipps\Login\Plugin\AddressSave"/>
+    </type>
+
+    <type name="Vipps\Login\Plugin\AddressSave">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Plugin\Quote\ShippingAddressManagement">
+        <arguments>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Plugin\Quote\BillingAddressManagement">
+        <arguments>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Quote\Api\CartRepositoryInterface">
+        <plugin name="vippsQuoteAddressSavePlugin" type="Vipps\Login\Plugin\Quote\CartSave" sortOrder="50"/>
+    </type>
+
+    <type name="Vipps\Login\Plugin\Quote\CartSave">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
 </config>

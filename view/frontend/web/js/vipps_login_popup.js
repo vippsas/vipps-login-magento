@@ -79,7 +79,8 @@ define([
             storage.post(
                 'vipps/login/addressUpdate',
                 JSON.stringify({
-                                   'sync_address_mode': CustomerData.get('sync_address_mode')()
+                                   'sync_address_mode': CustomerData.get('sync_address_mode')(),
+                                   'sync_address_remeber': CustomerData.get('sync_address_remeber')()
                                }),
                 1,
                 'json'
