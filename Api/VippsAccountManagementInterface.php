@@ -70,9 +70,6 @@ interface VippsAccountManagementInterface
      * @param CustomerInterface $customer
      *
      * @return bool
-     * @throws InputException
-     * @throws InputMismatchException
-     * @throws LocalizedException
      */
     public function isLinked(CustomerInterface $customer);
 
