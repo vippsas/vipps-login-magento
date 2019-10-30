@@ -105,12 +105,6 @@
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Model\StateKey">
-        <arguments>
-            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
-        </arguments>
-    </type>
-
     <type name="Vipps\Login\Model\ApiEndpoints">
         <arguments>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>

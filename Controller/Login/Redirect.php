@@ -125,7 +125,7 @@ class Redirect extends Action
                 return $resultRedirect;
             }
 
-            if (!$this->stateKey->isValid($state)) {
+            if (!$this->isStateKeyValid($state)) {
                 throw new LocalizedException(__('Invalid state key.'));
             }
 
@@ -161,5 +161,15 @@ class Redirect extends Action
         $this->sessionManager->setData('vipps_login_id_token', $token['id_token']);
         $this->sessionManager->setData('vipps_login_id_token_payload', $token['id_token_payload']);
         $this->sessionManager->setData('vipps_login_access_token', $token['access_token']);
+    }
+
+    /**
+     * @param string $state
+     *
+     * @return bool
+     */
+    private function isStateKeyValid($state)
+    {
+        return $state == $this->sessionManager->getData(StateKey::DATA_KEY_STATE);
     }
 }
