@@ -108,7 +108,7 @@ class AddressSave
     public function afterSave(AddressRepositoryInterface $subject, AddressInterface $address)
     {
         $vippsAddressId = $this->request->getParam('vipps_address_id');
-        if (!empty($vippsAddressId) ) {
+        if (!empty($vippsAddressId)) {
             $customerModel = $this->customerSession->getCustomer();
             try {
                 $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customerModel->getDataModel());

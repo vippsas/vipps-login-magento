@@ -63,13 +63,14 @@ class Button extends Template
      */
     protected function _toHtml()
     {
-        //if Vipps payment method express checkout is enabled and this method
+        //If Vipps payment method express checkout is enabled and this method
         // shows express checkout button on cart page then
         // we need to hide vipps/login button
         $isLoggedIn = $this->customerSession->isLoggedIn();
+        $cartDisplay = $this->config->getValue('payment/vipps/checkout_cart_display');
+        $expressCheckout = $this->config->getValue('payment/vipps/express_checkout');
         if (!$isLoggedIn &&
-            $this->config->getValue('payment/vipps/express_checkout') &&
-            !$this->config->getValue('payment/vipps/checkout_cart_display')
+            ($cartDisplay && !$expressCheckout || !$cartDisplay && $expressCheckout)
         ) {
             return parent::getChildHtml('vipps_form_login_button');
         }

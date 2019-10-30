@@ -60,13 +60,7 @@
         </arguments>
     </type>
 
-    <type name="Vipps\Login\Plugin\Quote\ShippingAddressManagement">
-        <arguments>
-            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
-        </arguments>
-    </type>
-
-    <type name="Vipps\Login\Plugin\Quote\BillingAddressManagement">
+    <type name="Vipps\Login\Model\VippsAccountManagement">
         <arguments>
             <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>

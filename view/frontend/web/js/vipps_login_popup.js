@@ -58,55 +58,42 @@ define([
         },
         _init: function () {
             var popup = modal(this.options, $(this.options.idModal));
-            var getKey = CustomerData.get('vippsPopUpShow');
-            var self = this;
+            var vippsData = CustomerData.get('vipps_login_data');
 
-            if (this._getData().addressUpdated &&
+            this.update(vippsData());
+
+            vippsData.subscribe(function (updatedData) {
+                this.update(updatedData);
+            }, this);
+        },
+        update: function(updateData) {
+            var self = this;
+            var getKey = CustomerData.get('vippsPopUpShow');
+
+            if (updateData.addressUpdated &&
                 $(this.options.accountClass).length &&
-                getKey() !== true) {
-                self.setDataAddr();
-                $(self.options.idModal).modal("openModal").on('modalclosed', function () {
+                getKey() !== true
+            ) {
+                this.setDataAddr();
+                $(this.options.idModal).modal("openModal").on('modalclosed', function () {
                     self.sendData();
                 });
-                $(self.options.idModal).show();
+                $(this.options.idModal).show();
                 CustomerData.set('vippsPopUpShow',true);
             } else {
                 $(this.options.idModal).hide();
             }
-
         },
         sendData: function () {
             storage.post(
                 'vipps/login/addressUpdate',
                 JSON.stringify({
-                                   'sync_address_mode': CustomerData.get('sync_address_mode')(),
-                                   'sync_address_remeber': CustomerData.get('sync_address_remeber')()
-                               }),
+                   'sync_address_mode': CustomerData.get('sync_address_mode')(),
+                   'sync_address_remeber': CustomerData.get('sync_address_remeber')()
+                }),
                 1,
                 'json'
             );
-        },
-        /**
-         * @param {Object} data
-         */
-        _saveData: function (data) {
-            CustomerData.set(this.options.cacheKey, data);
-        },
-
-        /**
-         * @return {*}
-         */
-        _getData: function () {
-            var data = CustomerData.get(this.options.cacheKey)();
-
-            if ($.isEmptyObject(data)) {
-                data = {
-                    'addressUpdated': false
-                };
-                this._saveData(data);
-            }
-
-            return data;
         },
         setDataAddr: function () {
             var addresses = CustomerData.get(this.options.cacheKey)();
@@ -117,7 +104,7 @@ define([
                     '<li><strong>' + $t('New address from Vipps') + '</strong></li>' +
                     '<li>' + customerName.fullname + '</li>' +
                     '<li>' + addresses.newAddress.street + '</li>' +
-                    '<li>' + addresses.newAddress.postalcode + '<span>' + addresses.newAddress.city + '</span></li>'
+                    '<li>' + addresses.newAddress.postalcode + ', ' + addresses.newAddress.city + '</li>'
                     + '</h2>'
                 );
 
@@ -126,7 +113,7 @@ define([
                     '<li><strong>' + $t('Old address') + '</strong></li>' +
                     '<li>' + customerName.fullname + '</li>' +
                     '<li>' + addresses.oldAddress.street + '</li>' +
-                    '<li>' + addresses.oldAddress.postalcode + '<span>' + addresses.oldAddress.city + '</span></li>'
+                    '<li>' + addresses.oldAddress.postalcode + ', ' + addresses.oldAddress.city + '</li>'
                     + '</h2>'
                 );
 
@@ -135,11 +122,11 @@ define([
                     '<input type="checkbox" name="remember_choice" id="remember_choice">' +
                     $t('Remember my choice') + '</label>'
                 );
-                this.checboxHandler();
+                this.checkboxHandler();
             }
 
         },
-        checboxHandler: function () {
+        checkboxHandler: function () {
             var checkbox = $(this.options.checkboxId);
             checkbox.on('change', function () {
                 if (this.checked) {

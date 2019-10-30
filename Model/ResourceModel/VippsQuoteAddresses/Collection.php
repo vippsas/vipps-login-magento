@@ -33,6 +33,9 @@ class Collection extends AbstractCollection
      */
     protected function _construct()
     {
-        $this->_init(\Vipps\Login\Model\VippsQuoteAddressesRelation::class, \Vipps\Login\Model\ResourceModel\VippsQuoteAddressesRelation::class);
+        $this->_init(
+            \Vipps\Login\Model\VippsQuoteAddressesRelation::class,
+            \Vipps\Login\Model\ResourceModel\VippsQuoteAddressesRelation::class
+        );
     }
 }

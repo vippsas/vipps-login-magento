@@ -88,18 +88,20 @@ class AddressList extends Template
     }
 
     /**
-     * @return array|\Vipps\Login\Api\Data\VippsCustomerAddressSearchResultsInterface
-     * @throws NoSuchEntityException
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\State\InputMismatchException
+     * @return array|VippsCustomerAddressInterface[]
      */
     public function getVippsAddresses()
     {
         $customerModel = $this->customerSession->getCustomer();
         $customer = $customerModel->getDataModel();
         if ($this->vippsAccountManagement->isLinked($customer)) {
-            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+            try {
+                $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+            } catch (NoSuchEntityException $e) {
+                $this->_logger->debug($e->getMessage());
+                return [];
+            }
+
             $vippsAddressResult = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
             $vippsAddresses = $vippsAddressResult->getItems();
             return $vippsAddresses;
@@ -152,7 +154,7 @@ class AddressList extends Template
             $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customerModel->getDataModel());
             $phone = $vippsCustomer->getTelephone();
         } catch (NoSuchEntityException $e) {
-            $this->_logger->error($e->getMessage());
+            $this->_logger->debug($e->getMessage());
         }
 
         return $phone;

@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model;
 
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterfaceFactory;
@@ -64,6 +65,11 @@ class VippsAccountManagement implements VippsAccountManagementInterface
     private $vippsCustomerAddressRepository;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * VippsAccountManagement constructor.
      *
      * @param VippsCustomerInterfaceFactory $vippsCustomerFactory
@@ -71,19 +77,22 @@ class VippsAccountManagement implements VippsAccountManagementInterface
      * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      * @param EmailNotification $emailNotification
      * @param Random $mathRand
+     * @param LoggerInterface $logger
      */
     public function __construct(
         VippsCustomerInterfaceFactory $vippsCustomerFactory,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
         EmailNotification $emailNotification,
-        Random $mathRand
+        Random $mathRand,
+        LoggerInterface $logger
     ) {
         $this->vippsCustomerFactory = $vippsCustomerFactory;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
         $this->emailNotification = $emailNotification;
         $this->mathRand = $mathRand;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -103,7 +112,7 @@ class VippsAccountManagement implements VippsAccountManagementInterface
                 throw new InvalidTransitionException(__('Account already confirmed'));
             }
         } catch (NoSuchEntityException $e) {
-            //$this->lo
+            $this->logger->debug($e->getMessage());
         }
 
         $vippsCustomer = $this->getPair($userInfo, $customer);

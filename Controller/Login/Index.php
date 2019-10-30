@@ -60,7 +60,7 @@ class Index extends Action
      * @var SessionManagerInterface
      */
     private $customerSession;
-    
+
     /**
      * @var RedirectUrlResolver
      */
@@ -97,6 +97,7 @@ class Index extends Action
 
     /**
      * @return ResponseInterface|Redirect|ResultInterface
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function execute()
     {
@@ -104,7 +105,7 @@ class Index extends Action
             'client_id='. $this->config->getLoginClientId(),
             'response_type=code',
             'scope=' . 'openid address name email phoneNumber birthDate',
-            'state=' . $this->stateKey->generate(),
+            'state=' . $this->getStateKey(),
             'redirect_uri=' .  trim($this->url->getUrl('vipps/login/redirect'), '/')
 
         ];
@@ -117,5 +118,16 @@ class Index extends Action
         $resultRedirect = $this->resultRedirectFactory->create();
         $resultRedirect->setUrl($vippsRedirectUrl);
         return $resultRedirect;
+    }
+
+    /**
+     * @return string
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function getStateKey()
+    {
+        $state = $this->stateKey->generate();
+        $this->customerSession->setData(StateKey::DATA_KEY_STATE, $state);
+        return $state;
     }
 }

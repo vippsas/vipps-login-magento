@@ -19,11 +19,11 @@ declare(strict_types=1);
 namespace Vipps\Login\Model;
 
 use Magento\Framework\Math\Random;
-use Magento\Framework\Session\SessionManagerInterface;
 
 /**
  * Class StateKey
  * @package Vipps\Login\Model
+ * @api
  */
 class StateKey
 {
@@ -33,11 +33,6 @@ class StateKey
     const DATA_KEY_STATE = 'vipps_login_url_state';
 
     /**
-     * @var SessionManagerInterface
-     */
-    private $sessionManager;
-
-    /**
      * @var Random
      */
     private $mathRand;
@@ -45,14 +40,11 @@ class StateKey
     /**
      * StateKey constructor.
      *
-     * @param SessionManagerInterface $sessionManager
      * @param Random $mathRand
      */
     public function __construct(
-        SessionManagerInterface $sessionManager,
         Random $mathRand
     ) {
-        $this->sessionManager = $sessionManager;
         $this->mathRand = $mathRand;
     }
 
@@ -61,21 +53,11 @@ class StateKey
      * This stateKey uses for validation on redirect action from vipps/login.
      *
      * @return string
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function generate()
     {
         $state = $this->mathRand->getUniqueHash();
-        $this->sessionManager->setData(self::DATA_KEY_STATE, $state);
         return $state;
-    }
-
-    /**
-     * @param $state
-     *
-     * @return bool
-     */
-    public function isValid($state): bool
-    {
-        return $state == $this->sessionManager->getData(self::DATA_KEY_STATE);
     }
 }
