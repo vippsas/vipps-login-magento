@@ -60,9 +60,6 @@ class Link extends Template
 
     /**
      * @return bool
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\State\InputMismatchException
      */
     public function isLinked()
     {

@@ -67,6 +67,7 @@ define([
             }, this);
         },
         update: function(updateData) {
+            var self = this;
             var getKey = CustomerData.get('vippsPopUpShow');
 
             if (updateData.addressUpdated &&
@@ -75,7 +76,7 @@ define([
             ) {
                 this.setDataAddr();
                 $(this.options.idModal).modal("openModal").on('modalclosed', function () {
-                    this.sendData();
+                    self.sendData();
                 });
                 $(this.options.idModal).show();
                 CustomerData.set('vippsPopUpShow',true);
@@ -93,12 +94,6 @@ define([
                 1,
                 'json'
             );
-        },
-        /**
-         * @param {Object} data
-         */
-        _saveData: function (data) {
-            CustomerData.set(this.options.cacheKey, data);
         },
         setDataAddr: function () {
             var addresses = CustomerData.get(this.options.cacheKey)();

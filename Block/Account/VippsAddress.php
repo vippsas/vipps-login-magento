@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Block\Account;
 
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Customer\Model\Session;
@@ -76,17 +77,20 @@ class VippsAddress extends Template
     }
 
     /**
-     * @return array|\Vipps\Login\Api\Data\VippsCustomerAddressInterface[]
-     * @throws \Magento\Framework\Exception\InputException
-     * @throws \Magento\Framework\Exception\LocalizedException
-     * @throws \Magento\Framework\Exception\State\InputMismatchException
+     * @return array|VippsCustomerAddressInterface[]
      */
     public function getVippsAddresses()
     {
         $customerModel = $this->customerSession->getCustomer();
         $customer = $customerModel->getDataModel();
         if ($this->vippsAccountManagement->isLinked($customer)) {
-            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+            try {
+                $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer);
+            } catch (NoSuchEntityException $e) {
+                $this->_logger->debug($e->getMessage());
+                return[];
+            }
+
             return $this->vippsCustomerAddressRepository->getNotLinkedAddresses($vippsCustomer);
         }
 
