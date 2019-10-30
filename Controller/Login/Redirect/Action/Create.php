@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login\Redirect\Action;
 
-use Magento\Framework\Validator\Exception as ValidatoException;
+use Magento\Framework\Validator\Exception as ValidatorException;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
@@ -112,7 +112,7 @@ class Create implements ActionInterface
             $redirect->setUrl(
                 $this->redirectUrlResolver->getRedirectUrl()
             );
-        } catch (ValidatoException $e) {
+        } catch (ValidatorException $e) {
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('customer/account/create');
         }
