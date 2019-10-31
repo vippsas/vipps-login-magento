@@ -21,10 +21,12 @@ namespace Vipps\Login\CustomerData;
 use Magento\Customer\Api\AddressRepositoryInterface;
 use Magento\Customer\CustomerData\SectionSourceInterface;
 use Magento\Customer\Model\Session;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Session\SessionManagerInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Customer section
@@ -52,23 +54,31 @@ class VippsCustomer implements SectionSourceInterface
     private $addressRepository;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * VippsCustomer constructor.
      *
      * @param SessionManagerInterface $customerSession
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      * @param AddressRepositoryInterface $addressRepository
+     * @param LoggerInterface $logger
      */
     public function __construct(
         SessionManagerInterface $customerSession,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
-        AddressRepositoryInterface $addressRepository
+        AddressRepositoryInterface $addressRepository,
+        LoggerInterface $logger
     ) {
         $this->customerSession = $customerSession;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
         $this->addressRepository = $addressRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -76,19 +86,23 @@ class VippsCustomer implements SectionSourceInterface
      */
     public function getSectionData()
     {
-        $result['linked'] = false;
+        $result = [];
+        $customer = $this->customerSession->getCustomer();
         if (!$this->customerSession->isLoggedIn()) {
             return $result;
         }
 
-        $customer = $this->customerSession->getCustomer();
-
-        $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
-        if (!$vippsCustomer->getEntityId()) {
+        try {
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
+        } catch (NoSuchEntityException $e) {
+            $this->logger->debug($e->getMessage());
             return $result;
         }
 
-        $result['linked'] = true;
+        if (!$vippsCustomer->getLinked()) {
+            return $result;
+        }
+
         $addressesResult = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
         foreach ($addressesResult->getItems() as $address) {
             $result['addresses'][] = [
@@ -103,7 +117,7 @@ class VippsCustomer implements SectionSourceInterface
                 $address->getCustomerAddressId() &&
                 $vippsCustomer->getSyncAddressMode() === VippsCustomerInterface::MANUAL_UPDATE
             ) {
-                $result['addressUpdated'] = true;
+                $result['show_popup'] = !(bool)$this->customerSession->getDisableVippsAddressUpdatePrompt();
                 $result['newAddress'] = [
                     'country_id' => $address->getCountry(),
                     'postalcode' => $address->getPostalCode(),

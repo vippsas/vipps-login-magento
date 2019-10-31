@@ -14,12 +14,12 @@
  */
 
 define([
-           'jquery',
-           'Magento_Ui/js/modal/modal',
-           'Magento_Customer/js/customer-data',
-           'mage/storage',
-           'mage/translate'
-       ], function ($, modal, CustomerData, storage, $t) {
+   'jquery',
+   'Magento_Ui/js/modal/modal',
+   'Magento_Customer/js/customer-data',
+   'mage/storage',
+   'mage/translate'
+], function ($, modal, customerData, storage, $t) {
     'use strict';
 
     $.widget('mage.vippsLoginPopUp', {
@@ -29,7 +29,7 @@ define([
         options: {
             type: 'popup',
             cacheKey: 'vipps_login_data',
-            idModal: '#popup-mpdal',
+            idModal: '#popup-modal',
             callUrl: 'vipps/login/addressUpdate',
             paramCall: 'sync_address_mode',
             responsive: true,
@@ -43,7 +43,7 @@ define([
                     class: '',
                     click: function () {
                         this.closeModal();
-                        CustomerData.set('sync_address_mode', 2)
+                        customerData.set('sync_address_mode', 2)
                     }
                 },
                 {
@@ -51,15 +51,15 @@ define([
                     class: '',
                     click: function () {
                         this.closeModal();
-                        CustomerData.set('sync_address_mode', 0)
+                        customerData.set('sync_address_mode', 0)
                     }
                 }
             ]
         },
         _init: function () {
-            var popup = modal(this.options, $(this.options.idModal));
-            var vippsData = CustomerData.get('vipps_login_data');
+            var vippsData = customerData.get('vipps_login_data');
 
+            modal(this.options, $(this.options.idModal));
             this.update(vippsData());
 
             vippsData.subscribe(function (updatedData) {
@@ -68,18 +68,13 @@ define([
         },
         update: function(updateData) {
             var self = this;
-            var getKey = CustomerData.get('vippsPopUpShow');
 
-            if (updateData.addressUpdated &&
-                $(this.options.accountClass).length &&
-                getKey() !== true
-            ) {
+            if (updateData.show_popup && $(this.options.accountClass).length) {
                 this.setDataAddr();
                 $(this.options.idModal).modal("openModal").on('modalclosed', function () {
                     self.sendData();
                 });
                 $(this.options.idModal).show();
-                CustomerData.set('vippsPopUpShow',true);
             } else {
                 $(this.options.idModal).hide();
             }
@@ -88,16 +83,16 @@ define([
             storage.post(
                 'vipps/login/addressUpdate',
                 JSON.stringify({
-                   'sync_address_mode': CustomerData.get('sync_address_mode')(),
-                   'sync_address_remeber': CustomerData.get('sync_address_remeber')()
+                   'sync_address_mode': customerData.get('sync_address_mode')(),
+                   'sync_address_remember': customerData.get('sync_address_remember')()
                 }),
                 1,
                 'json'
             );
         },
         setDataAddr: function () {
-            var addresses = CustomerData.get(this.options.cacheKey)();
-            var customerName = CustomerData.get('customer')();
+            var addresses = customerData.get(this.options.cacheKey)();
+            var customerName = customerData.get('customer')();
             if (addresses.newAddress || addresses.oldAddress) {
                 $(this.options.idModal).find('.vipps-address').append(
                     '<ul>' +
@@ -130,9 +125,9 @@ define([
             var checkbox = $(this.options.checkboxId);
             checkbox.on('change', function () {
                 if (this.checked) {
-                    CustomerData.set('sync_address_remeber', true);
+                    customerData.set('sync_address_remember', true);
                 } else {
-                    CustomerData.set('sync_address_remeber', false);
+                    customerData.set('sync_address_remember', false);
                 }
             });
         }
@@ -140,7 +135,4 @@ define([
     });
 
     return $.mage.vippsLoginPopUp;
-
 });
-
-
