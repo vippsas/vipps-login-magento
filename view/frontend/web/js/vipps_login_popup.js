@@ -71,7 +71,7 @@ define([
 
             if (updateData.addressUpdated &&
                 $(this.options.accountClass).length &&
-                updateData.vippsPopUpShow !== true
+                updateData.vippsPopUpShow === undefined
             ) {
                 this.setDataAddr();
                 $(this.options.idModal).modal("openModal").on('modalclosed', function () {
