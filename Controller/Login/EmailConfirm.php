@@ -90,6 +90,7 @@ class EmailConfirm extends Action
      * @param VippsAddressManagementInterface $vippsAddressManagement
      * @param RedirectUrlResolver $redirectUrlResolver
      * @param LoggerInterface $logger
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
