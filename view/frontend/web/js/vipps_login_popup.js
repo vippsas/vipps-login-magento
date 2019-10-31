@@ -67,19 +67,18 @@ define([
             }, this);
         },
         update: function(updateData) {
-            var self = this;
+            var getKey = CustomerData.get('vippsPopUpShow');
 
             if (updateData.addressUpdated &&
                 $(this.options.accountClass).length &&
-                updateData.vippsPopUpShow === undefined
+                getKey() !== true
             ) {
                 this.setDataAddr();
                 $(this.options.idModal).modal("openModal").on('modalclosed', function () {
-                    self.sendData();
+                    this.sendData();
                 });
                 $(this.options.idModal).show();
-                updateData.vippsPopUpShow = true;
-                CustomerData.set('vipps_login_data', updateData);
+                CustomerData.set('vippsPopUpShow',true);
             } else {
                 $(this.options.idModal).hide();
             }
