@@ -19,6 +19,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Customer:etc/sections.xsd">
     <action name="vipps/login/index">
         <section name="cart"/>
+        <section name="vipps_login_data"/>
     </action>
     <action name="vipps/login/addressUpdate">
         <section name="vipps_login_data" />
