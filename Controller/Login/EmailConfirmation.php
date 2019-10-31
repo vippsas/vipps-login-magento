@@ -34,6 +34,7 @@ use Magento\Framework\Serialize\SerializerInterface;
 /**
  * Class EmailConfirmation
  * @package Vipps\Login\Controller\Login
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class EmailConfirmation extends Action
 {

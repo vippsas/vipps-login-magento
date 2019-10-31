@@ -35,6 +35,7 @@ use Vipps\Login\Model\VippsCustomerAddressFactory as ModelFactory;
 /**
  * Class VippsCustomerAddressRepository
  * @package Vipps\Login\Model\ResourceModel
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class VippsCustomerAddressRepository implements VippsCustomerAddressRepositoryInterface
 {

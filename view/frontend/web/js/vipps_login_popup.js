@@ -14,14 +14,13 @@
  */
 
 define([
-           'jquery',
-           'Magento_Ui/js/modal/modal',
-           'Magento_Customer/js/customer-data',
-           'mage/storage',
-           'mage/translate'
-       ], function ($, modal, CustomerData, storage, $t) {
-    'use strict';
-
+       'jquery',
+       'Magento_Ui/js/modal/modal',
+       'Magento_Customer/js/customer-data',
+       'mage/storage',
+       'mage/translate'
+   ], function ($, modal, CustomerData, storage, $t) {
+'use strict';
     $.widget('mage.vippsLoginPopUp', {
         /**
          * Added clear timeout on trigger show
@@ -67,19 +66,20 @@ define([
             }, this);
         },
         update: function(updateData) {
-            var self = this;
-            var getKey = CustomerData.get('vippsPopUpShow');
+            var self = this,
+                getKey = CustomerData.get('vippsPopUpShow'),
+                showPopup = (typeof getKey() === "boolean") ? getKey() : true;
 
             if (updateData.addressUpdated &&
                 $(this.options.accountClass).length &&
-                getKey() !== true
+                showPopup === true
             ) {
                 this.setDataAddr();
                 $(this.options.idModal).modal("openModal").on('modalclosed', function () {
                     self.sendData();
                 });
                 $(this.options.idModal).show();
-                CustomerData.set('vippsPopUpShow',true);
+                CustomerData.set('vippsPopUpShow', false);
             } else {
                 $(this.options.idModal).hide();
             }
@@ -140,7 +140,4 @@ define([
     });
 
     return $.mage.vippsLoginPopUp;
-
 });
-
-

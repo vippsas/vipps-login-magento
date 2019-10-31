@@ -191,6 +191,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
 
     /**
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getIsDefault()
     {
@@ -209,6 +210,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
 
     /**
      * @return bool
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getWasChanged()
     {

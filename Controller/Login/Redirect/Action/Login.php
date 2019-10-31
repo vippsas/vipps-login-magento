@@ -37,6 +37,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Class Login
  * @package Vipps\Login\Controller\Login\Redirect\Action
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Login implements ActionInterface
 {
@@ -103,6 +104,7 @@ class Login implements ActionInterface
      * @param RedirectUrlResolver $redirectUrlResolver
      * @param ManagerInterface $messageManager
      * @param LoggerInterface $logger
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         RedirectFactory $redirectFactory,
