@@ -178,6 +178,7 @@
     <type name="Vipps\Login\CustomerData\VippsCustomer">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
 

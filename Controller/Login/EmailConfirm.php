@@ -90,6 +90,7 @@ class EmailConfirm extends Action
      * @param VippsAddressManagementInterface $vippsAddressManagement
      * @param RedirectUrlResolver $redirectUrlResolver
      * @param LoggerInterface $logger
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
@@ -117,6 +118,7 @@ class EmailConfirm extends Action
 
     /**
      * @return \Magento\Framework\Controller\Result\Redirect
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function execute()
     {
@@ -132,7 +134,7 @@ class EmailConfirm extends Action
                 $this->messageManager->addSuccessMessage(__('Your account was successfully confirmed.'));
 
                 if ($accessToken = $this->accessTokenProvider->get()) {
-                    $userInfo = $this->userInfoCommand->execute($this->accessTokenProvider->get());
+                    $userInfo = $this->userInfoCommand->execute($accessToken);
                     $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
                 }
 

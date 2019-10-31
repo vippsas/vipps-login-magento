@@ -35,6 +35,7 @@ use Psr\Log\LoggerInterface;
 /**
  * Class CartSave
  * @package Vipps\Login\Plugin
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class CartSave
 {
@@ -115,6 +116,7 @@ class CartSave
      * @param CartInterface $quote
      *
      * @return CartInterface
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterSave(CartRepositoryInterface $subject, $result, CartInterface $quote)
     {

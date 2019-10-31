@@ -36,6 +36,7 @@ use Magento\Customer\Api\Data\CustomerInterface;
 /**
  * Class VippsCustomer
  * @package Vipps\Login\Model
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class VippsAccountManagement implements VippsAccountManagementInterface
 {
@@ -179,7 +180,7 @@ class VippsAccountManagement implements VippsAccountManagementInterface
             return false;
         }
 
-        return $vippsCustomer->getLinked();
+        return (bool) $vippsCustomer->getLinked();
     }
 
     /**

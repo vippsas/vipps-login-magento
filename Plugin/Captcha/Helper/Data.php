@@ -45,6 +45,7 @@ class Data
      * @param string $formId
      *
      * @return array
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function beforeGetCaptcha(Subject $subject, $formId)
     {

@@ -101,22 +101,21 @@ class AddressUpdate extends AccountBase
 
     /**
      * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function execute()
     {
-        $httpBadRequestCode = 400;
-
         /** @var Raw $resultRaw */
         $resultRaw = $this->resultRawFactory->create();
         try {
             $this->customerSession->setDisableVippsAddressUpdatePrompt(true);
             $syncData = $this->serializer->unserialize($this->getRequest()->getContent());
         } catch (\Exception $e) {
-            return $resultRaw->setHttpResponseCode($httpBadRequestCode);
+            return $resultRaw;
         }
 
         if (!$this->isValid($syncData)) {
-            return $resultRaw->setHttpResponseCode($httpBadRequestCode);
+            return $resultRaw;
         }
 
         $response = [

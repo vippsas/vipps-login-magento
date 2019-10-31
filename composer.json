@@ -4,7 +4,7 @@
     "require": {
         "magento/framework": "101.*",
         "magento/module-customer": "101.0.*",
-        "magento/module-store": "100.0.*",
+        "magento/module-store": "100.2.*",
         "magento/module-directory": "100.2.*",
         "monolog/monolog": "^1.17",
         "firebase/php-jwt": "^5.0",
@@ -30,11 +30,5 @@
             "type": "composer",
             "url": "https://repo.magento.com/"
         }
-    },
-    "require-dev": {
-        "magento/magento-coding-standard": "^1.0",
-        "phpunit/phpunit": "~6.2.0",
-        "phpmd/phpmd": "@stable",
-        "magento/zendframework1": "~1.12.16"
     }
 }

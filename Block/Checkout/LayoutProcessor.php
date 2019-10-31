@@ -156,6 +156,7 @@ class LayoutProcessor implements LayoutProcessorInterface
      * @param $jsLayout
      *
      * @return mixed
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     private function processBillingAddress($jsLayout)
     {
