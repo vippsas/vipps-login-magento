@@ -180,7 +180,7 @@ class VippsAccountManagement implements VippsAccountManagementInterface
             return false;
         }
 
-        return $vippsCustomer->getLinked();
+        return (bool) $vippsCustomer->getLinked();
     }
 
     /**
