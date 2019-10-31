@@ -88,6 +88,9 @@ class VippsCustomer implements SectionSourceInterface
     {
         $result = [];
         $customer = $this->customerSession->getCustomer();
+        if (!$this->customerSession->isLoggedIn()) {
+            return $result;
+        }
 
         try {
             $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
@@ -114,7 +117,7 @@ class VippsCustomer implements SectionSourceInterface
                 $address->getCustomerAddressId() &&
                 $vippsCustomer->getSyncAddressMode() === VippsCustomerInterface::MANUAL_UPDATE
             ) {
-                $result['addressUpdated'] = true;
+                $result['show_popup'] = !(bool)$this->customerSession->getDisableVippsAddressUpdatePrompt();
                 $result['newAddress'] = [
                     'country_id' => $address->getCountry(),
                     'postalcode' => $address->getPostalCode(),

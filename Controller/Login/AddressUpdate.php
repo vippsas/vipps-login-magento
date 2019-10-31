@@ -108,6 +108,7 @@ class AddressUpdate extends AccountBase
         /** @var Raw $resultRaw */
         $resultRaw = $this->resultRawFactory->create();
         try {
+            $this->customerSession->setDisableVippsAddressUpdatePrompt(true);
             $syncData = $this->serializer->unserialize($this->getRequest()->getContent());
         } catch (\Exception $e) {
             return $resultRaw;
@@ -130,7 +131,7 @@ class AddressUpdate extends AccountBase
                 throw new LocalizedException(__('You are not linked to a Vipps profile.'));
             }
 
-            if ($syncData['sync_address_remeber']) {
+            if ($syncData['sync_address_remember']) {
                 $vippsCustomer->setSyncAddressMode($syncData['sync_address_mode']);
                 $this->vippsCustomerRepository->save($vippsCustomer);
             }
