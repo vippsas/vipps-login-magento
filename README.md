@@ -2,21 +2,16 @@
 
 ## About Vipps Login for Magento 2
 
-Vipps Payment offers a familiar and convenient buying experience that can help your customers spend more time shopping and less time checking out.
+Sign in with Vipps is the easiest way to sign in and create an account. 
 
-Vipps Payment is used by large and small companies.  From years of shopping safely with Vipps, customers trust their personal information will remain secure.  Businesses have the reassurance of our advanced fraud protection and payment protection policy.
+No need to worry about usernames and passwords. All you need to sign in is your phone number. 
 
-For more information about Vipps Payment and Magento 2, please visit our [Vipps Payment for Magento](https://www.vipps.no/bedrift/vipps-pa-nett) site.
-
-See also the Magento documentation for order management: https://docs.magento.com/m2/ce/user_guide/sales/order-management.html
+Vipps, and you are logged in.
 
 ## Prerequisites
 * Magento 2.2+
    * [Magento 2 System Requirements](http://devdocs.magento.com/magento-system-requirements.html)
 * SSL is installed on your site and active on the Checkout page
-* Supported protocols HTTP1/HTTP1.1
-   * Magento relies on the [Zend Framework](https://framework.zend.com), which does not support HTTP/2.
-   * HTTP/1.1 must therefore be "forced", typically by using [CPanel](https://documentation.cpanel.net/display/EA4/Apache+Module%3A+HTTP2) or similar.
 * A verified Vipps Payment merchant account - [sign up here](https://vippsbedrift.no/signup/vippspanett/)
 
 ## Installation and Configuration
