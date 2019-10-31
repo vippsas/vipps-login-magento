@@ -85,6 +85,7 @@ class AccountManagement
      * @param CustomerInterface $result
      *
      * @return CustomerInterface
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterCreateAccount(Subject $subject, CustomerInterface $result)
     {

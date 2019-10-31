@@ -132,7 +132,7 @@ class EmailConfirm extends Action
                 $this->messageManager->addSuccessMessage(__('Your account was successfully confirmed.'));
 
                 if ($accessToken = $this->accessTokenProvider->get()) {
-                    $userInfo = $this->userInfoCommand->execute($this->accessTokenProvider->get());
+                    $userInfo = $this->userInfoCommand->execute($accessToken);
                     $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
                 }
 

@@ -104,6 +104,7 @@ class AddressSave
      * @param AddressInterface $address
      *
      * @return AddressInterface
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterSave(AddressRepositoryInterface $subject, AddressInterface $address)
     {

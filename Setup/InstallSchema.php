@@ -148,6 +148,7 @@ class InstallSchema implements InstallSchemaInterface
      * @param SchemaSetupInterface $installer
      *
      * @throws \Zend_Db_Exception
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     private function createVippsCustomerAddressTable(SchemaSetupInterface $installer)
     {

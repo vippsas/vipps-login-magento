@@ -38,6 +38,7 @@ use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 /**
  * Class VippsCustomer
  * @package Vipps\Login\Model
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class VippsAddressManagement implements VippsAddressManagementInterface
 {
@@ -147,7 +148,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $newVippsAddresses = $userInfo->getAddress();
         $result = [];
 
-        foreach ($vippsAddresses as $type => $item) {
+        foreach ($vippsAddresses as $item) {
             $match = false;
             foreach ($newVippsAddresses as $addressType => $address) {
                 if ($address['address_type'] != $item->getAddressType()) {

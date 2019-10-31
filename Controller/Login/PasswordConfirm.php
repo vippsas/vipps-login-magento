@@ -128,6 +128,7 @@ class PasswordConfirm extends Action
      * @param UrlInterface $url
      * @param VippsAddressManagementInterface $vippsAddressManagement
      * @param LoggerInterface $logger
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         Context $context,
