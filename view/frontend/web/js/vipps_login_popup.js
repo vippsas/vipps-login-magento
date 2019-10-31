@@ -68,6 +68,7 @@ define([
         },
         update: function(updateData) {
             var getKey = CustomerData.get('vippsPopUpShow');
+            var self = this;
 
             if (updateData.addressUpdated &&
                 $(this.options.accountClass).length &&
@@ -75,7 +76,7 @@ define([
             ) {
                 this.setDataAddr();
                 $(this.options.idModal).modal("openModal").on('modalclosed', function () {
-                    this.sendData();
+                    self.sendData();
                 });
                 $(this.options.idModal).show();
                 CustomerData.set('vippsPopUpShow',true);
