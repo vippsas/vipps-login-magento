@@ -109,7 +109,7 @@ class Creator
 
             $customer->setWebsiteId($this->storeManager->getWebsite()->getWebsiteId());
             $customer->setEmail($userInfo->getEmail());
-            $customer->setFirstname($userInfo->getName());
+            $customer->setFirstname($userInfo->getGivenName());
             $customer->setLastname($userInfo->getFamilyName());
 
             return $this->accountManagement->createAccount($customer);
