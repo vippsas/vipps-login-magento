@@ -117,6 +117,7 @@ class EmailConfirm extends Action
 
     /**
      * @return \Magento\Framework\Controller\Result\Redirect
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function execute()
     {
