@@ -105,18 +105,16 @@ class AddressUpdate extends AccountBase
      */
     public function execute()
     {
-        $httpBadRequestCode = 400;
-
         /** @var Raw $resultRaw */
         $resultRaw = $this->resultRawFactory->create();
         try {
             $syncData = $this->serializer->unserialize($this->getRequest()->getContent());
         } catch (\Exception $e) {
-            return $resultRaw->setHttpResponseCode($httpBadRequestCode);
+            return $resultRaw;
         }
 
         if (!$this->isValid($syncData)) {
-            return $resultRaw->setHttpResponseCode($httpBadRequestCode);
+            return $resultRaw;
         }
 
         $response = [
