@@ -34,6 +34,8 @@ use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\Result\Raw;
 use Magento\Framework\UrlInterface;
+use Magento\Framework\Stdlib\CookieManagerInterface;
+use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
@@ -102,14 +104,26 @@ class PasswordConfirm extends Action
      * @var UrlInterface
      */
     private $url;
+
     /**
      * @var RedirectUrlResolver
      */
     private $redirectUrlResolver;
+
     /**
      * @var LoggerInterface
      */
     private $logger;
+
+    /**
+     * @var CookieManagerInterface
+     */
+    private $cookieManager;
+
+    /**
+     * @var CookieMetadataFactory
+     */
+    private $cookieMetadataFactory;
 
     /**
      * PasswordConfirm constructor.
@@ -127,6 +141,8 @@ class PasswordConfirm extends Action
      * @param AccessTokenProvider $accessTokenProvider
      * @param UrlInterface $url
      * @param VippsAddressManagementInterface $vippsAddressManagement
+     * @param CookieManagerInterface $cookieManager
+     * @param CookieMetadataFactory $cookieMetadataFactory
      * @param LoggerInterface $logger
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -144,6 +160,8 @@ class PasswordConfirm extends Action
         AccessTokenProvider $accessTokenProvider,
         UrlInterface $url,
         VippsAddressManagementInterface $vippsAddressManagement,
+        CookieManagerInterface $cookieManager,
+        CookieMetadataFactory $cookieMetadataFactory,
         LoggerInterface $logger
     ) {
         parent::__construct($context);
@@ -160,6 +178,8 @@ class PasswordConfirm extends Action
         $this->url = $url;
         $this->redirectUrlResolver = $redirectUrlResolver;
         $this->logger = $logger;
+        $this->cookieManager = $cookieManager;
+        $this->cookieMetadataFactory = $cookieMetadataFactory;
     }
 
     /**
@@ -207,6 +227,11 @@ class PasswordConfirm extends Action
 
             $this->customerSession->setCustomerDataAsLoggedIn($magentoCustomer);
             $this->customerSession->regenerateId();
+            if ($this->cookieManager->getCookie('mage-cache-sessid')) {
+                $metadata = $this->cookieMetadataFactory->createCookieMetadata();
+                $metadata->setPath('/');
+                $this->cookieManager->deleteCookie('mage-cache-sessid', $metadata);
+            }
 
             $response['redirectUrl'] = $this->redirectUrlResolver->getRedirectUrl();
 
