@@ -20,6 +20,6 @@ declare(strict_types=1);
 
 if ($block->isLinked()) : ?>
     <div class="vipps-link-wrap">
-        <a href="<?= $block->escapeUrl('vipps/login/unlink'); ?>"><?= $block->escapeHtml(__('Unlink my account from Vipps')) ?></a>
+        <a href="<?= $block->escapeUrl($block->getUrl('vipps/login/unlink')); ?>"><?= $block->escapeHtml(__('Unlink my account from Vipps')) ?></a>
     </div>
 <?php endif?>
