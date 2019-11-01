@@ -23,6 +23,8 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\Stdlib\CookieManagerInterface;
+use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\Customer;
@@ -92,6 +94,16 @@ class Login implements ActionInterface
     private $messageManager;
 
     /**
+     * @var CookieManagerInterface
+     */
+    private $cookieManager;
+
+    /**
+     * @var CookieMetadataFactory
+     */
+    private $cookieMetadataFactory;
+
+    /**
      * Login constructor.
      *
      * @param RedirectFactory $redirectFactory
@@ -103,6 +115,8 @@ class Login implements ActionInterface
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      * @param RedirectUrlResolver $redirectUrlResolver
      * @param ManagerInterface $messageManager
+     * @param CookieManagerInterface $cookieManager
+     * @param CookieMetadataFactory $cookieMetadataFactory
      * @param LoggerInterface $logger
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -116,6 +130,8 @@ class Login implements ActionInterface
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
         RedirectUrlResolver $redirectUrlResolver,
         ManagerInterface $messageManager,
+        CookieManagerInterface $cookieManager,
+        CookieMetadataFactory $cookieMetadataFactory,
         LoggerInterface $logger
     ) {
         $this->redirectFactory = $redirectFactory;
@@ -128,6 +144,8 @@ class Login implements ActionInterface
         $this->logger = $logger;
         $this->redirectUrlResolver = $redirectUrlResolver;
         $this->messageManager = $messageManager;
+        $this->cookieManager = $cookieManager;
+        $this->cookieMetadataFactory = $cookieMetadataFactory;
     }
 
     /**
@@ -146,6 +164,13 @@ class Login implements ActionInterface
                 $userInfo = $this->userInfoCommand->execute($token['access_token']);
 
                 $this->sessionManager->setCustomerAsLoggedIn($customer);
+                $this->sessionManager->regenerateId();
+                if ($this->cookieManager->getCookie('mage-cache-sessid')) {
+                    $metadata = $this->cookieMetadataFactory->createCookieMetadata();
+                    $metadata->setPath('/');
+                    $this->cookieManager->deleteCookie('mage-cache-sessid', $metadata);
+                }
+
                 $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
 
                 $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());

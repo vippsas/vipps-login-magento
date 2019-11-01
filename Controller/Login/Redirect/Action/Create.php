@@ -22,6 +22,8 @@ use Magento\Framework\Validator\Exception as ValidatorException;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Stdlib\CookieManagerInterface;
+use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Customer\Model\Session;
 use Magento\Customer\Model\CustomerRegistry;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
@@ -65,6 +67,16 @@ class Create implements ActionInterface
     private $redirectUrlResolver;
 
     /**
+     * @var CookieManagerInterface
+     */
+    private $cookieManager;
+
+    /**
+     * @var CookieMetadataFactory
+     */
+    private $cookieMetadataFactory;
+
+    /**
      * Create constructor.
      *
      * @param RedirectFactory $redirectFactory
@@ -72,6 +84,8 @@ class Create implements ActionInterface
      * @param CustomerRegistry $customerRegistry
      * @param UserInfoCommand $userInfoCommand
      * @param RedirectUrlResolver $redirectUrlResolver
+     * @param CookieManagerInterface $cookieManager
+     * @param CookieMetadataFactory $cookieMetadataFactory
      * @param Creator $creator
      */
     public function __construct(
@@ -80,6 +94,8 @@ class Create implements ActionInterface
         CustomerRegistry $customerRegistry,
         UserInfoCommand $userInfoCommand,
         RedirectUrlResolver $redirectUrlResolver,
+        CookieManagerInterface $cookieManager,
+        CookieMetadataFactory $cookieMetadataFactory,
         Creator $creator
     ) {
         $this->redirectFactory = $redirectFactory;
@@ -88,6 +104,8 @@ class Create implements ActionInterface
         $this->userInfoCommand = $userInfoCommand;
         $this->redirectUrlResolver = $redirectUrlResolver;
         $this->creator = $creator;
+        $this->cookieManager = $cookieManager;
+        $this->cookieMetadataFactory = $cookieMetadataFactory;
     }
 
     /**
@@ -108,7 +126,15 @@ class Create implements ActionInterface
             $userInfo = $this->userInfoCommand->execute($accessToken);
             $magentoCustomer = $this->creator->create($userInfo);
             $customer = $this->customerRegistry->retrieveByEmail($magentoCustomer->getEmail());
+
             $this->sessionManager->setCustomerAsLoggedIn($customer);
+            $this->sessionManager->regenerateId();
+            if ($this->cookieManager->getCookie('mage-cache-sessid')) {
+                $metadata = $this->cookieMetadataFactory->createCookieMetadata();
+                $metadata->setPath('/');
+                $this->cookieManager->deleteCookie('mage-cache-sessid', $metadata);
+            }
+
             $redirect->setUrl(
                 $this->redirectUrlResolver->getRedirectUrl()
             );
