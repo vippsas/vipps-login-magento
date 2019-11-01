@@ -92,12 +92,11 @@ define([
         },
         setDataAddr: function () {
             var addresses = customerData.get(this.options.cacheKey)();
-            var customerName = customerData.get('customer')();
             if (addresses.newAddress || addresses.oldAddress) {
                 $(this.options.idModal).find('.vipps-address').append(
                     '<ul>' +
                     '<li><strong>' + $t('New address from Vipps') + '</strong></li>' +
-                    '<li>' + customerName.fullname + '</li>' +
+                    '<li>' + addresses.newAddress.customer_display_name + '</li>' +
                     '<li>' + addresses.newAddress.street + '</li>' +
                     '<li>' + addresses.newAddress.postalcode + ', ' + addresses.newAddress.city + '</li>'
                     + '</h2>'
@@ -106,7 +105,7 @@ define([
                 $(this.options.idModal).find('.old-address').append(
                     '<ul>' +
                     '<li><strong>' + $t('Old address') + '</strong></li>' +
-                    '<li>' + customerName.fullname + '</li>' +
+                    '<li>' + addresses.oldAddress.customer_display_name + '</li>' +
                     '<li>' + addresses.oldAddress.street + '</li>' +
                     '<li>' + addresses.oldAddress.postalcode + ', ' + addresses.oldAddress.city + '</li>'
                     + '</h2>'
