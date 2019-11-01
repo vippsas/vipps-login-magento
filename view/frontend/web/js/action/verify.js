@@ -61,7 +61,7 @@ define([
                     'json'
                 ).done(function (response) {
                     if (response.error !== true) {
-                        self.showMsgPopUp($t('Request was send'),response.message)
+                        self.showMsgPopUp($t('Check your inbox'),response.message)
                     } else {
                         self.showMsgPopUp($t('An error occurred'),response.message);
                     }
@@ -74,7 +74,7 @@ define([
                 loginAction(self.fetchData(self.options.verifyPasswordForm),
                             self.options.urlPasswordConfirmation).done(function (response) {
                     if (response.error !== true) {
-                        self.showMsgPopUp($t('Request was send'),response.message)
+                        self.showMsgPopUp($t('Check your inbox'),response.message)
                     } else {
                         self.showMsgPopUp($t('An error occurred'),response.message);
                     }
