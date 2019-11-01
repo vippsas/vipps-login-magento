@@ -117,22 +117,25 @@ class VippsCustomer implements SectionSourceInterface
                 $address->getCustomerAddressId() &&
                 $vippsCustomer->getSyncAddressMode() === VippsCustomerInterface::MANUAL_UPDATE
             ) {
+                $magentoAddress = $this->addressRepository->getById($address->getCustomerAddressId());
+                $customerDisplayName = $magentoAddress->getFirstname() . ' ' . $magentoAddress->getLastname();
+
                 $result['show_popup'] = !(bool)$this->customerSession->getDisableVippsAddressUpdatePrompt();
                 $result['newAddress'] = [
                     'country_id' => $address->getCountry(),
                     'postalcode' => $address->getPostalCode(),
                     'city' => $address->getRegion(),
                     'telephone' => $vippsCustomer->getTelephone(),
-                    'street' => $address->getStreetAddress()
+                    'street' => $address->getStreetAddress(),
+                    'customer_display_name' => $customerDisplayName
                 ];
-
-                $magentoAddress = $this->addressRepository->getById($address->getCustomerAddressId());
                 $result['oldAddress'] = [
                     'country_id' => $magentoAddress->getCountryId(),
                     'postalcode' => $magentoAddress->getPostcode(),
                     'city' => $magentoAddress->getCity(),
                     'telephone' => $magentoAddress->getTelephone(),
                     'street' => $this->formatAddress($magentoAddress->getStreet()),
+                    'customer_display_name' => $customerDisplayName
                 ];
             }
         }
