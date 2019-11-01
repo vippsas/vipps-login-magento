@@ -40,7 +40,7 @@ define([
             buttons: [
                 {
                     text: $.mage.__('Do nothing'),
-                    class: '',
+                    class: 'vipps-popup-btn',
                     click: function () {
                         this.closeModal();
                         customerData.set('sync_address_mode', 2)
@@ -48,7 +48,7 @@ define([
                 },
                 {
                     text: $.mage.__('Update'),
-                    class: '',
+                    class: 'vipps-popup-btn',
                     click: function () {
                         this.closeModal();
                         customerData.set('sync_address_mode', 0)
