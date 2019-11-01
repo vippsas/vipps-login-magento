@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
@@ -25,6 +26,7 @@ use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Session\SessionManagerInterface;
 use Vipps\Login\Model\ConfigInterface;
 use Vipps\Login\Model\TokenProviderInterface;
 
@@ -45,21 +47,29 @@ class Confirmation extends Action
     private $tokenPayloadProvider;
 
     /**
+     * @var SessionManagerInterface|Session
+     */
+    private $customerSession;
+
+    /**
      * Confirmation constructor.
      *
      * @param Context $context
      * @param ConfigInterface $config
+     * @param SessionManagerInterface $customerSession,
      * @param ManagerInterface $messageManager
      * @param TokenProviderInterface $tokenPayloadProvider
      */
     public function __construct(
         Context $context,
         ConfigInterface $config,
+        SessionManagerInterface $customerSession,
         ManagerInterface $messageManager,
         TokenProviderInterface $tokenPayloadProvider
     ) {
         parent::__construct($context);
         $this->config = $config;
+        $this->customerSession = $customerSession;
         $this->tokenPayloadProvider = $tokenPayloadProvider;
         $this->messageManager = $messageManager;
     }
@@ -69,6 +79,10 @@ class Confirmation extends Action
      */
     public function execute()
     {
+        if ($this->customerSession->isLoggedIn()) {
+            return $this->_redirect('customer/account');
+        }
+
         if (!$this->tokenPayloadProvider->get()) {
             $this->messageManager->addErrorMessage(__('An error occurred. Please, try again later.'));
             return $this->_redirect('customer/account/login');

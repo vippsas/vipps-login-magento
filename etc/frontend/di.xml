@@ -78,6 +78,7 @@
     <type name="Vipps\Login\Controller\Login\Confirmation">
         <arguments>
             <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session</argument>
             <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
