@@ -30,6 +30,8 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Stdlib\CookieManagerInterface;
+use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 
 /**
  * Class EmailConfirm
@@ -78,6 +80,16 @@ class EmailConfirm extends Action
     private $redirectUrlResolver;
 
     /**
+     * @var CookieManagerInterface
+     */
+    private $cookieManager;
+
+    /**
+     * @var CookieMetadataFactory
+     */
+    private $cookieMetadataFactory;
+
+    /**
      * EmailConfirm constructor.
      *
      * @param Context $context
@@ -89,6 +101,8 @@ class EmailConfirm extends Action
      * @param UserInfoCommand $userInfoCommand
      * @param VippsAddressManagementInterface $vippsAddressManagement
      * @param RedirectUrlResolver $redirectUrlResolver
+     * @param CookieManagerInterface $cookieManager
+     * @param CookieMetadataFactory $cookieMetadataFactory
      * @param LoggerInterface $logger
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
@@ -102,6 +116,8 @@ class EmailConfirm extends Action
         UserInfoCommand $userInfoCommand,
         VippsAddressManagementInterface $vippsAddressManagement,
         RedirectUrlResolver $redirectUrlResolver,
+        CookieManagerInterface $cookieManager,
+        CookieMetadataFactory $cookieMetadataFactory,
         LoggerInterface $logger
     ) {
         parent::__construct($context);
@@ -114,6 +130,8 @@ class EmailConfirm extends Action
         $this->userInfoCommand = $userInfoCommand;
         $this->logger = $logger;
         $this->redirectUrlResolver = $redirectUrlResolver;
+        $this->cookieManager = $cookieManager;
+        $this->cookieMetadataFactory = $cookieMetadataFactory;
     }
 
     /**
@@ -130,7 +148,15 @@ class EmailConfirm extends Action
             $vippsCustomer = $this->vippsAccountManagement->confirm($id, $key);
             if ($vippsCustomer) {
                 $customer = $this->customerRegistry->retrieveByEmail($vippsCustomer->getEmail());
+
                 $this->sessionManager->setCustomerAsLoggedIn($customer);
+                $this->sessionManager->regenerateId();
+                if ($this->cookieManager->getCookie('mage-cache-sessid')) {
+                    $metadata = $this->cookieMetadataFactory->createCookieMetadata();
+                    $metadata->setPath('/');
+                    $this->cookieManager->deleteCookie('mage-cache-sessid', $metadata);
+                }
+
                 $this->messageManager->addSuccessMessage(__('Your account was successfully confirmed.'));
 
                 if ($accessToken = $this->accessTokenProvider->get()) {

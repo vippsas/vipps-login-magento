@@ -41,18 +41,21 @@
     <type name="Vipps\Login\Controller\Login\Redirect\Action\Login">
         <arguments>
             <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="cookieManager" xsi:type="object">Magento\Framework\Stdlib\Cookie\PhpCookieManager\Proxy</argument>
         </arguments>
     </type>
 
     <type name="Vipps\Login\Controller\Login\Redirect\Action\Create">
         <arguments>
             <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="cookieManager" xsi:type="object">Magento\Framework\Stdlib\Cookie\PhpCookieManager\Proxy</argument>
         </arguments>
     </type>
 
     <type name="Vipps\Login\Controller\Login\EmailConfirm">
         <arguments>
             <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="cookieManager" xsi:type="object">Magento\Framework\Stdlib\Cookie\PhpCookieManager\Proxy</argument>
             <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
@@ -78,6 +81,7 @@
     <type name="Vipps\Login\Controller\Login\Confirmation">
         <arguments>
             <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session</argument>
             <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
@@ -86,6 +90,7 @@
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+            <argument name="cookieManager" xsi:type="object">Magento\Framework\Stdlib\Cookie\PhpCookieManager\Proxy</argument>
             <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
