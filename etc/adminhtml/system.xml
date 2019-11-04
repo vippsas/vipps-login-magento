@@ -24,7 +24,15 @@
             <label>Login</label>
             <tab>vipps</tab>
             <resource>Vipps_Login::login</resource>
-            <group id="vipps_required" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="5">
+            <group id="vipps_login" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="5">
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable this Solution</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>vipps/login/enabled</config_path>
+                    <requires>
+                        <group id="vipps_required"/>
+                    </requires>
+                </field>
                 <field id="environment" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Environment</label>
                     <source_model>Vipps\Login\Model\Adminhtml\Source\Environment</source_model>
@@ -35,16 +43,18 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <config_path>vipps/login/debug</config_path>
                 </field>
-                <field id="client_id" translate="label" type="obscure" sortOrder="81" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Client ID</label>
-                    <config_path>vipps/login/client_id</config_path>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                </field>
-                <field id="client_secret" translate="label" type="obscure" sortOrder="82" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Client Secret</label>
-                    <config_path>vipps/login/client_secret</config_path>
-                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                </field>
+                <group id="vipps_required" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="5">
+                    <field id="client_id" translate="label" type="obscure" sortOrder="81" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Client ID</label>
+                        <config_path>vipps/login/client_id</config_path>
+                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    </field>
+                    <field id="client_secret" translate="label" type="obscure" sortOrder="82" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>Client Secret</label>
+                        <config_path>vipps/login/client_secret</config_path>
+                        <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    </field>
+                </group>
             </group>
         </section>
     </system>

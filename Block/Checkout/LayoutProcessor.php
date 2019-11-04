@@ -23,10 +23,10 @@ use Magento\Customer\Model\Session;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
-use Vipps\Login\Api\Data\VippsCustomerAddressInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
+use Vipps\Login\Model\ConfigInterface;
 
 /**
  * Class LayoutProcessor
@@ -65,6 +65,11 @@ class LayoutProcessor implements LayoutProcessorInterface
     private $logger;
 
     /**
+     * @var ConfigInterface
+     */
+    private $config;
+
+    /**
      * LayoutProcessor constructor.
      *
      * @param StoreManagerInterface $storeManager
@@ -72,6 +77,7 @@ class LayoutProcessor implements LayoutProcessorInterface
      * @param VippsAccountManagementInterface $vippsAccountManagement
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
+     * @param ConfigInterface $config
      * @param LoggerInterface $logger
      */
     public function __construct(
@@ -80,6 +86,7 @@ class LayoutProcessor implements LayoutProcessorInterface
         VippsAccountManagementInterface $vippsAccountManagement,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
+        ConfigInterface $config,
         LoggerInterface $logger
     ) {
         $this->storeManager = $storeManager;
@@ -88,6 +95,7 @@ class LayoutProcessor implements LayoutProcessorInterface
         $this->vippsCustomerRepository = $vippsCustomerRepository;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
         $this->logger = $logger;
+        $this->config = $config;
     }
 
     /**
@@ -98,6 +106,18 @@ class LayoutProcessor implements LayoutProcessorInterface
      */
     public function process($jsLayout)
     {
+        if (!$this->config->isEnabled()) {
+            return $jsLayout;
+        }
+
+        if (!$this->customerSession->isLoggedIn()) {
+            $jsLayout['components']['checkout']['children']['steps']['children']['shipping-step']
+            ['children']['shippingAddress']['children']['customer-email']['children']
+            ['before-login-form']['children']['vipps_login_form'] = $this->getVippsLoginButtonComponent();
+
+            return $jsLayout;
+        }
+
         $customerModel = $this->customerSession->getCustomer();
         $customer = $customerModel->getDataModel();
         try {
@@ -215,6 +235,20 @@ class LayoutProcessor implements LayoutProcessorInterface
             'imports' => [
                 'setOptions' => "index = checkoutProvider:dictionaries.vipps_addresses_list"
             ]
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function getVippsLoginButtonComponent()
+    {
+        return [
+            'component' => 'Vipps_Login/js/view/checkout/vipps_checkout_login',
+            'config' => [
+                'template' => 'Vipps_Login/vipps-checkout-login/login-btn',
+                'title' => __('Vipps login form'),
+            ],
         ];
     }
 }
