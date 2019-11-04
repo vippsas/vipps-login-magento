@@ -79,6 +79,16 @@ class Config implements ConfigInterface
     }
 
     /**
+     * @param null $storeId
+     *
+     * @return bool
+     */
+    public function isEnabled($storeId = null)
+    {
+        return (bool)$this->getValue(self::VIPPS_LOGIN_ENABLED, $storeId);
+    }
+
+    /**
      * @param $path
      * @param null $storeId
      *

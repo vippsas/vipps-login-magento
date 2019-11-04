@@ -24,7 +24,7 @@ define([
 
    return Component.extend({
        options: {
-           isCustomerLoggedIn: customer.isLoggedIn,
+           isCustomerLoggedIn: customer.isLoggedIn
        },
        initialize: function () {
         this._super();
