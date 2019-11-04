@@ -1,0 +1,61 @@
+<?php
+
+/** @var \Vipps\Login\Block\Form\Confirmation $block */
+
+$emails = $block->getEmails();
+
+?>
+<div class="block block-customer-login">
+    <div class="confirm-page-title">
+        <h1><?= $block->escapeHtmlAttr(__('Confirm your email')) ?></h1>
+    </div>
+    <div class="block-content" aria-labelledby="block-customer-login-heading">
+        <div class="field note">
+            <?= $block->escapeHtml(__('Looks, like your email %1 has been already registered. Confirm your password or send confirmation link to your email.', '<b>' . $block->escapeHtmlAttr(current($emails)) . '</b>'), ['b']) ?>
+        </div>
+        <form class="form form-login by-mail"
+              action="<?= $block->escapeUrl($block->getAjaxEmailConfirmationUrl()) ?>"
+              method="post"
+              id="verify-email-form"
+              data-mage-init='{"validation":{}}'>
+            <?= $block->getBlockHtml('formkey') ?>
+            <fieldset class="fieldset">
+                <input type="hidden" name="email" value="<?= $block->escapeHtmlAttr(current($emails)) ?>" <?php if ($block->isAutocompleteDisabled()) : ?> autocomplete="off"<?php endif; ?> id="email2" type="email" class="input-text" title="<?= $block->escapeHtmlAttr(__('Email')) ?>" data-validate="{required:true, 'validate-email':true}">
+                <div class="actions-toolbar">
+                    <div class="primary"><button type="submit" class="action login primary" name="send" id="send2"><span><?= $block->escapeHtml(__('Send confirmation link to email')) ?></span></button></div>
+                </div>
+            </fieldset>
+        </form>
+        <form class="form form-login"
+              action="<?= $block->escapeUrl($block->getAjaxLoginUrl()) ?>"
+              method="post"
+              id="verify-password-form"
+              data-mage-init='{"validation":{}}'>
+            <?= $block->getBlockHtml('formkey') ?>
+            <fieldset class="fieldset login" data-hasrequired="<?= $block->escapeHtmlAttr(__('* Required Fields')) ?>">
+
+                    <input type="hidden" name="username" value="<?= $block->escapeHtmlAttr(current($emails)) ?>" <?php if ($block->isAutocompleteDisabled()) : ?> autocomplete="off"<?php endif; ?> id="email1" type="email" class="input-text" title="<?= $block->escapeHtmlAttr(__('Email')) ?>" data-validate="{required:true, 'validate-email':true}">
+                <div class="field password required">
+                    <label for="pass" class="label"><span><?= $block->escapeHtml(__('or enter your password')) ?></span></label>
+                    <div class="control">
+                        <input name="password" type="password" <?php if ($block->isAutocompleteDisabled()) : ?> autocomplete="off"<?php endif; ?> class="input-text" id="pass" title="<?= $block->escapeHtmlAttr(__('Password')) ?>" data-validate="{required:true}">
+                    </div>
+                </div>
+                <div class="actions-toolbar">
+                    <div class="primary"><button type="submit" class="action login primary" name="send" id="send1"><span><?= $block->escapeHtml(__('Sign In')) ?></span></button></div>
+                </div>
+            </fieldset>
+        </form>
+
+    </div>
+</div>
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Vipps_Login/js/action/verify": {}
+        }
+    }
+</script>
+
+

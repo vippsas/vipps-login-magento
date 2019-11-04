@@ -1,0 +1,241 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright 2019 Vipps
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <preference for="Vipps\Login\Api\VippsSessionInterface" type="Vipps\Login\Model\VippsSession"/>
+
+    <type name="Vipps\Login\Controller\Login\Index">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Redirect">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Unlink">
+        <arguments>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Redirect\Action\Login">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="cookieManager" xsi:type="object">Magento\Framework\Stdlib\Cookie\PhpCookieManager\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Redirect\Action\Create">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="cookieManager" xsi:type="object">Magento\Framework\Stdlib\Cookie\PhpCookieManager\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\EmailConfirm">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="cookieManager" xsi:type="object">Magento\Framework\Stdlib\Cookie\PhpCookieManager\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\EmailConfirmation">
+        <arguments>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\AccountBase">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\ConfigurationSave">
+        <arguments>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Confirmation">
+        <arguments>
+            <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\PasswordConfirm">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+            <argument name="cookieManager" xsi:type="object">Magento\Framework\Stdlib\Cookie\PhpCookieManager\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Gateway\Command\TokenCommand">
+        <arguments>
+            <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Gateway\Validator\TokenValidator">
+        <arguments>
+            <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Model\TokenPayloadProvider">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Model\AccessTokenProvider">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Form\Confirmation">
+        <arguments>
+            <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Model\ApiEndpoints">
+        <arguments>
+            <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Redirect\ActionsPool">
+        <arguments>
+            <argument name="actions" xsi:type="array">
+                <item name="bind" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Bind</item>
+                <item name="login" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Login</item>
+                <item name="confirm" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Confirm</item>
+                <item name="create" xsi:type="string">Vipps\Login\Controller\Login\Redirect\Action\Create</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Account\Link">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Cart\Button">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Account\VippsAddress">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Account\AddressList">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Account\VippsConfiguration">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Controller\Login\Redirect\Action\Bind">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\CustomerData\VippsCustomer">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Customer\CustomerData\SectionPoolInterface">
+        <arguments>
+            <argument name="sectionSourceMap" xsi:type="array">
+                <item name="vipps_login_data" xsi:type="string">Vipps\Login\CustomerData\VippsCustomer</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Customer\Api\AccountManagementInterface">
+        <plugin name="Vipps\Login\Plugin\Customer\Api\AccountManagement"
+                type="Vipps\Login\Plugin\Customer\Api\AccountManagement" />
+    </type>
+    <type name="Vipps\Login\Plugin\Customer\Api\AccountManagement">
+        <arguments>
+            <argument name="accessTokenProvider" xsi:type="object">Vipps\Login\Model\AccessTokenProvider</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Captcha\Helper\Data">
+        <plugin
+            name="Vipps\Login\Plugin\Captcha\Helper\Data"
+            type="Vipps\Login\Plugin\Captcha\Helper\Data" />
+    </type>
+
+    <type name="Vipps\Login\Observer\CustomerRegistrationFormFill">
+        <arguments>
+            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Model\RedirectUrlResolver">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Checkout\Block\Onepage">
+        <arguments>
+            <argument name="layoutProcessors" xsi:type="array">
+                <item name="vipps-address-component" xsi:type="object">Vipps\Login\Block\Checkout\LayoutProcessor</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <type name="Vipps\Login\Block\Checkout\LayoutProcessor">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
+        </arguments>
+    </type>
+
+</config>
