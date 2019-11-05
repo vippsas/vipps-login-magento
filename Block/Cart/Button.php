@@ -69,7 +69,8 @@ class Button extends Template
         $isLoggedIn = $this->customerSession->isLoggedIn();
         $cartDisplay = $this->config->getValue('payment/vipps/checkout_cart_display');
         $expressCheckout = $this->config->getValue('payment/vipps/express_checkout');
-        if (!$isLoggedIn &&
+        if ($this->config->isEnabled() &&
+            !$isLoggedIn &&
             ($cartDisplay && !$expressCheckout || !$cartDisplay && $expressCheckout)
         ) {
             return parent::getChildHtml('vipps_form_login_button');

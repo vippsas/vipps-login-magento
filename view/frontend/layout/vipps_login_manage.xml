@@ -17,14 +17,13 @@
     <update handle="customer_account"/>
     <body>
         <referenceContainer name="content">
-
-            <block class="Vipps\Login\Block\Account\VippsConfiguration" name="vipps_configuration" template="Vipps_Login::account/vipps_login_configuration.phtml" cacheable="false">
+            <block class="Vipps\Login\Block\Account\VippsConfiguration" name="vipps_configuration" template="Vipps_Login::account/vipps_login_configuration.phtml" ifconfig="vipps/login/enabled" cacheable="false">
                 <block class="Magento\Framework\View\Element\Template"
                        name="vipps_form_login_button"
                        template="Vipps_Login::form/login/button.phtml"
                        before="-"/>
             </block>
-            <block class="Vipps\Login\Block\Account\Link" name="vipps_login_links" template="Vipps_Login::account/link.phtml" cacheable="false"/>w
+            <block class="Vipps\Login\Block\Account\Link" name="vipps_login_links" template="Vipps_Login::account/link.phtml" ifconfig="vipps/login/enabled" cacheable="false"/>
         </referenceContainer>
     </body>
 </page>
