@@ -103,7 +103,7 @@ Vipps module injects Vipps Login button on cart page that allows customer login 
 
 ## Checkout page
 
-It is also possible to sign-in being on a checkout page. 
+It is also possible to sign-in using Vipps being on a checkout page. 
 
 ![Screenshot of checkout Vipps login](docs/images/checkout-vipps-login.png)
 
