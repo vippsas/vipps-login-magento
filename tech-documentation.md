@@ -103,9 +103,13 @@ Vipps module injects Vipps Login button on cart page that allows customer login 
 
 ## Checkout page
 
+### Sign-in
+
 It is also possible to sign-in using Vipps being on a checkout page. 
 
 ![Screenshot of checkout Vipps login](docs/images/checkout-vipps-login.png)
+
+### Adding new address
 
 If customer wants to add address directly on a checkout page it is also possible to populate form based on unused Vipps address in the same manner as it works for "My account" / "Address book" page.
 
