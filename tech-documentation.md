@@ -67,12 +67,46 @@ So, customer could choose type of behavior.
 
 ## Work with addresses
 
+### Get addresses from Vipps account
+
+After Login In with Vipps all your Vipps addresses will be transferred to Magento webshop and displayed in "My account" / "Address book" left menu item.
+
+Vipps addresses stores into a separate `vipps_customer_address` table.
+
+Vipps addresses automatically converted to Magento default billing and shipping addresses if such does not exist.
+
+### Default billing and shipping address
+
+Vipps address that was converted to Magento address marked as "Applied/Used"
+
+![Screenshot of Vipps applied addresses](docs/images/account-vipps-addresses-applied.png)
+
+### Use Vipps Address
+
+If Vipps address was not converted to Magento such address has a link "Use Address"
+
+![Screenshot of Vipps not applied addresses](docs/images/account-vipps-addresses-not-applied.png)
+
+By clicking to the link "Bruk addresse" customer will able to edit the address and save in a standard Magento manner.
+
+![Screenshot of edit Vipps address](docs/images/account-edit-vipps-address.png)
+
+### Adding new Magento address
+
+If customer is adding address in a standard Magento way and there is at least one Vipps address that was not converted to Magento (was not applied | not using) then customer will able to use Vipps address data for new address by choosing it in a dropdown menu at the top.
+
+![Screenshot of Choose Vipps address](docs/images/account-choose-vipps-address.png)
 
 ## Cart page
 
+Vipps module injects Vipps Login button on cart page that allows customer login into the system and proceed to checkout having better user experience since it does not need to specify shipping or billing address manually.
 
 ## Checkout page
 
+It is also possible to sign-in being on a checkout page. 
 
+![Screenshot of checkout Vipps login](docs/images/checkout-vipps-login.png)
 
+If customer wants to add address directly on a checkout page it is also possible to populate form based on unused Vipps address in the same manner as it works for "My account" / "Address book" page.
 
+![Screenshot of checkout new address](docs/images/checkout-new-address.png)
