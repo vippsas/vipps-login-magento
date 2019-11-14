@@ -29,7 +29,10 @@ In case when customer does not have a Magento account which has been linked with
 Customer could finish a process using password or email confirmation. When account confirmed it will be linked with Vipps account, so no extra steps need during next sign-in.
 
 
-![Screenshot of confirmation page](docs/images/confirmation.png)
+<img src="docs/images/confirmation.png" 
+title="Confirmation page"
+alt="Confirmation page"
+width="300px" />
 
     
 ### Create a new account
@@ -48,7 +51,10 @@ To do this customer should do the following:
  - Choose "Login with Vipps" on the left menu
  - Press button "Login with Vipps" and finalize the process 
  
-![Screenshot of login with Vipps](docs/images/account-login-with-vipps.png)
+<img src="docs/images/account-login-with-vipps.png" 
+title="Login with Vipps"
+alt="Login with Vipps"
+width="300px" />
     
 ### Sync addresses between Vipps and Magento
 
@@ -60,13 +66,19 @@ There are three types of behavior in the module related to addresses update
  - ask first; customer will be asked before update.
  - do nothing; customer will not be asked, addresses will not be updated.
  
-![Screenshot of logged-in with Vipps](docs/images/account-logged-in-with-vipps.png)
+<img src="docs/images/account-logged-in-with-vipps.png" 
+title="Logged-in with Vipps"
+alt="Logged-in with Vipps"
+width="300px" />
 
 So, customer could choose type of behavior.
 
 In case when a behavior set to "ask first" and Vipps adress(es) where changed, customer will see a popup
 
-![Screenshot of logged-in addresses popup](docs/images/account-addresses-popup.png)
+<img src="docs/images/account-addresses-popup.png" 
+title="Logged-in addresses popup"
+alt="Logged-in addresses popup"
+width="300px" />
 
 ## Work with addresses
 
@@ -82,23 +94,35 @@ Vipps addresses automatically converted to Magento default billing and shipping 
 
 Vipps address that was converted to Magento address marked as "Applied/Used"
 
-![Screenshot of Vipps applied addresses](docs/images/account-vipps-addresses-applied.png)
+<img src="docs/images/account-vipps-addresses-applied.png" 
+title="Vipps applied addresses"
+alt="Vipps applied addresses"
+width="300px" />
 
 ### Use Vipps Address
 
 If Vipps address was not converted to Magento, such address has a link "Use Address"
 
-![Screenshot of Vipps not applied addresses](docs/images/account-vipps-addresses-not-applied.png)
+<img src="docs/images/account-vipps-addresses-not-applied.png" 
+title="Vipps not applied addresses"
+alt="Vipps not applied addresses"
+width="300px" />
 
 By clicking on a link "Bruk addresse" customer will able to edit the address and save it in a standard Magento way.
 
-![Screenshot of edit Vipps address](docs/images/account-edit-vipps-address.png)
+<img src="docs/images/account-edit-vipps-address.png" 
+title="Edit Vipps address"
+alt="Edit Vipps address"
+width="300px" />
 
 ### Adding new Magento address
 
 If customer is adding address in a standard Magento way and there is at least one Vipps address that was not converted to Magento (was not applied | not using) then customer will able to use Vipps address data for new address by choosing it in a dropdown menu at the top.
 
-![Screenshot of Choose Vipps address](docs/images/account-choose-vipps-address.png)
+<img src="docs/images/account-choose-vipps-address.png" 
+title="Choose Vipps address"
+alt="Choose Vipps address"
+width="300px" />
 
 NB! If customer changed any data so that newly created address and Vipps address are different such addresses will not be linked between each other.
 
@@ -115,10 +139,16 @@ NB! In case when cart page contains Vipps Express Checkout button from Vipps Pay
 
 It is also possible to sign-in using Vipps being on a checkout page. 
 
-![Screenshot of checkout Vipps login](docs/images/checkout-vipps-login.png)
+<img src="docs/images/checkout-vipps-login.png" 
+title="Checkout Vipps Login"
+alt="Checkout Vipps Login"
+width="300px" />
 
 ### Adding new address
 
 If customer wants to add address directly on a checkout page it is also possible to populate form based on unused Vipps address in the same manner as it works for "My account" / "Address book" page.
 
-![Screenshot of checkout new address](docs/images/checkout-new-address.png)
+<img src="docs/images/checkout-new-address.png" 
+title="Checkout new address"
+alt="Checkout new address"
+width="300px" />
