@@ -12,13 +12,13 @@ The sequence of operations is as follows:
  - Being redirected to Vipps web page customer interacts with Vipps web page and mobile app to permit access to Vipps account data for the webshop
  - Customer redirects back to Magento webshop
  - If access was granted the webshop (Vipps Login plugin) has access to customer Vipps account data such as: name, email, phone number, addresses, etc...
- - Magento does sign-in / create a new account for customer
+ - Magento does sign-in / creates a new account for customer.
  
 To have a deeper understanding of the process let's consider last item at length.
 
-Firstly, having access to customer's Vipps account data, Magento (the login accumulated into Vipps Login module), using customer's phone number, checks - is there already existing account presents in the system that is linked with Vipps account? 
+Firstly, having access to customer's Vipps account data, Magento (the logic accumulated into Vipps Login module), using customer's phone number, checks - is there already existing account presents in the system that is linked with Vipps account? 
 
-In case when this check is positive then it means that customer already verified so does sign-in.
+In case when check is positive then it means that customer already verified so does sign-in.
 
 In case when check is negative it means that existing customer's account was not linked with Vipps before (customer has to confirm / link accounts) or customer does not have an account (customer has to create an account).
 
@@ -32,17 +32,17 @@ Customer could finish a process using password or email confirmation. When accou
 ![Screenshot of confirmation page](docs/images/confirmation.png)
 
     
-### Create new account
+### Create a new account
   
 If there is no account defined for customer then Magento will try automatically create a new account using Vipps account data.
    
 In case when Magento can't create account automatically, customer will be redirected to standard Magento registration form to complete it manually.
-In could happened in case when Magento requires some extra data for account creation that are missing in Vipps account.
+It could happened if Magento requires some extra data for account creation that are missing in Vipps account.
 
 
 ### Link Magento and Vipps accounts
 
-It is also possible to link customer account and Vipps account, being signed-in in the system.
+It is also possible to link customer account and Vipps account, being signed-in into the system.
 To do this customer should do the following:
  - Go to "My Account" page
  - Choose "Login with Vipps" on the left menu
@@ -52,7 +52,7 @@ To do this customer should do the following:
     
 ### Sync addresses between Vipps and Magento
 
-Each time when customer signed-in into the system the Vipps Login module checks whether Vipps customer addresses were changed or not
+Each time when customer signed-in into the system, Vipps Login module checks whether Vipps customer addresses were changed or not
 
 There are three types of behavior in the module related to addresses update
 
@@ -64,6 +64,9 @@ There are three types of behavior in the module related to addresses update
 
 So, customer could choose type of behavior.
 
+In case when a behavior set to "ask first" and Vipps adress(es) where changed, customer will see a popup
+
+![Screenshot of logged-in addresses popup](docs/images/account-addresses-popup.png)
 
 ## Work with addresses
 
@@ -73,7 +76,7 @@ After Login In with Vipps all your Vipps addresses will be transferred to Magent
 
 Vipps addresses stores into a separate `vipps_customer_address` table.
 
-Vipps addresses automatically converted to Magento default billing and shipping addresses if such does not exist.
+Vipps addresses automatically converted to Magento default billing and shipping address if such does not exist.
 
 ### Default billing and shipping address
 
@@ -83,11 +86,11 @@ Vipps address that was converted to Magento address marked as "Applied/Used"
 
 ### Use Vipps Address
 
-If Vipps address was not converted to Magento such address has a link "Use Address"
+If Vipps address was not converted to Magento, such address has a link "Use Address"
 
 ![Screenshot of Vipps not applied addresses](docs/images/account-vipps-addresses-not-applied.png)
 
-By clicking to the link "Bruk addresse" customer will able to edit the address and save in a standard Magento manner.
+By clicking on a link "Bruk addresse" customer will able to edit the address and save it in a standard Magento way.
 
 ![Screenshot of edit Vipps address](docs/images/account-edit-vipps-address.png)
 
@@ -97,9 +100,14 @@ If customer is adding address in a standard Magento way and there is at least on
 
 ![Screenshot of Choose Vipps address](docs/images/account-choose-vipps-address.png)
 
+NB! If customer changed any data so that newly created address and Vipps address are different such addresses will not be linked between each other.
+
 ## Cart page
 
 Vipps module injects Vipps Login button on cart page that allows customer login into the system and proceed to checkout having better user experience since it does not need to specify shipping or billing address manually.
+
+
+NB! In case when cart page contains Vipps Express Checkout button from Vipps Payment module - only Vipps Login button will be shown. Vipps Login has higher priority. 
 
 ## Checkout page
 
