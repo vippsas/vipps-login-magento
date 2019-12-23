@@ -212,13 +212,13 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         }
 
         $magentoAddress->setCustomerId($customer->getId());
-        $magentoAddress->setCity($vippsAddress->getRegion());
-        $magentoAddress->setCountryId($vippsAddress->getCountry());
-        $magentoAddress->setFirstname($customer->getFirstname());
-        $magentoAddress->setLastname($customer->getLastname());
-        $magentoAddress->setPostcode($vippsAddress->getPostalCode());
+        $magentoAddress->setCity(htmlspecialchars($vippsAddress->getRegion()));
+        $magentoAddress->setCountryId(htmlspecialchars($vippsAddress->getCountry()));
+        $magentoAddress->setFirstname(htmlspecialchars($customer->getFirstname()));
+        $magentoAddress->setLastname(htmlspecialchars($customer->getLastname()));
+        $magentoAddress->setPostcode(htmlspecialchars($vippsAddress->getPostalCode()));
 
-        $street = explode(PHP_EOL, $vippsAddress->getStreetAddress());
+        $street = explode(PHP_EOL, htmlspecialchars($vippsAddress->getStreetAddress()));
 
         $magentoAddress->setStreet($street);
         $magentoAddress->setTelephone($vippsCustomer->getTelephone());
