@@ -218,9 +218,9 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $magentoAddress->setLastname(htmlspecialchars($customer->getLastname()));
         $magentoAddress->setPostcode(htmlspecialchars($vippsAddress->getPostalCode()));
 
-        $street = explode(PHP_EOL, $vippsAddress->getStreetAddress());
+        $street = explode(PHP_EOL, htmlspecialchars($vippsAddress->getStreetAddress()));
 
-        $magentoAddress->setStreet(htmlspecialchars($street));
+        $magentoAddress->setStreet($street);
         $magentoAddress->setTelephone($vippsCustomer->getTelephone());
 
         if (!$hasDefault &&
