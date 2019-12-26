@@ -15,17 +15,20 @@
  */
 
 declare(strict_types=1);
-/** @var $block \Magento\Framework\View\Element\Template */
-?>
-<div class="login-vipps">
-    <form action="<?= $block->escapeUrl($block->getUrl('vipps/login/index')); ?>" method="post">
-        <button type="submit" class="action create primary vipps-btn"><?= $block->escapeHtml(__('Sign in with')) ?>
-            <span class="icon-vipps"></span>
-        </button>
-    </form>
-</div>
-<style>
-    .customer-account-create .form-create-account {
-        display: none;
-    }
-</style>
+
+namespace Vipps\Login\Block\Widget;
+
+use Magento\Framework\View\Element\Template;
+use Magento\Widget\Block\BlockInterface;
+
+/**
+ * Class LoginButton
+ * @package Vipps\Login\Block\Widget
+ */
+class LoginButton extends Template implements BlockInterface
+{
+    /**
+     * @var string
+     */
+    protected $_template = "form/login/button.phtml";
+}
