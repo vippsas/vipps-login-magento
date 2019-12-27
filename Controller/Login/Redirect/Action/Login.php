@@ -29,6 +29,7 @@ use Magento\Framework\Controller\Result\Redirect;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\Session;
+use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
@@ -206,8 +207,9 @@ class Login implements ActionInterface
         if ($telephone) {
             $trustedAccounts = $this->trustedAccountsLocator->getList($telephone);
             if ($trustedAccounts->getTotalCount() > 0) {
+                /** @var VippsCustomerInterface $vippsCustomer */
                 $vippsCustomer = current($trustedAccounts->getItems());
-                return $this->customerRegistry->retrieveByEmail($vippsCustomer->getEmail());
+                return $this->customerRegistry->retrieve($vippsCustomer->getCustomerEntityId());
             }
         }
 
