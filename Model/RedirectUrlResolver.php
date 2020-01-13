@@ -87,16 +87,4 @@ class RedirectUrlResolver
 
         return $this->redirectUrl;
     }
-
-    /**
-     * @param $redirectUrl
-     *
-     * @return $this
-     */
-    public function setRedirectUrl($redirectUrl)
-    {
-        $this->redirectUrl = $redirectUrl;
-
-        return $this;
-    }
 }
