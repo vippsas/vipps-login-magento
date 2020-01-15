@@ -18,11 +18,7 @@
         <referenceContainer name="content">
             <referenceBlock name="checkout.cart.methods.bottom">
                 <referenceContainer name="checkout.cart.methods">
-                    <block class="Vipps\Login\Block\Cart\Button" name="vipps_cart_button">
-                        <block class="Magento\Framework\View\Element\Template"
-                               name="vipps_form_login_button"
-                               template="Vipps_Login::form/login/button.phtml"/>
-                    </block>
+                    <block class="Vipps\Login\Block\Cart\Button" name="vipps_cart_button" template="Vipps_Login::buttons/continue-with.phtml" ifconfig="vipps/login/enabled"/>
                 </referenceContainer>
             </referenceBlock>
         </referenceContainer>
