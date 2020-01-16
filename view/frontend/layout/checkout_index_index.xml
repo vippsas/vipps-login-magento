@@ -27,7 +27,7 @@
                                     <item name="children" xsi:type="array">
                                         <item name="vipps-login" xsi:type="array">
                                             <item name="sortOrder" xsi:type="string">0</item>
-                                            <item name="component" xsi:type="string">Vipps_Login/js/view/checkout/autification_vipps</item>
+                                            <item name="component" xsi:type="string">Vipps_Login/js/view/checkout/vipps-login-auth</item>
                                             <item name="displayArea" xsi:type="string">messages</item>
                                         </item>
                                     </item>
