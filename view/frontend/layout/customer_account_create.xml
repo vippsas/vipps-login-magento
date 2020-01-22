@@ -12,7 +12,7 @@
                 <block class="Vipps\Login\Block\Account\Create" name="vipps_login_links" template="Vipps_Login::account/create/vipps_register.phtml" before="-" ifconfig="vipps/login/enabled">
                     <block class="Magento\Framework\View\Element\Template"
                            name="vipps_form_register_button"
-                           template="Vipps_Login::form/login/button-register.phtml"
+                           template="Vipps_Login::buttons/continue-with.phtml"
                            before="-"/>
                 </block>
             </container>

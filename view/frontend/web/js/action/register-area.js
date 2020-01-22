@@ -15,29 +15,33 @@
 
 define([
    'jquery',
-   'uiComponent',
-],function($,Component) {
+   'uiComponent'
+],function($, Component) {
     'use strict';
 
     return Component.extend({
         options: {
-            formAccountCreate: 'form-create-account',
-            linkToogle: 'link-toogle',
+            formAccountCreate: '.form-create-account',
+            linkToggle: '.link-toggle'
         },
         initialize: function () {
             this._super();
-            this.toogle();
+            this.cookieMessages = $.cookieStorage.get('mage-messages');
+            if (this.cookieMessages && this.cookieMessages.length) {
+                $(this.options.formAccountCreate).show();
+            }
+            this.toggle();
         },
-        toogle: function () {
-            var self = this;
-            if($('.' + this.options.linkToogle).length) {
-                $('.' + this.options.linkToogle).on('click',function () {
-                    $('.' + self.options.formAccountCreate).slideToggle();
+        toggle: function () {
+            if($(this.options.linkToggle).length) {
+                var self = this;
+                $(this.options.linkToggle).on('click',function () {
+                    $(self.options.formAccountCreate).slideToggle();
                 });
             } else  {
-                $('.' + self.options.formAccountCreate).show();
-                $('.' + self.options.formAccountCreate).find('.field.password').remove();
-                $('.' + self.options.formAccountCreate).find('.field.confirmation').remove();
+                $(this.options.formAccountCreate).show();
+                $(this.options.formAccountCreate).find('.field.password').remove();
+                $(this.options.formAccountCreate).find('.field.confirmation').remove();
             }
         }
     });

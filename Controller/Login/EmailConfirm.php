@@ -147,7 +147,7 @@ class EmailConfirm extends Action
         try {
             $vippsCustomer = $this->vippsAccountManagement->confirm($id, $key);
             if ($vippsCustomer) {
-                $customer = $this->customerRegistry->retrieveByEmail($vippsCustomer->getEmail());
+                $customer = $this->customerRegistry->retrieve($vippsCustomer->getCustomerEntityId());
 
                 $this->sessionManager->setCustomerAsLoggedIn($customer);
                 $this->sessionManager->regenerateId();

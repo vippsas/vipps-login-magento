@@ -15,25 +15,20 @@
  */
 
 declare(strict_types=1);
-/** @var \Vipps\Login\Block\Account\Create $block */
-?>
-<?php if (!$block->isVippsLoggedIn()) : ?>
-    <div class="login-vipps-holder new-account" id="register-area">
-        <?= $block->getChildHtml('vipps_form_register_button') ?>
-        <div class="link-toggle">
-            <span><?= $block->escapeHtml(__('or')) ?></span><p><?= $block->escapeHtml(__('register with email')) ?></p>
-        </div>
-    </div>
-<?php endif; ?>
-<script type="text/x-magento-init">
-    {
-        "*": {
-            "Vipps_Login/js/action/register-area": {}
-        }
-    }
-</script>
-<style>
-    .customer-account-create .form-create-account {
-        display: none;
-    }
-</style>
+
+namespace Vipps\Login\Block\Widget;
+
+use Magento\Framework\View\Element\Template;
+use Magento\Widget\Block\BlockInterface;
+
+/**
+ * Class LoginButton
+ * @package Vipps\Login\Block\Widget
+ */
+class LoginButton extends Template implements BlockInterface
+{
+    /**
+     * @var string
+     */
+    protected $_template = "form/login/button.phtml";
+}
