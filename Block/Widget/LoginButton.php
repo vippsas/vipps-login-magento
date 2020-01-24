@@ -30,5 +30,5 @@ class LoginButton extends Template implements BlockInterface
     /**
      * @var string
      */
-    protected $_template = "buttons/signin-with.phtml";
+    protected $_template = "widget.phtml";
 }
