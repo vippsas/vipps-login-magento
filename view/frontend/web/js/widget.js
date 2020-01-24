@@ -28,7 +28,7 @@ define([
         var renderButton = function (user) {
             if (user.firstname) {
                 $('#vipps_login_widget').empty()
-            } else {
+            } else if ( $('#vipps_login_widget').children().length === 0) {
                 var template = '<div class="login-vipps-holder checkout-page">' +
                                '    <div class="login-vipps">' +
                                '        <form action="' + url.build("vipps/login/index") + '" method="post">' +
