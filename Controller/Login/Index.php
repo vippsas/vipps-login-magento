@@ -62,16 +62,10 @@ class Index extends Action
     private $customerSession;
 
     /**
-     * @var RedirectUrlResolver
-     */
-    private $redirectUrlResolver;
-
-    /**
      * Index constructor.
      *
      * @param Context $context
      * @param SessionManagerInterface $customerSession
-     * @param RedirectUrlResolver $redirectUrlResolver
      * @param ApiEndpointsInterface $apiEndpoints
      * @param ConfigInterface $config
      * @param StateKey $stateKey
@@ -80,7 +74,6 @@ class Index extends Action
     public function __construct(
         Context $context,
         SessionManagerInterface $customerSession,
-        RedirectUrlResolver $redirectUrlResolver,
         ApiEndpointsInterface $apiEndpoints,
         ConfigInterface $config,
         StateKey $stateKey,
@@ -92,7 +85,6 @@ class Index extends Action
         $this->stateKey = $stateKey;
         $this->url = $url;
         $this->customerSession = $customerSession;
-        $this->redirectUrlResolver = $redirectUrlResolver;
     }
 
     /**
@@ -112,6 +104,7 @@ class Index extends Action
 
         $vippsRedirectUrl = $this->apiEndpoints->getAuthorizationEndpoint()
             . '?' . implode('&', $params);
+
         $refererUrl = $this->_redirect->getRefererUrl();
         $this->customerSession->setVippsRedirectUrl($refererUrl);
 

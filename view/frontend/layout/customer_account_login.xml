@@ -11,12 +11,12 @@
             <block
                 class="Magento\Framework\View\Element\Template"
                 name="vipps_login_holder"
-                template="Vipps_Login::form/login/login-holder.phtml"
+                template="Vipps_Login::form/login-holder.phtml"
                 before="-"
                 ifconfig="vipps/login/enabled">
                 <block class="Magento\Framework\View\Element\Template"
                        name="vipps_form_login_button"
-                       template="Vipps_Login::form/login/button.phtml"
+                       template="Vipps_Login::buttons/signin-with.phtml"
                        before="-"/>
             </block>
         </referenceContainer>
