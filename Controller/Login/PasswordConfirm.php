@@ -243,11 +243,6 @@ class PasswordConfirm extends Action
                 'errors' => true,
                 'message' => $e->getMessage()
             ];
-        } catch (InvalidEmailOrPasswordException $e) {
-            $response = [
-                'errors' => true,
-                'message' => $e->getMessage()
-            ];
         } catch (LocalizedException $e) {
             $this->logger->error($e);
             $response = [
@@ -274,15 +269,15 @@ class PasswordConfirm extends Action
      */
     private function isValid($credentials)
     {
-        if (!$credentials ||
-            !array_key_exists('username', $credentials) ||
-            !array_key_exists('password', $credentials) ||
-            $this->getRequest()->getMethod() !== 'POST' ||
-            !$this->getRequest()->isXmlHttpRequest()
+        if ($credentials &&
+            array_key_exists('username', $credentials) &&
+            array_key_exists('password', $credentials) &&
+            $this->getRequest()->getMethod() === 'POST' &&
+            $this->getRequest()->isXmlHttpRequest()
         ) {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

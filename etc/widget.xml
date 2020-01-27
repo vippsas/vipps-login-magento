@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <!--
   ~ Copyright 2019 Vipps
   ~
@@ -12,15 +12,11 @@
   ~ THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
   ~ CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
   ~ IN THE SOFTWARE
-  -->
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-    <body>
-        <referenceContainer name="content">
-            <referenceBlock name="checkout.cart.methods.bottom">
-                <referenceContainer name="checkout.cart.methods">
-                    <block class="Vipps\Login\Block\Cart\Button" name="vipps_cart_button" template="Vipps_Login::buttons/continue-with.phtml" ifconfig="vipps/login/enabled"/>
-                </referenceContainer>
-            </referenceBlock>
-        </referenceContainer>
-    </body>
-</page>
+-->
+
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:helloworld:Magento_Widget:etc/widget.xsd">
+    <widget class="Vipps\Login\Block\Widget\LoginButton" id="vipps_login_button">
+        <label>Vipps Login</label>
+        <description>Vipps Login Button</description>
+    </widget>
+</widgets>
