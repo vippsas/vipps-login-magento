@@ -243,7 +243,7 @@ class PasswordConfirm extends Action
                 'errors' => true,
                 'message' => $e->getMessage()
             ];
-        }catch (LocalizedException $e) {
+        } catch (LocalizedException $e) {
             $this->logger->error($e);
             $response = [
                 'errors' => true,
