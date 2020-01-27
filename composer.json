@@ -12,7 +12,7 @@
         "psr/log": "~1.0"
     },
     "type": "magento2-module",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
