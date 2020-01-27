@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2019 Vipps
+ * Copyright 2020 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -15,20 +15,15 @@
  */
 
 declare(strict_types=1);
+/** @var $block \Magento\Framework\View\Element\Template */
+?>
 
-namespace Vipps\Login\Block\Widget;
+<div id ="vipps_login_widget" class="account-sign-in my-account"></div>
 
-use Magento\Framework\View\Element\Template;
-use Magento\Widget\Block\BlockInterface;
-
-/**
- * Class LoginButton
- * @package Vipps\Login\Block\Widget
- */
-class LoginButton extends Template implements BlockInterface
-{
-    /**
-     * @var string
-     */
-    protected $_template = "widget.phtml";
-}
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Vipps_Login/js/widget": {}
+        }
+    }
+</script>
