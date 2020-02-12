@@ -26,5 +26,10 @@
                 <enabled>0</enabled>
             </login>
         </vipps>
+        <customer>
+            <create_account>
+                <email_no_password_template>vipps_login_create_account_email_no_password_template</email_no_password_template>
+            </create_account>
+        </customer>
     </default>
 </config>

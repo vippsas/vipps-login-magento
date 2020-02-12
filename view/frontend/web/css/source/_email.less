@@ -1,0 +1,68 @@
+/*
+ * Copyright 2018 Vipps
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE
+ */
+@import "module/_variables.less";
+
+.login-vipps {
+    margin-top: 10px;
+
+    .icon-vipps {
+        background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
+        display: inline-block;
+        background-size: 55px 14px;
+        padding-left: 62px;
+        height: 15px;
+        margin-left: 10px;
+    }
+}
+
+.vipps-btn {
+    .icon-vipps {
+        background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
+        display: inline-block;
+        background-size: 55px 14px;
+        padding-left: 62px;
+        height: 15px;
+        margin-left: 10px;
+
+    }
+
+    .icon-vipps-no-icon {
+        background: url("@{baseDir}images/vipps-no-icon.svg") left center no-repeat;
+        display: inline-block;
+        width: 25px;
+        height: 20px;
+        margin-right: 10px;
+    }
+}
+
+.login-vipps {
+    .vipps-btn {
+        display: flex;
+        background: @vipps__color;
+        color: @color__white;
+        text-transform: none;
+        padding: 15px 25px;
+        border-radius: 25px;
+        border: 0;
+
+        &:hover,
+        &:focus,
+        &:active {
+            background: lighten(@vipps__color, 10%);
+            border: 0;
+            color: @color__white;
+        }
+    }
+}
