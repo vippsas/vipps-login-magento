@@ -14,45 +14,17 @@
  */
 @import "module/_variables.less";
 
+
 .login-vipps {
     margin-top: 10px;
 
-    .icon-vipps {
-        background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
-        display: inline-block;
-        background-size: 55px 14px;
-        padding-left: 62px;
-        height: 15px;
-        margin-left: 10px;
-    }
-}
-
-.vipps-btn {
-    .icon-vipps {
-        background: url("@{baseDir}images/vipps-white-logo.png") left center no-repeat;
-        display: inline-block;
-        background-size: 55px 14px;
-        padding-left: 62px;
-        height: 15px;
-        margin-left: 10px;
-
-    }
-
-    .icon-vipps-no-icon {
-        background: url("@{baseDir}images/vipps-no-icon.svg") left center no-repeat;
-        display: inline-block;
-        width: 25px;
-        height: 20px;
-        margin-right: 10px;
-    }
-}
-
-.login-vipps {
     .vipps-btn {
         display: flex;
         background: @vipps__color;
         color: @color__white;
         text-transform: none;
+        font-family: 'Open Sans','Helvetica Neue',Helvetica,Arial,sans-serif;
+        font-weight: 600;
         padding: 15px 25px;
         border-radius: 25px;
         border: 0;
@@ -64,5 +36,18 @@
             border: 0;
             color: @color__white;
         }
+    }
+}
+
+.vipps-btn {
+
+    .icon-vipps {
+        background: url("@{baseUrl}images/vipps-white-logo.png") left center no-repeat;
+        display: inline-block;
+        background-size: 55px 14px;
+        padding-left: 62px;
+        height: 15px;
+        margin-left: 10px;
+
     }
 }
