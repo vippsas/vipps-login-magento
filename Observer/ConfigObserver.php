@@ -81,9 +81,11 @@ class ConfigObserver implements ObserverInterface
         } elseif ($websiteId) {
             $scope = 'websites';
             $scopeId = (int) $websiteId;
+            $storeId = 0;
         } else {
             $scope = 'default';
             $scopeId = 0;
+            $storeId = 0;
         }
 
         if ($this->config->isEnabled($storeId)) {
