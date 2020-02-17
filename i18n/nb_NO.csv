@@ -80,3 +80,5 @@ Debug,Feilsøk
 "Confirm my email address","Bekreft e-postadressen min"
 "Check your inbox","Sjekk innboksen din"
 "User cancelled the login", "Bruker avbrøt innloggingen"
+"You can sign in using", "Du kan logge inne med"
+"or log in to our site and set a password using this <a href='%create_password_url'>link</a>.", "eller logge inn på kontoen din og sette et passord med denne <a href='%create_password_url'>linken</a>."
