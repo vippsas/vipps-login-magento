@@ -22,4 +22,11 @@
               type="html"
               module="Vipps_Login"
               area="frontend" />
+
+    <template id="vipps_login_create_account_email_no_password_template"
+              label="New Account Without Password"
+              file="account_new_no_password.html"
+              type="html"
+              module="Vipps_Login"
+              area="frontend"/>
 </config>
