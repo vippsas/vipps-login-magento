@@ -25,6 +25,7 @@ use Magento\Framework\Serialize\SerializerInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\UserInfoInterfaceFactory;
 use Vipps\Login\Api\ApiEndpointsInterface;
+use Vipps\Login\Model\TokenProviderInterface;
 
 /**
  * Class UserInfoCommand
@@ -51,6 +52,11 @@ class UserInfoCommand
      * @var ApiEndpointsInterface
      */
     private $apiEndpoints;
+    
+    /**
+     * @var TokenProviderInterface
+     */
+    private $tokenPayloadProvider;
 
     /**
      * @var array
@@ -64,17 +70,20 @@ class UserInfoCommand
      * @param ClientFactory $httpClientFactory
      * @param UserInfoInterfaceFactory $userInfoFactory
      * @param ApiEndpointsInterface $apiEndpoints
+     * @param TokenProviderInterface $tokenPayloadProvider
      */
     public function __construct(
         SerializerInterface $serializer,
         ClientFactory $httpClientFactory,
         UserInfoInterfaceFactory $userInfoFactory,
-        ApiEndpointsInterface $apiEndpoints
+        ApiEndpointsInterface $apiEndpoints,
+        TokenProviderInterface $tokenPayloadProvider
     ) {
         $this->serializer = $serializer;
         $this->httpClientFactory = $httpClientFactory;
         $this->userInfoFactory = $userInfoFactory;
         $this->apiEndpoints = $apiEndpoints;
+        $this->tokenPayloadProvider = $tokenPayloadProvider;
     }
 
     /**
@@ -99,6 +108,10 @@ class UserInfoCommand
         $body = $this->serializer->unserialize($httpClient->getBody());
 
         if (200 <= $status && 300 > $status) {
+            $tokenPayload = $this->tokenPayloadProvider->get();
+            if (empty($body['sub']) || empty($tokenPayload['sub']) || $body['sub'] !== $tokenPayload['sub']) {
+                throw new LocalizedException(__('An error occurred trying to fetch user info'));
+            }
             $this->cache[$accessToken] = $this->userInfoFactory->create(['data' => $body]);
             return $this->cache[$accessToken];
         }
