@@ -238,4 +238,10 @@
         </arguments>
     </type>
 
+    <type name="Vipps\Login\Gateway\Command\UserInfoCommand">
+        <arguments>
+            <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
+        </arguments>
+    </type>
+
 </config>
