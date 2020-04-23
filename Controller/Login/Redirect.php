@@ -22,7 +22,6 @@ use Psr\Log\LoggerInterface;
 use Vipps\Login\Controller\Login\Redirect\ActionsPool;
 use Vipps\Login\Gateway\Command\TokenCommand;
 use Vipps\Login\Model\RedirectUrlResolver;
-use Vipps\Login\Model\StateKey;
 use Magento\Customer\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Action\Action;
@@ -31,7 +30,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect as MagentoRedirect;
 use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Message\ManagerInterface;
+use Vipps\Login\Model\StateKey;
 
 /**
  * Class Redirect
@@ -51,19 +50,9 @@ class Redirect extends Action
     private $tokenCommand;
 
     /**
-     * @var StateKey
-     */
-    private $stateKey;
-
-    /**
      * @var ActionsPool
      */
     private $actionsPool;
-
-    /**
-     * @var Context
-     */
-    private $context;
 
     /**
      * @var LoggerInterface
@@ -81,9 +70,7 @@ class Redirect extends Action
      * @param Context $context
      * @param SessionManagerInterface $sessionManager
      * @param TokenCommand $tokenCommand
-     * @param StateKey $stateKey
      * @param ActionsPool $actionsPool
-     * @param ManagerInterface $messageManager
      * @param RedirectUrlResolver $redirectUrlResolver
      * @param LoggerInterface $logger
      */
@@ -91,21 +78,16 @@ class Redirect extends Action
         Context $context,
         SessionManagerInterface $sessionManager,
         TokenCommand $tokenCommand,
-        StateKey $stateKey,
         ActionsPool $actionsPool,
-        ManagerInterface $messageManager,
         RedirectUrlResolver $redirectUrlResolver,
         LoggerInterface $logger
     ) {
         parent::__construct($context);
         $this->sessionManager = $sessionManager;
         $this->tokenCommand = $tokenCommand;
-        $this->stateKey = $stateKey;
         $this->actionsPool = $actionsPool;
-        $this->context = $context;
-        $this->logger = $logger;
-        $this->messageManager = $messageManager;
         $this->redirectUrlResolver = $redirectUrlResolver;
+        $this->logger = $logger;
     }
 
     /**
@@ -122,6 +104,7 @@ class Redirect extends Action
                 $errorDescription = $this->_request->getParam('error_description');
                 $this->messageManager->addErrorMessage(__($errorDescription));
                 $resultRedirect->setUrl($this->redirectUrlResolver->getRedirectUrl());
+
                 return $resultRedirect;
             }
 
