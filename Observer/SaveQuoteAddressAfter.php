@@ -71,7 +71,7 @@ class SaveQuoteAddressAfter implements ObserverInterface
         /* @var Address $quoteAddress */
         $quoteAddress = $observer->getEvent()->getData('quote_address');
         $extAttributes = $quoteAddress->getExtensionAttributes();
-        if (!empty($extAttributes)) {
+        if (is_object($extAttributes) && method_exists($extAttributes, 'getVippsAddressId')) {
             try {
                 $vippsAddressId = $extAttributes->getVippsAddressId();
                 if ($vippsAddressId) {
