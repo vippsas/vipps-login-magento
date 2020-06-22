@@ -29,7 +29,7 @@ define([
         options: {
             type: 'popup',
             cacheKey: 'vipps_login_data',
-            idModal: '#popup-modal',
+            idModal: '#vipps-popup-modal',
             callUrl: 'vipps/login/addressUpdate',
             paramCall: 'sync_address_mode',
             responsive: true,
