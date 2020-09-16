@@ -1,17 +1,17 @@
 <?php
 /**
- * Copyright 2019 Vipps
+ * Copyright 2020 Vipps
  *
- *    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- *    documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- *    the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- *    and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
- *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- *    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
- *    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- *    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- *    IN THE SOFTWARE
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
  */
 
 declare(strict_types=1);
@@ -212,13 +212,13 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         }
 
         $magentoAddress->setCustomerId($customer->getId());
-        $magentoAddress->setCity(htmlspecialchars($vippsAddress->getRegion()));
-        $magentoAddress->setCountryId(htmlspecialchars($vippsAddress->getCountry()));
-        $magentoAddress->setFirstname(htmlspecialchars($customer->getFirstname()));
-        $magentoAddress->setLastname(htmlspecialchars($customer->getLastname()));
-        $magentoAddress->setPostcode(htmlspecialchars($vippsAddress->getPostalCode()));
+        $magentoAddress->setCity($vippsAddress->getRegion());
+        $magentoAddress->setCountryId($vippsAddress->getCountry());
+        $magentoAddress->setFirstname($customer->getFirstname());
+        $magentoAddress->setLastname($customer->getLastname());
+        $magentoAddress->setPostcode($vippsAddress->getPostalCode());
 
-        $street = explode(PHP_EOL, htmlspecialchars($vippsAddress->getStreetAddress()));
+        $street = explode(PHP_EOL, $vippsAddress->getStreetAddress());
 
         $magentoAddress->setStreet($street);
         $magentoAddress->setTelephone($vippsCustomer->getTelephone());
@@ -351,11 +351,11 @@ class VippsAddressManagement implements VippsAddressManagementInterface
     public function populateWithArray(VippsCustomerAddressInterface $vippsAddress, array $address)
     {
         $vippsAddress->setCountry($address['country']);
-        $vippsAddress->setStreetAddress($address['street_address']);
+        $vippsAddress->setStreetAddress(htmlspecialchars($address['street_address']));
         $vippsAddress->setAddressType($address['address_type']);
-        $vippsAddress->setFormatted($address['formatted']);
+        $vippsAddress->setFormatted(htmlspecialchars($address['formatted']));
         $vippsAddress->setPostalCode($address['postal_code']);
-        $vippsAddress->setRegion($address['region']);
+        $vippsAddress->setRegion(htmlspecialchars($address['region']));
 
         return $vippsAddress;
     }
