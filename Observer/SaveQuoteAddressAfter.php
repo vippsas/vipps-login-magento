@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2019 Vipps
+ * Copyright 2020 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -11,7 +11,7 @@
  * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE
+ * IN THE SOFTWARE.
  */
 
 declare(strict_types=1);
@@ -71,7 +71,7 @@ class SaveQuoteAddressAfter implements ObserverInterface
         /* @var Address $quoteAddress */
         $quoteAddress = $observer->getEvent()->getData('quote_address');
         $extAttributes = $quoteAddress->getExtensionAttributes();
-        if (!empty($extAttributes)) {
+        if (is_object($extAttributes) && method_exists($extAttributes, 'getVippsAddressId')) {
             try {
                 $vippsAddressId = $extAttributes->getVippsAddressId();
                 if ($vippsAddressId) {
