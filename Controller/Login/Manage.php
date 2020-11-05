@@ -18,8 +18,12 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
-use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\View\Result\Page;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class Manage
@@ -28,12 +32,37 @@ use Magento\Framework\Controller\ResultInterface;
 class Manage extends AccountBase
 {
     /**
-     * @return ResponseInterface|ResultInterface|void
+     * @var ResultFactory
+     */
+    private $resultFactory;
+
+    /**
+     * Manage constructor.
+     *
+     * @param SessionManagerInterface $customerSession
+     * @param RequestInterface $request
+     * @param LoggerInterface $logger
+     * @param ResultFactory $resultFactory
+     */
+    public function __construct(
+        SessionManagerInterface $customerSession,
+        RequestInterface $request,
+        LoggerInterface $logger,
+        ResultFactory $resultFactory
+    ) {
+        parent::__construct($customerSession, $request, $logger);
+        $this->resultFactory = $resultFactory;
+    }
+
+    /**
+     * @return ResultInterface
      */
     public function execute()
     {
-        $this->_view->loadLayout();
-        $this->_view->getPage()->getConfig()->getTitle()->set(__('Sign in with Vipps'));
-        $this->_view->renderLayout();
+        /** @var Page $resultPage */
+        $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+        $resultPage->getConfig()->getTitle()->set(__('Sign in with Vipps'));
+
+        return $resultPage;
     }
 }

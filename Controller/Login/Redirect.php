@@ -18,18 +18,20 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\App\ActionInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Controller\Result\Redirect as MagentoRedirect;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Session\SessionManagerInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Customer\Model\Session;
 use Psr\Log\LoggerInterface;
 use Vipps\Login\Controller\Login\Redirect\ActionsPool;
 use Vipps\Login\Gateway\Command\TokenCommand;
 use Vipps\Login\Model\RedirectUrlResolver;
-use Magento\Customer\Model\Session;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Controller\Result\Redirect as MagentoRedirect;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Exception\LocalizedException;
 use Vipps\Login\Model\StateKey;
 
 /**
@@ -37,12 +39,12 @@ use Vipps\Login\Model\StateKey;
  * @package Vipps\Login\Controller\Login
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Redirect extends Action
+class Redirect implements ActionInterface
 {
     /**
      * @var SessionManagerInterface|Session
      */
-    private $sessionManager;
+    private $customerSession;
 
     /**
      * @var TokenCommand
@@ -65,25 +67,48 @@ class Redirect extends Action
     private $redirectUrlResolver;
 
     /**
+     * Customer session
+     *
+     * @var RequestInterface
+     */
+    private $request;
+
+    /**
+     * @var RedirectFactory
+     */
+    private $resultRedirectFactory;
+
+    /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
+
+    /**
      * Redirect constructor.
      *
-     * @param Context $context
-     * @param SessionManagerInterface $sessionManager
+     * @param ManagerInterface $messageManager
+     * @param RequestInterface $request
+     * @param RedirectFactory $resultRedirectFactory
+     * @param SessionManagerInterface $customerSession
      * @param TokenCommand $tokenCommand
      * @param ActionsPool $actionsPool
      * @param RedirectUrlResolver $redirectUrlResolver
      * @param LoggerInterface $logger
      */
     public function __construct(
-        Context $context,
-        SessionManagerInterface $sessionManager,
+        ManagerInterface $messageManager,
+        RequestInterface $request,
+        RedirectFactory $resultRedirectFactory,
+        SessionManagerInterface $customerSession,
         TokenCommand $tokenCommand,
         ActionsPool $actionsPool,
         RedirectUrlResolver $redirectUrlResolver,
         LoggerInterface $logger
     ) {
-        parent::__construct($context);
-        $this->sessionManager = $sessionManager;
+        $this->messageManager = $messageManager;
+        $this->request = $request;
+        $this->resultRedirectFactory = $resultRedirectFactory;
+        $this->customerSession = $customerSession;
         $this->tokenCommand = $tokenCommand;
         $this->actionsPool = $actionsPool;
         $this->redirectUrlResolver = $redirectUrlResolver;
@@ -95,13 +120,14 @@ class Redirect extends Action
      */
     public function execute()
     {
-        $code = $this->_request->getParam('code');
-        $state = $this->_request->getParam('state');
+        $code = $this->request->getParam('code');
+        $state = $this->request->getParam('state');
         $resultRedirect = $this->resultRedirectFactory->create();
 
         try {
-            if (empty($code) && $this->_request->getParam('error')) {
-                $errorDescription = $this->_request->getParam('error_description');
+            if (empty($code) && $this->request->getParam('error')) {
+                $errorDescription = $this->request->getParam('error_description');
+                $this->logger->critical($errorDescription);
                 $this->messageManager->addErrorMessage(__($errorDescription));
                 $resultRedirect->setUrl($this->redirectUrlResolver->getRedirectUrl());
 
@@ -124,14 +150,13 @@ class Redirect extends Action
             }
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage($e);
-            $this->logger->critical($e->getMessage());
+            $this->logger->critical($e);
         } catch (\Throwable $t) {
             $this->messageManager->addErrorMessage(__('Please, try again later.'));
-            $this->logger->critical($t->getMessage());
+            $this->logger->critical($t);
         }
 
-        $resultRedirect->setPath('vipps/login/error');
-        return $resultRedirect;
+        return $resultRedirect->setPath('vipps/login/error');
     }
 
     /**
@@ -141,9 +166,9 @@ class Redirect extends Action
      */
     private function storeToken($token)
     {
-        $this->sessionManager->setData('vipps_login_id_token', $token['id_token']);
-        $this->sessionManager->setData('vipps_login_id_token_payload', $token['id_token_payload']);
-        $this->sessionManager->setData('vipps_login_access_token', $token['access_token']);
+        $this->customerSession->setData('vipps_login_id_token', $token['id_token']);
+        $this->customerSession->setData('vipps_login_id_token_payload', $token['id_token_payload']);
+        $this->customerSession->setData('vipps_login_access_token', $token['access_token']);
     }
 
     /**
@@ -151,8 +176,14 @@ class Redirect extends Action
      *
      * @return bool
      */
-    private function isStateKeyValid($state)
+    private function isStateKeyValid($state): bool
     {
-        return $state == $this->sessionManager->getData(StateKey::DATA_KEY_STATE);
+        $sessionStateKey = $this->customerSession->getData(StateKey::DATA_KEY_STATE, true);
+
+        if (empty($sessionStateKey)) {
+            return false;
+        }
+
+        return $state == $sessionStateKey;
     }
 }

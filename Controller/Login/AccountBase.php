@@ -18,19 +18,17 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\App\ActionInterface;
 use Magento\Framework\App\RequestInterface;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Exception\NotFoundException;
 use Magento\Customer\Model\Session;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class AccountBase
  * @package Vipps\Login\Controller\Login\Account
  */
-abstract class AccountBase extends Action
+abstract class AccountBase implements ActionInterface
 {
     /**
      * Customer session
@@ -40,33 +38,49 @@ abstract class AccountBase extends Action
     protected $customerSession;
 
     /**
+     * Customer session
+     *
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * AccountBase constructor.
      *
-     * @param Context $context
      * @param SessionManagerInterface $customerSession
+     * @param RequestInterface $request
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        Context $context,
-        SessionManagerInterface $customerSession
+        SessionManagerInterface $customerSession,
+        RequestInterface $request,
+        LoggerInterface $logger
     ) {
-        parent::__construct($context);
         $this->customerSession = $customerSession;
+        $this->request = $request;
+        $this->logger = $logger;
     }
 
     /**
-     * Check customer authentication for some actions
+     * Check customer authentication for some actions.
      *
-     * @param RequestInterface $request
-     *
-     * @return ResponseInterface
-     * @throws NotFoundException
+     * @return bool
      */
-    public function dispatch(RequestInterface $request)
+    public function canProcess(): bool
     {
-        if (!$this->customerSession->authenticate()) {
-            $this->_actionFlag->set('', 'no-dispatch', true);
-        }
+        return $this->customerSession->authenticate();
+    }
 
-        return parent::dispatch($request);
+    /**
+     * @return RequestInterface
+     */
+    protected function getRequest(): RequestInterface
+    {
+        return $this->request;
     }
 }

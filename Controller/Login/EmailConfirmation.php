@@ -18,25 +18,26 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\App\ActionInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\Result\Json;
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Exception\AuthorizationException;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\State\InvalidTransitionException;
+use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 use Psr\Log\LoggerInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\AccessTokenProvider;
 use Vipps\Login\Model\VippsAccountManagement;
-use Magento\Customer\Api\CustomerRepositoryInterface;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Exception\State\InvalidTransitionException;
-use Magento\Framework\Exception\AuthorizationException;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Serialize\SerializerInterface;
 
 /**
  * Class EmailConfirmation
  * @package Vipps\Login\Controller\Login
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class EmailConfirmation extends Action
+class EmailConfirmation implements ActionInterface
 {
     /**
      * @var CustomerRepositoryInterface
@@ -72,11 +73,15 @@ class EmailConfirmation extends Action
      * @var LoggerInterface
      */
     private $logger;
+    /**
+     * @var RequestInterface
+     */
+    private $request;
 
     /**
      * EmailConfirmation constructor.
      *
-     * @param Context $context
+     * @param RequestInterface $request
      * @param CustomerRepositoryInterface $customerRepository
      * @param VippsAccountManagement $vippsAccountManagement
      * @param UserInfoCommand $userInfoCommand
@@ -86,7 +91,7 @@ class EmailConfirmation extends Action
      * @param LoggerInterface $logger
      */
     public function __construct(
-        Context $context,
+        RequestInterface $request,
         CustomerRepositoryInterface $customerRepository,
         VippsAccountManagement $vippsAccountManagement,
         UserInfoCommand $userInfoCommand,
@@ -95,7 +100,7 @@ class EmailConfirmation extends Action
         SerializerInterface $serializer,
         LoggerInterface $logger
     ) {
-        parent::__construct($context);
+        $this->request = $request;
         $this->customerRepository = $customerRepository;
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->userInfoCommand = $userInfoCommand;
@@ -106,37 +111,53 @@ class EmailConfirmation extends Action
     }
 
     /**
-     * @return \Magento\Framework\Controller\Result\Json
+     * @return Json
      */
     public function execute()
     {
-        $content = $this->serializer->unserialize($this->getRequest()->getContent());
+        $content = $this->serializer->unserialize($this->request->getContent());
         $email = $content['email'] ?? null;
-        if ($email) {
-            try {
-                $customer = $this->customerRepository->get($email);
-                $userInfo = $this->userInfoCommand->execute($this->accessTokenProvider->get());
 
-                // send email to customer
-                $this->vippsAccountManagement->resendConfirmation($userInfo, $customer);
-
-                return $this->jsonFactory
-                    ->create()
-                    ->setData(['error' => false, 'message' => __('Please check your inbox for a confirmation email. Click the link in the email to confirm your email address.')]);
-            } catch (InvalidTransitionException $e) {
-                $errorMessage = __('This email does not require confirmation.');
-            } catch (AuthorizationException $e) {
-                $errorMessage = $e->getMessage();
-            } catch (LocalizedException $e) {
-                $errorMessage = $e->getMessage();
-            } catch (\Exception $e) {
-                $this->logger->critical($e);
-                $errorMessage = __('An error occurred when trying to send email.');
-            }
+        /** @var Json $jsonResponse */
+        $jsonResponse = $this->jsonFactory->create();
+        if (!$email) {
+            return $jsonResponse->setData([
+                    'error' => true,
+                    'message' => $errorMessage ?? __('Email is missing.')
+                ]);
         }
 
-        return $this->jsonFactory
-            ->create()
-            ->setData(['error' => true, 'message' => $errorMessage ?? __('An error occurred when trying to send email.')]);
+        try {
+            $customer = $this->customerRepository->get($email);
+            $userInfo = $this->userInfoCommand->execute($this->accessTokenProvider->get());
+
+            // send email to customer
+            $this->vippsAccountManagement->resendConfirmation($userInfo, $customer);
+
+            return $jsonResponse->setData([
+                       'error' => false,
+                       'message' =>
+                           __('Please check your inbox for a confirmation email.'.
+                            ' Click the link in the email to confirm your email address.')
+                   ]);
+        } catch (InvalidTransitionException $e) {
+            $this->logger->critical($e);
+            $errorMessage = __('This email does not require confirmation.');
+        } catch (AuthorizationException $e) {
+            $this->logger->critical($e);
+            $errorMessage = $e->getMessage();
+        } catch (LocalizedException $e) {
+            $this->logger->critical($e);
+            $errorMessage = $e->getMessage();
+        } catch (\Exception $e) {
+            $this->logger->critical($e);
+            $errorMessage = __('An error occurred when trying to send email.');
+        }
+
+        return $this->jsonFactory->create()
+            ->setData([
+                'error' => true,
+                'message' => $errorMessage ?? __('An error occurred when trying to send email.')
+            ]);
     }
 }

@@ -18,13 +18,16 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Session\SessionManagerInterface;
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Model\VippsAccountManagement;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\Exception\NoSuchEntityException;
 
 /**
  * Class ApplyAddress
@@ -43,14 +46,26 @@ class ApplyAddress extends AccountBase
     private $vippsCustomerAddressRepository;
 
     /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
+
+    /**
      * @var VippsCustomerRepositoryInterface
      */
     private $vippsCustomerRepository;
 
     /**
-     * Unlink constructor.
+     * @var RedirectFactory
+     */
+    private $resultRedirectFactory;
+
+    /**
+     * ApplyAddress constructor.
      *
-     * @param Context $context
+     * @param RedirectFactory $resultRedirectFactory
+     * @param RequestInterface $request
+     * @param LoggerInterface $logger
      * @param SessionManagerInterface $customerSession
      * @param VippsAccountManagement $vippsAccountManagement
      * @param ManagerInterface $messageManager
@@ -58,14 +73,17 @@ class ApplyAddress extends AccountBase
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      */
     public function __construct(
-        Context $context,
+        RedirectFactory $resultRedirectFactory,
+        RequestInterface $request,
+        LoggerInterface $logger,
         SessionManagerInterface $customerSession,
         VippsAccountManagement $vippsAccountManagement,
         ManagerInterface $messageManager,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
         VippsCustomerRepositoryInterface $vippsCustomerRepository
     ) {
-        parent::__construct($context, $customerSession);
+        parent::__construct($customerSession, $request, $logger);
+        $this->resultRedirectFactory = $resultRedirectFactory;
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->messageManager = $messageManager;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
@@ -73,11 +91,11 @@ class ApplyAddress extends AccountBase
     }
 
     /**
-     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
+     * @return Redirect
      */
     public function execute()
     {
-        /** @var \Magento\Framework\Controller\Result\Forward $resultForward */
+        /** @var Redirect $resultForward */
         $resultRedirect = $this->resultRedirectFactory->create();
 
         $addressId = $this->getRequest()->getParam('id', false);
@@ -99,10 +117,13 @@ class ApplyAddress extends AccountBase
                     'street' => explode(PHP_EOL, $vippsAddress->getStreetAddress()),
                     'region' => $vippsAddress->getRegion()
                 ]);
-
                 $params = ['vipps_address_id' => $addressId];
             } catch (NoSuchEntityException $e) {
+                $this->logger->critical($e);
                 $this->messageManager->addErrorMessage(__('We can\'t delete the address right now.'));
+            } catch (\Exception $e) {
+                $this->logger->critical($e);
+                $this->messageManager->addErrorMessage(__('An error occurred. Please, try again later.'));
             }
         }
 
