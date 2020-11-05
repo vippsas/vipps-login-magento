@@ -18,11 +18,15 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
-use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\ActionInterface;
+use Magento\Framework\App\ResponseInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Response\RedirectInterface;
+use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\App\Action\Action;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\UrlInterface;
@@ -35,7 +39,7 @@ use Psr\Log\LoggerInterface;
  * Class Index
  * @package Vipps\Login\Controller\Login
  */
-class Index extends Action
+class Index implements ActionInterface
 {
     /**
      * @var ConfigInterface
@@ -68,9 +72,32 @@ class Index extends Action
     private $logger;
 
     /**
+     * @var RedirectInterface
+     */
+    private $redirect;
+
+    /**
+     * @var RequestInterface
+     */
+    private $request;
+
+    /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
+
+    /**
+     * @var RedirectFactory
+     */
+    private $resultRedirectFactory;
+
+    /**
      * Index constructor.
      *
-     * @param Context $context
+     * @param RedirectInterface $redirect
+     * @param RequestInterface $request
+     * @param RedirectFactory $resultRedirectFactory
+     * @param ManagerInterface $messageManager
      * @param SessionManagerInterface $customerSession
      * @param ApiEndpointsInterface $apiEndpoints
      * @param ConfigInterface $config
@@ -79,7 +106,10 @@ class Index extends Action
      * @param LoggerInterface $logger
      */
     public function __construct(
-        Context $context,
+        RedirectInterface $redirect,
+        RequestInterface $request,
+        RedirectFactory $resultRedirectFactory,
+        ManagerInterface $messageManager,
         SessionManagerInterface $customerSession,
         ApiEndpointsInterface $apiEndpoints,
         ConfigInterface $config,
@@ -87,7 +117,10 @@ class Index extends Action
         UrlInterface $url,
         LoggerInterface $logger
     ) {
-        parent::__construct($context);
+        $this->redirect = $redirect;
+        $this->request = $request;
+        $this->resultRedirectFactory = $resultRedirectFactory;
+        $this->messageManager = $messageManager;
         $this->customerSession = $customerSession;
         $this->apiEndpoints = $apiEndpoints;
         $this->config = $config;
@@ -102,7 +135,7 @@ class Index extends Action
     public function execute()
     {
         $resultRedirect = $this->resultRedirectFactory->create();
-        $refererUrl = $this->_redirect->getRefererUrl();
+        $refererUrl = $this->redirect->getRefererUrl();
 
         try {
             $clientId = $this->config->getLoginClientId();
@@ -125,12 +158,13 @@ class Index extends Action
         } catch (LocalizedException $e) {
             $resultRedirect->setUrl($refererUrl);
             $this->messageManager->addErrorMessage($e->getMessage());
-            $this->logger->critical($e->getMessage());
+            $this->logger->critical($e);
         } catch (\Exception $e) {
             $resultRedirect->setUrl($refererUrl);
             $this->messageManager->addErrorMessage(__('An error occurred. Please, try again later.'));
-            $this->logger->critical($e->getMessage());
+            $this->logger->critical($e);
         }
+
         return $resultRedirect;
     }
 

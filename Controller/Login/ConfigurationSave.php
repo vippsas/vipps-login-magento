@@ -18,13 +18,15 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\App\Response\RedirectInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Data\Form\FormKey\Validator;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Session\SessionManagerInterface;
 use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\Data\Form\FormKey\Validator;
 
 /**
  * Class Unlink
@@ -43,33 +45,49 @@ class ConfigurationSave extends AccountBase
     private $formKeyValidator;
 
     /**
-     * @var LoggerInterface
+     * @var RedirectFactory
      */
-    private $logger;
+    private $resultRedirectFactory;
+
+    /**
+     * @var RedirectInterface
+     */
+    private $redirect;
+
+    /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
 
     /**
      * ConfigurationSave constructor.
      *
-     * @param Context $context
+     * @param ManagerInterface $messageManager
+     * @param RedirectInterface $redirect
+     * @param RequestInterface $request
+     * @param RedirectFactory $resultRedirectFactory
      * @param SessionManagerInterface $customerSession
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      * @param Validator $formKeyValidator
-     * @param ManagerInterface $messageManager
      * @param LoggerInterface $logger
      */
     public function __construct(
-        Context $context,
+        ManagerInterface $messageManager,
+        RedirectInterface $redirect,
+        RequestInterface $request,
+        RedirectFactory $resultRedirectFactory,
         SessionManagerInterface $customerSession,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
         Validator $formKeyValidator,
-        ManagerInterface $messageManager,
         LoggerInterface $logger
     ) {
-        parent::__construct($context, $customerSession);
+        parent::__construct($customerSession, $request, $logger);
         $this->messageManager = $messageManager;
+        $this->redirect = $redirect;
+        $this->request = $request;
+        $this->resultRedirectFactory = $resultRedirectFactory;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
         $this->formKeyValidator = $formKeyValidator;
-        $this->logger = $logger;
     }
 
     /**
@@ -78,10 +96,11 @@ class ConfigurationSave extends AccountBase
     public function execute()
     {
         $redirect = $this->resultRedirectFactory->create();
-        $refererUrl = $this->_redirect->getRefererUrl();
+
+        $refererUrl = $this->redirect->getRefererUrl();
         $redirect->setPath($refererUrl);
 
-        if (!$this->formKeyValidator->validate($this->getRequest())) {
+        if (!$this->canProcess() || !$this->formKeyValidator->validate($this->getRequest())) {
             return $redirect;
         }
 

@@ -26,7 +26,7 @@
 
     <type name="Vipps\Login\Controller\Login\Redirect">
         <arguments>
-            <argument name="sessionManager" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
             <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
@@ -68,6 +68,7 @@
     <type name="Vipps\Login\Controller\Login\AccountBase">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+            <argument name="logger" xsi:type="object">Vipps\Login\Model\Logger</argument>
         </arguments>
     </type>
 

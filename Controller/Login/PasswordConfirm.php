@@ -21,12 +21,11 @@ namespace Vipps\Login\Controller\Login;
 
 use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Model\Session;
+use Magento\Framework\App\ActionInterface;
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\EmailNotConfirmedException;
-use Magento\Framework\Exception\InvalidEmailOrPasswordException;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -48,7 +47,7 @@ use Vipps\Login\Model\RedirectUrlResolver;
  * @package Vipps\Login\Controller\Login
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class PasswordConfirm extends Action
+class PasswordConfirm implements ActionInterface
 {
     /**
      * @var SessionManagerInterface|Session
@@ -124,11 +123,15 @@ class PasswordConfirm extends Action
      * @var CookieMetadataFactory
      */
     private $cookieMetadataFactory;
+    /**
+     * @var RequestInterface
+     */
+    private $request;
 
     /**
      * PasswordConfirm constructor.
      *
-     * @param Context $context
+     * @param RequestInterface $request
      * @param UserInfoCommand $userInfoCommand
      * @param SessionManagerInterface $customerSession
      * @param SerializerInterface $serializer
@@ -147,7 +150,7 @@ class PasswordConfirm extends Action
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        Context $context,
+        RequestInterface $request,
         UserInfoCommand $userInfoCommand,
         SessionManagerInterface $customerSession,
         SerializerInterface $serializer,
@@ -164,7 +167,7 @@ class PasswordConfirm extends Action
         CookieMetadataFactory $cookieMetadataFactory,
         LoggerInterface $logger
     ) {
-        parent::__construct($context);
+        $this->request = $request;
         $this->customerSession = $customerSession;
         $this->userInfoCommand = $userInfoCommand;
         $this->serializer = $serializer;
@@ -198,7 +201,7 @@ class PasswordConfirm extends Action
         /** @var Raw $resultRaw */
         $resultRaw = $this->resultRawFactory->create();
         try {
-            $credentials = $this->serializer->unserialize($this->getRequest()->getContent());
+            $credentials = $this->serializer->unserialize($this->request->getContent());
         } catch (\Exception $e) {
             $this->logger->critical($e);
             return $resultRaw->setHttpResponseCode($httpBadRequestCode);
@@ -222,6 +225,7 @@ class PasswordConfirm extends Action
             try {
                 $userInfo = $this->userInfoCommand->execute($this->accessTokenProvider->get());
             } catch (\Throwable $e) {
+                $this->logger->critical($e);
                 return $resultRaw->setHttpResponseCode($httpBadRequestCode);
             }
 
@@ -239,6 +243,7 @@ class PasswordConfirm extends Action
 
             $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $magentoCustomer);
         } catch (EmailNotConfirmedException $e) {
+            $this->logger->error($e);
             $response = [
                 'errors' => true,
                 'message' => $e->getMessage()
@@ -272,8 +277,8 @@ class PasswordConfirm extends Action
         if ($credentials &&
             array_key_exists('username', $credentials) &&
             array_key_exists('password', $credentials) &&
-            $this->getRequest()->getMethod() === 'POST' &&
-            $this->getRequest()->isXmlHttpRequest()
+            $this->request->getMethod() === 'POST' &&
+            $this->request->isXmlHttpRequest()
         ) {
             return true;
         }

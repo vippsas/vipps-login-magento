@@ -18,6 +18,10 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\App\ActionInterface;
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\Result\RedirectFactory;
 use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
@@ -26,7 +30,6 @@ use Vipps\Login\Model\RedirectUrlResolver;
 use Vipps\Login\Model\VippsAccountManagement;
 use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\Session;
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Message\ManagerInterface;
@@ -37,7 +40,7 @@ use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
  * Class EmailConfirm
  * @package Vipps\Login\Controller\Login
  */
-class EmailConfirm extends Action
+class EmailConfirm implements ActionInterface
 {
     /**
      * @var VippsAccountManagement
@@ -90,9 +93,24 @@ class EmailConfirm extends Action
     private $cookieMetadataFactory;
 
     /**
+     * @var RequestInterface
+     */
+    private $request;
+
+    /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
+
+    /**
+     * @var RedirectFactory
+     */
+    private $resultRedirectFactory;
+
+    /**
      * EmailConfirm constructor.
      *
-     * @param Context $context
+     * @param RequestInterface $request
      * @param VippsAccountManagement $vippsAccountManagement
      * @param SessionManagerInterface $sessionManager
      * @param CustomerRegistry $customerRegistry
@@ -103,11 +121,12 @@ class EmailConfirm extends Action
      * @param RedirectUrlResolver $redirectUrlResolver
      * @param CookieManagerInterface $cookieManager
      * @param CookieMetadataFactory $cookieMetadataFactory
+     * @param RedirectFactory $resultRedirectFactory
      * @param LoggerInterface $logger
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        Context $context,
+        RequestInterface $request,
         VippsAccountManagement $vippsAccountManagement,
         SessionManagerInterface $sessionManager,
         CustomerRegistry $customerRegistry,
@@ -118,9 +137,10 @@ class EmailConfirm extends Action
         RedirectUrlResolver $redirectUrlResolver,
         CookieManagerInterface $cookieManager,
         CookieMetadataFactory $cookieMetadataFactory,
+        RedirectFactory $resultRedirectFactory,
         LoggerInterface $logger
     ) {
-        parent::__construct($context);
+        $this->request = $request;
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->sessionManager = $sessionManager;
         $this->customerRegistry = $customerRegistry;
@@ -131,18 +151,20 @@ class EmailConfirm extends Action
         $this->logger = $logger;
         $this->redirectUrlResolver = $redirectUrlResolver;
         $this->cookieManager = $cookieManager;
+        $this->resultRedirectFactory = $resultRedirectFactory;
         $this->cookieMetadataFactory = $cookieMetadataFactory;
     }
 
     /**
-     * @return \Magento\Framework\Controller\Result\Redirect
+     * @return Redirect
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function execute()
     {
-        $id = (int)$this->getRequest()->getParam('id');
-        $key = $this->getRequest()->getParam('key');
+        $id = (int)$this->request->getParam('id');
+        $key = $this->request->getParam('key');
 
+        /** @var  $redirect */
         $redirect = $this->resultRedirectFactory->create();
         try {
             $vippsCustomer = $this->vippsAccountManagement->confirm($id, $key);

@@ -18,12 +18,14 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\App\RequestInterface;
+use Magento\Framework\App\Response\RedirectInterface;
+use Magento\Framework\Controller\Result\Redirect;
+use Magento\Framework\Controller\Result\RedirectFactory;
+use Magento\Framework\Message\ManagerInterface;
+use Magento\Framework\Session\SessionManagerInterface;
 use Psr\Log\LoggerInterface;
 use Vipps\Login\Model\VippsAccountManagement;
-use Magento\Framework\App\Action\Context;
-use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Framework\Message\ManagerInterface;
-use Magento\Framework\Controller\Result\Redirect;
 
 /**
  * Class Unlink
@@ -37,30 +39,45 @@ class Unlink extends AccountBase
     private $vippsAccountManagement;
 
     /**
-     * @var LoggerInterface
+     * @var ManagerInterface
      */
-    private $logger;
+    private $messageManager;
+
+    /**
+     * @var RedirectInterface
+     */
+    private $redirect;
+
+    /**
+     * @var RedirectFactory
+     */
+    private $resultRedirectFactory;
 
     /**
      * Unlink constructor.
      *
-     * @param Context $context
      * @param SessionManagerInterface $customerSession
+     * @param RedirectInterface $redirect
+     * @param RequestInterface $request
+     * @param RedirectFactory $resultRedirectFactory
+     * @param LoggerInterface $logger
      * @param VippsAccountManagement $vippsAccountManagement
      * @param ManagerInterface $messageManager
-     * @param LoggerInterface $logger
      */
     public function __construct(
-        Context $context,
         SessionManagerInterface $customerSession,
+        RedirectInterface $redirect,
+        RequestInterface $request,
+        RedirectFactory $resultRedirectFactory,
+        LoggerInterface $logger,
         VippsAccountManagement $vippsAccountManagement,
-        ManagerInterface $messageManager,
-        LoggerInterface $logger
+        ManagerInterface $messageManager
     ) {
-        parent::__construct($context, $customerSession);
+        parent::__construct($customerSession, $request, $logger);
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->messageManager = $messageManager;
-        $this->logger = $logger;
+        $this->redirect = $redirect;
+        $this->resultRedirectFactory = $resultRedirectFactory;
     }
 
     /**
@@ -69,16 +86,13 @@ class Unlink extends AccountBase
     public function execute()
     {
         $redirect = $this->resultRedirectFactory->create();
-        $refererUrl = $this->_redirect->getRefererUrl();
+        $refererUrl = $this->redirect->getRefererUrl();
         $redirect->setPath($refererUrl);
 
         try {
             $customer = $this->customerSession->getCustomer();
             $this->vippsAccountManagement->unlink($customer->getDataModel());
-
             $this->messageManager->addSuccessMessage(__('Your account was successfully unlinked.'));
-
-            return $redirect;
         } catch (\Throwable $e) {
             $this->logger->critical($e);
             $this->messageManager->addErrorMessage(

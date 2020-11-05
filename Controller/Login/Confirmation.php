@@ -19,12 +19,12 @@ declare(strict_types=1);
 namespace Vipps\Login\Controller\Login;
 
 use Magento\Customer\Model\Session;
-use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\ActionInterface;
+use Magento\Framework\App\Response\RedirectInterface;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Controller\Result\Redirect;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\App\Action\Action;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Vipps\Login\Model\ConfigInterface;
@@ -34,7 +34,7 @@ use Vipps\Login\Model\TokenProviderInterface;
  * Class Confirmation
  * @package Vipps\Login\Controller\Login
  */
-class Confirmation extends Action
+class Confirmation implements ActionInterface
 {
     /**
      * @var ConfigInterface
@@ -52,22 +52,48 @@ class Confirmation extends Action
     private $customerSession;
 
     /**
+     * @var ManagerInterface
+     */
+    private $messageManager;
+
+    /**
+     * @var ResultFactory
+     */
+    private $resultFactory;
+
+    /**
+     * @var RedirectInterface
+     */
+    private $redirect;
+
+    /**
+     * @var ResponseInterface
+     */
+    private $response;
+
+    /**
      * Confirmation constructor.
      *
-     * @param Context $context
+     * @param ResultFactory $resultFactory
+     * @param RedirectInterface $redirect
+     * @param ResponseInterface $response
      * @param ConfigInterface $config
-     * @param SessionManagerInterface $customerSession,
+     * @param SessionManagerInterface $customerSession
      * @param ManagerInterface $messageManager
      * @param TokenProviderInterface $tokenPayloadProvider
      */
     public function __construct(
-        Context $context,
+        ResultFactory $resultFactory,
+        RedirectInterface $redirect,
+        ResponseInterface $response,
         ConfigInterface $config,
         SessionManagerInterface $customerSession,
         ManagerInterface $messageManager,
         TokenProviderInterface $tokenPayloadProvider
     ) {
-        parent::__construct($context);
+        $this->resultFactory = $resultFactory;
+        $this->redirect = $redirect;
+        $this->response = $response;
         $this->config = $config;
         $this->customerSession = $customerSession;
         $this->tokenPayloadProvider = $tokenPayloadProvider;
@@ -88,7 +114,19 @@ class Confirmation extends Action
             return $this->_redirect('customer/account/login');
         }
 
-        $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
-        return $resultPage;
+        return $this->resultFactory->create(ResultFactory::TYPE_PAGE);
+    }
+
+    /**
+     * Set redirect into response
+     *
+     * @param string $path
+     * @param array $arguments
+     * @return ResponseInterface
+     */
+    private function _redirect($path, $arguments = [])
+    {
+        $this->redirect->redirect($this->response, $path, $arguments);
+        return $this->response;
     }
 }

@@ -18,14 +18,17 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\App\Action\Context;
+use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\RawFactory;
 use Magento\Framework\Controller\Result\Raw;
+use Magento\Framework\Controller\ResultInterface;
+use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
@@ -71,26 +74,28 @@ class AddressUpdate extends AccountBase
     /**
      * AddressUpdate constructor.
      *
-     * @param Context $context
      * @param SessionManagerInterface $customerSession
+     * @param RequestInterface $request
      * @param SerializerInterface $serializer
      * @param JsonFactory $resultJsonFactory
      * @param RawFactory $resultRawFactory
      * @param VippsAddressManagementInterface $vippsAddressManagement
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
+     * @param LoggerInterface $logger
      */
     public function __construct(
-        Context $context,
         SessionManagerInterface $customerSession,
+        RequestInterface $request,
         SerializerInterface $serializer,
         JsonFactory $resultJsonFactory,
         RawFactory $resultRawFactory,
         VippsAddressManagementInterface $vippsAddressManagement,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
-        VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
+        VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
+        LoggerInterface $logger
     ) {
-        parent::__construct($context, $customerSession);
+        parent::__construct($customerSession, $request, $logger);
         $this->serializer = $serializer;
         $this->resultJsonFactory = $resultJsonFactory;
         $this->resultRawFactory = $resultRawFactory;
@@ -100,17 +105,22 @@ class AddressUpdate extends AccountBase
     }
 
     /**
-     * @return $this|\Magento\Framework\App\ResponseInterface|\Magento\Framework\Controller\ResultInterface
-     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @return ResponseInterface|Json|Raw|ResultInterface
      */
     public function execute()
     {
         /** @var Raw $resultRaw */
         $resultRaw = $this->resultRawFactory->create();
+
+        if (!$this->canProcess()) {
+            return $resultRaw;
+        }
+
         try {
             $this->customerSession->setDisableVippsAddressUpdatePrompt(true);
             $syncData = $this->serializer->unserialize($this->getRequest()->getContent());
         } catch (\Exception $e) {
+            $this->logger->critical($e->getMessage());
             return $resultRaw;
         }
 
@@ -153,11 +163,13 @@ class AddressUpdate extends AccountBase
                 }
             }
         } catch (LocalizedException $e) {
+            $this->logger->critical($e);
             $response = [
                 'errors' => true,
                 'message' => $e->getMessage()
             ];
         } catch (\Throwable $e) {
+            $this->logger->critical($e);
             $response = [
                 'errors' => true,
                 'message' => __('An error occurred.')
@@ -166,7 +178,9 @@ class AddressUpdate extends AccountBase
 
         /** @var Json $resultJson */
         $resultJson = $this->resultJsonFactory->create();
-        return $resultJson->setData($response);
+        $resultJson->setData($response);
+
+        return $resultJson;
     }
 
     /**
@@ -174,7 +188,7 @@ class AddressUpdate extends AccountBase
      *
      * @return bool
      */
-    private function isValid($mode)
+    private function isValid($mode): bool
     {
         if (!$mode ||
             !array_key_exists('sync_address_mode', $mode) ||

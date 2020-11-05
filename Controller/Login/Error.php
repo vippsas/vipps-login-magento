@@ -18,24 +18,37 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Controller\Login;
 
+use Magento\Framework\App\ActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\App\Action\Action;
 
 /**
  * Class Error
  * @package Vipps\Login\Controller\Login
  */
-class Error extends Action
+class Error implements ActionInterface
 {
     /**
-     * @return ResponseInterface|Redirect|ResultInterface
+     * @var ResultFactory
+     */
+    private $resultFactory;
+
+    /**
+     * Error constructor.
+     *
+     * @param ResultFactory $resultFactory
+     */
+    public function __construct(ResultFactory $resultFactory)
+    {
+        $this->resultFactory = $resultFactory;
+    }
+
+    /**
+     * @return ResponseInterface|ResultInterface
      */
     public function execute()
     {
-        $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
-        return $resultPage;
+        return $this->resultFactory->create(ResultFactory::TYPE_PAGE);
     }
 }
