@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2020 Vipps
+ * Copyright 2021 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -11,7 +11,7 @@
  * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
  * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE
+ * IN THE SOFTWARE.
  */
 
 declare(strict_types=1);
@@ -113,14 +113,15 @@ class Index extends Action
             $params = [
                 'client_id='. $clientId,
                 'response_type=code',
-                'scope=' . 'openid address name email phoneNumber',
+                'scope=' . 'openid address name email phoneNumber api_version_2',
                 'state=' . $this->getStateKey(),
                 'redirect_uri=' .  trim($this->url->getUrl('vipps/login/redirect'), '/')
             ];
 
-            $vippsRedirectUrl = $this->apiEndpoints->getAuthorizationEndpoint()
-                . '?' . implode('&', $params);
-            $this->customerSession->setVippsRedirectUrl($refererUrl);
+        $vippsRedirectUrl = $this->apiEndpoints->getAuthorizationEndpoint()
+            . '?' . implode('&', $params);
+
+        $this->customerSession->setVippsRedirectUrl($refererUrl);
             $resultRedirect->setUrl($vippsRedirectUrl);
         } catch (LocalizedException $e) {
             $resultRedirect->setUrl($refererUrl);
@@ -131,7 +132,6 @@ class Index extends Action
             $this->messageManager->addErrorMessage(__('An error occurred. Please, try again later.'));
             $this->logger->critical($e->getMessage());
         }
-
         return $resultRedirect;
     }
 
