@@ -59,11 +59,6 @@ class UserInfoCommand
     private $tokenPayloadProvider;
 
     /**
-     * @var TokenProviderInterface
-     */
-    private $tokenPayloadProvider;
-
-    /**
      * @var array
      */
     private $cache = [];
