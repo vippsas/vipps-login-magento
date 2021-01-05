@@ -1,17 +1,17 @@
 <?php
 /**
- * Copyright 2019 Vipps
+ * Copyright 2021 Vipps
  *
- *    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- *    documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- *    the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
- *    and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+ * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
  *
- *    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- *    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
- *    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
- *    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- *    IN THE SOFTWARE
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON INFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
  */
 
 declare(strict_types=1);
@@ -19,10 +19,12 @@ declare(strict_types=1);
 namespace Vipps\Login\Block\Form;
 
 use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Customer\Model\Form;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Store\Model\ScopeInterface;
-use Magento\Customer\Model\Form;
+use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\AccountsProvider;
 use Vipps\Login\Model\TokenProviderInterface;
 
@@ -35,7 +37,7 @@ class Confirmation extends Template
     /**
      * @var TokenProviderInterface
      */
-    private $tokenPayloadProvider;
+    private $accessTokenProvider;
 
     /**
      * @var AccountsProvider
@@ -43,22 +45,30 @@ class Confirmation extends Template
     private $accountsProvider;
 
     /**
+     * @var UserInfoCommand
+     */
+    private $userInfoCommand;
+
+    /**
      * Confirmation constructor.
      *
      * @param Context $context
-     * @param TokenProviderInterface $tokenPayloadProvider
+     * @param TokenProviderInterface $accessTokenProvider
      * @param AccountsProvider $accountsProvider
+     * @param UserInfoCommand $userInfoCommand
      * @param array $data
      */
     public function __construct(
         Context $context,
-        TokenProviderInterface $tokenPayloadProvider,
+        TokenProviderInterface $accessTokenProvider,
         AccountsProvider $accountsProvider,
+        UserInfoCommand $userInfoCommand,
         array $data = []
     ) {
         parent::__construct($context, $data);
-        $this->tokenPayloadProvider = $tokenPayloadProvider;
+        $this->accessTokenProvider = $accessTokenProvider;
         $this->accountsProvider = $accountsProvider;
+        $this->userInfoCommand = $userInfoCommand;
     }
 
     /**
@@ -90,16 +100,17 @@ class Confirmation extends Template
 
     /**
      * @return array
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function getEmails()
     {
-        $tokenPayload = $this->tokenPayloadProvider->get();
+        $accessToken = $this->accessTokenProvider->get();
+        $userInfo = $this->userInfoCommand->execute($accessToken);
 
-        $phone = $tokenPayload['phone_number'] ?? null;
-        $email = $tokenPayload['email'] ?? null;
-
-        $customers = $this->accountsProvider->get($phone, $email);
+        $customers = $this->accountsProvider->get(
+            $userInfo->getEmail(),
+            $userInfo->getPhoneNumber()
+        );
 
         $emails = [];
         /** @var CustomerInterface $customer */
