@@ -149,7 +149,7 @@ class Redirect implements ActionInterface
                 return $result;
             }
         } catch (LocalizedException $e) {
-            $this->messageManager->addErrorMessage($e);
+            $this->messageManager->addErrorMessage($e->getMessage());
             $this->logger->critical($e);
         } catch (\Throwable $t) {
             $this->messageManager->addErrorMessage(__('Please, try again later.'));

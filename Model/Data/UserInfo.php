@@ -77,6 +77,16 @@ class UserInfo extends AbstractExtensibleObject implements UserInfoInterface
      *
      * @return mixed|null
      */
+    public function getIsEmailVerified()
+    {
+        return (bool) $this->_get(UserInfoInterface::EMAIL_VERIFIED);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return mixed|null
+     */
     public function getFamilyName()
     {
         return $this->_get(UserInfoInterface::FAMILY_NAME);
@@ -167,7 +177,17 @@ class UserInfo extends AbstractExtensibleObject implements UserInfoInterface
      */
     public function getAddress()
     {
-        return (array)$this->_get(UserInfoInterface::ADDRESS);
+        $defaultAddress = (array)$this->_get(UserInfoInterface::ADDRESS);
+        $defaultAddress['is_default'] = true;
+
+        $allAddresses[] = $defaultAddress;
+
+        $otherAddresses = (array)$this->_get(UserInfoInterface::OTHER_ADDRESSES);
+        foreach ($otherAddresses as $otherAddress) {
+            $allAddresses[] = $otherAddress;
+        }
+
+        return $allAddresses;
     }
 
     /**

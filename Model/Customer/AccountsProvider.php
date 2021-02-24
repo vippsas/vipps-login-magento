@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2020 Vipps
+ * Copyright 2021 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model\Customer;
 
+use Magento\Customer\Model\Customer;
+use Magento\Customer\Model\CustomerRegistry;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Customer\Model\Config\Share;
 use Magento\Customer\Api\CustomerRepositoryInterface;
@@ -76,6 +78,11 @@ class AccountsProvider
     private $configShare;
 
     /**
+     * @var CustomerRegistry
+     */
+    private $customerRegistry;
+
+    /**
      * AccountsProvider constructor.
      *
      * @param StoreManagerInterface $storeManager
@@ -85,6 +92,7 @@ class AccountsProvider
      * @param FilterGroupBuilder $filterGroupBuilder
      * @param FilterBuilder $filterBuilder
      * @param CustomerRepositoryInterface $customerRepository
+     * @param CustomerRegistry $customerRegistry
      * @param Share $configShare
      */
     public function __construct(
@@ -95,6 +103,7 @@ class AccountsProvider
         FilterGroupBuilder $filterGroupBuilder,
         FilterBuilder $filterBuilder,
         CustomerRepositoryInterface $customerRepository,
+        CustomerRegistry $customerRegistry,
         Share $configShare
     ) {
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
@@ -105,6 +114,7 @@ class AccountsProvider
         $this->filterBuilder = $filterBuilder;
         $this->customerRepository = $customerRepository;
         $this->configShare = $configShare;
+        $this->customerRegistry = $customerRegistry;
     }
 
     /**
@@ -136,6 +146,48 @@ class AccountsProvider
         }
 
         return null;
+    }
+
+    /**
+     * Get customer for Vipps Login by Verified email and check phoneNumber match
+     *
+     * @param $email
+     * @param $phoneNumber
+     *
+     * @return CustomerInterface|null
+     * @throws LocalizedException
+     */
+    public function getByEmailAndVerifyPhone($email, $phoneNumber): ?Customer
+    {
+        $this->searchCriteriaBuilder->addFilter('email', $email, 'eq');
+        $this->searchCriteriaBuilder->addFilter(
+            'billing_telephone',
+            $this->preparePhonePattern($phoneNumber),
+            'like'
+        );
+
+        if ($this->configShare->isWebsiteScope()) {
+            $this->searchCriteriaBuilder->addFilter(
+                'website_id',
+                $this->storeManager->getWebsite()->getId(),
+                'eq'
+            );
+        }
+
+        /** @var GridCollection $collection */
+        $collection = $this->gridCollectionFactory->create();
+        $this->collectionProcessor->process($this->searchCriteriaBuilder->create(), $collection);
+
+        $customer = null;
+        $customerGridDocument = $collection->getFirstItem();
+        if ($customerGridDocument->getEmail()) {
+            $customer = $this->customerRegistry->retrieveByEmail(
+                $customerGridDocument->getEmail(),
+                $customerGridDocument->getWebsiteId()
+            );
+        }
+
+        return $customer;
     }
 
     /**

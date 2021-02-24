@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2020 Vipps
+ * Copyright 2021 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -145,7 +145,7 @@ class Index implements ActionInterface
             $params = [
                 'client_id='. $clientId,
                 'response_type=code',
-                'scope=' . 'openid address name email phoneNumber',
+                'scope=' . 'openid address name email phoneNumber api_version_2',
                 'state=' . $this->getStateKey(),
                 'redirect_uri=' .  trim($this->url->getUrl('vipps/login/redirect'), '/')
             ];
