@@ -122,7 +122,7 @@
 
     <type name="Vipps\Login\Block\Form\Confirmation">
         <arguments>
-            <argument name="tokenPayloadProvider" xsi:type="object">Vipps\Login\Model\TokenPayloadProvider</argument>
+            <argument name="accessTokenProvider" xsi:type="object">Vipps\Login\Model\AccessTokenProvider</argument>
         </arguments>
     </type>
 

@@ -173,7 +173,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
             $vippsCustomerAddress = $this->vippsCustomerAddressFactory->create();
             $vippsCustomerAddress = $this->populateWithArray($vippsCustomerAddress, $address);
             $vippsCustomerAddress->setVippsCustomerId($vippsCustomer->getEntityId());
-            if ($vippsCustomerAddress->getAddressType() == VippsCustomerAddressInterface::ADDRESS_TYPE_HOME) {
+            if (isset($address['is_default']) && $address['is_default'] === true) {
                 $vippsCustomerAddress->setIsDefault(true);
             }
             $result[] = $this->vippsCustomerAddressRepository->save($vippsCustomerAddress);

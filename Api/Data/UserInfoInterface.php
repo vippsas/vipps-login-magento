@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2020 Vipps
+ * Copyright 2021 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -36,6 +36,11 @@ interface UserInfoInterface extends CustomAttributesDataInterface
     /**
      * @var string
      */
+    const EMAIL_VERIFIED = 'email_verified';
+
+    /**
+     * @var string
+     */
     const FAMILY_NAME = 'family_name';
 
     /**
@@ -57,6 +62,11 @@ interface UserInfoInterface extends CustomAttributesDataInterface
      * @var string
      */
     const ADDRESS = 'address';
+
+    /**
+     * @var string
+     */
+    const OTHER_ADDRESSES = 'other_addresses';
 
     /**
      * @return mixed
@@ -141,4 +151,9 @@ interface UserInfoInterface extends CustomAttributesDataInterface
      * @return mixed
      */
     public function setAddress($value);
+
+    /**
+     * @return bool
+     */
+    public function getIsEmailVerified();
 }

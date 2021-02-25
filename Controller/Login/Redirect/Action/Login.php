@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2020 Vipps
+ * Copyright 2021 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -31,8 +31,10 @@ use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\Session;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
+use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Gateway\Command\UserInfoCommand;
+use Vipps\Login\Model\Customer\AccountsProvider;
 use Vipps\Login\Model\Customer\TrustedAccountsLocator;
 use Vipps\Login\Model\RedirectUrlResolver;
 use Psr\Log\LoggerInterface;
@@ -105,14 +107,26 @@ class Login implements ActionInterface
     private $cookieMetadataFactory;
 
     /**
+     * @var AccountsProvider
+     */
+    private $accountsProvider;
+
+    /**
+     * @var VippsAccountManagementInterface
+     */
+    private $vippsAccountManagement;
+
+    /**
      * Login constructor.
      *
      * @param RedirectFactory $redirectFactory
      * @param SessionManagerInterface $sessionManager
      * @param TrustedAccountsLocator $trustedAccountsLocator
      * @param CustomerRegistry $customerRegistry
+     * @param AccountsProvider $accountsProvider
      * @param UserInfoCommand $userInfoCommand
      * @param VippsAddressManagementInterface $vippsAddressManagement
+     * @param VippsAccountManagementInterface $vippsAccountManagement
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      * @param RedirectUrlResolver $redirectUrlResolver
      * @param ManagerInterface $messageManager
@@ -126,8 +140,10 @@ class Login implements ActionInterface
         SessionManagerInterface $sessionManager,
         TrustedAccountsLocator $trustedAccountsLocator,
         CustomerRegistry $customerRegistry,
+        AccountsProvider $accountsProvider,
         UserInfoCommand $userInfoCommand,
         VippsAddressManagementInterface $vippsAddressManagement,
+        VippsAccountManagementInterface $vippsAccountManagement,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
         RedirectUrlResolver $redirectUrlResolver,
         ManagerInterface $messageManager,
@@ -139,8 +155,10 @@ class Login implements ActionInterface
         $this->sessionManager = $sessionManager;
         $this->trustedAccountsLocator = $trustedAccountsLocator;
         $this->customerRegistry = $customerRegistry;
+        $this->accountsProvider = $accountsProvider;
         $this->userInfoCommand = $userInfoCommand;
         $this->vippsAddressManagement = $vippsAddressManagement;
+        $this->vippsAccountManagement = $vippsAccountManagement;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
         $this->logger = $logger;
         $this->redirectUrlResolver = $redirectUrlResolver;
@@ -158,59 +176,65 @@ class Login implements ActionInterface
      */
     public function execute($token)
     {
-        $customer = $this->getCustomerForLogin($token);
-        if ($customer) {
-            $redirect = $this->redirectFactory->create();
-            try {
-                $userInfo = $this->userInfoCommand->execute($token['access_token']);
-
-                $this->sessionManager->setCustomerAsLoggedIn($customer);
-                $this->sessionManager->regenerateId();
-                if ($this->cookieManager->getCookie('mage-cache-sessid')) {
-                    $metadata = $this->cookieMetadataFactory->createCookieMetadata();
-                    $metadata->setPath('/');
-                    $this->cookieManager->deleteCookie('mage-cache-sessid', $metadata);
-                }
-
-                $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
-
-                $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
-
-                $redirect = $this->redirectFactory->create();
-                $redirect->setUrl(
-                    $this->redirectUrlResolver->getRedirectUrl()
-                );
-                return $redirect;
-            } catch (LocalizedException $e) {
-                $this->messageManager->addErrorMessage($e);
-                $this->logger->critical($e);
-            } catch (\Throwable $e) {
-                $this->logger->critical($e);
+        $userInfo = $this->userInfoCommand->execute($token['access_token']);
+        $customer = $this->getCustomerForLogin($userInfo->getPhoneNumber());
+        if (!$customer) {
+            if (!$userInfo->getIsEmailVerified()) {
+                return false;
             }
-
-            return $redirect;
+            $customer = $this->accountsProvider->getByEmailAndVerifyPhone(
+                $userInfo->getEmail(),
+                $userInfo->getPhoneNumber()
+            );
+            if (!$customer) {
+                return false;
+            }
+            $this->vippsAccountManagement->link($userInfo, $customer->getDataModel());
         }
 
-        return false;
+        $redirect = $this->redirectFactory->create();
+        try {
+            $this->sessionManager->setCustomerAsLoggedIn($customer);
+            $this->sessionManager->regenerateId();
+            if ($this->cookieManager->getCookie('mage-cache-sessid')) {
+                $metadata = $this->cookieMetadataFactory->createCookieMetadata();
+                $metadata->setPath('/');
+                $this->cookieManager->deleteCookie('mage-cache-sessid', $metadata);
+            }
+
+            $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
+            $this->vippsAddressManagement->apply($userInfo, $vippsCustomer, $customer->getDataModel());
+
+            $redirect = $this->redirectFactory->create();
+            $redirect->setUrl(
+                $this->redirectUrlResolver->getRedirectUrl()
+            );
+
+            return $redirect;
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e);
+            $this->logger->critical($e);
+        } catch (\Throwable $e) {
+            $this->logger->critical($e);
+        }
+
+        return $redirect;
     }
 
     /**
-     * @param array $token
+     * @param string $telephone
      *
      * @return Customer|null
      * @throws LocalizedException
      * @throws NoSuchEntityException
      */
-    private function getCustomerForLogin($token)
+    private function getCustomerForLogin($telephone)
     {
-        $telephone = $token['id_token_payload']['phone_number'] ?? null;
-        if ($telephone) {
-            $trustedAccounts = $this->trustedAccountsLocator->getList($telephone);
-            if ($trustedAccounts->getTotalCount() > 0) {
-                /** @var VippsCustomerInterface $vippsCustomer */
-                $vippsCustomer = current($trustedAccounts->getItems());
-                return $this->customerRegistry->retrieve($vippsCustomer->getCustomerEntityId());
-            }
+        $trustedAccounts = $this->trustedAccountsLocator->getList($telephone);
+        if ($trustedAccounts->getTotalCount() > 0) {
+            /** @var VippsCustomerInterface $vippsCustomer */
+            $vippsCustomer = current($trustedAccounts->getItems());
+            return $this->customerRegistry->retrieve($vippsCustomer->getCustomerEntityId());
         }
 
         return null;

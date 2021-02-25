@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2020 Vipps
+ * Copyright 2021 Vipps
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
  * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
@@ -22,6 +22,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Controller\Result\RedirectFactory;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Customer\Model\CustomerRegistry;
+use Vipps\Login\Gateway\Command\UserInfoCommand;
 use Vipps\Login\Model\Customer\AccountsProvider;
 
 /**
@@ -46,20 +47,28 @@ class Confirm implements ActionInterface
     private $accountsProvider;
 
     /**
+     * @var UserInfoCommand
+     */
+    private $userInfoCommand;
+
+    /**
      * Login constructor.
      *
      * @param RedirectFactory $redirectFactory
      * @param CustomerRegistry $customerRegistry
      * @param AccountsProvider $accountsProvider
+     * @param UserInfoCommand $userInfoCommand
      */
     public function __construct(
         RedirectFactory $redirectFactory,
         CustomerRegistry $customerRegistry,
-        AccountsProvider $accountsProvider
+        AccountsProvider $accountsProvider,
+        UserInfoCommand $userInfoCommand
     ) {
         $this->redirectFactory = $redirectFactory;
         $this->customerRegistry = $customerRegistry;
         $this->accountsProvider = $accountsProvider;
+        $this->userInfoCommand = $userInfoCommand;
     }
 
     /**
@@ -70,10 +79,13 @@ class Confirm implements ActionInterface
      */
     public function execute($token)
     {
-        $phone = $token['id_token_payload']['phone_number'] ?? null;
-        $email = $token['id_token_payload']['email'] ?? null;
+        $userInfo = $this->userInfoCommand->execute($token['access_token']);
+        $email = null;
+        if ($userInfo->getIsEmailVerified()) {
+            $email = $userInfo->getEmail();
+        }
 
-        $customers = $this->accountsProvider->get($phone, $email);
+        $customers = $this->accountsProvider->get($userInfo->getPhoneNumber(), $email);
         if ($customers) {
             $redirect = $this->redirectFactory->create();
             $redirect->setPath('vipps/login/confirmation');
