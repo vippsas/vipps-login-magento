@@ -75,4 +75,23 @@
         </arguments>
     </type>
 
+    <virtualType name="Vipps\Login\Api\SearchCriteria\CollectionProcessor\CustomerFilterProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor\FilterProcessor">
+        <arguments>
+            <argument name="customFilters" xsi:type="array">
+                <item name="billing_telephone" xsi:type="object">Vipps\Login\Model\Api\SearchCriteria\CollectionProcessor\FilterProcessor\BillingTelephoneFilter</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="Vipps\Login\Api\SearchCriteria\CustomerCollectionProcessor" type="Magento\Framework\Api\SearchCriteria\CollectionProcessor">
+        <arguments>
+            <argument name="processors" xsi:type="array">
+                <item name="filters" xsi:type="object">Vipps\Login\Api\SearchCriteria\CollectionProcessor\CustomerFilterProcessor</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Vipps\Login\Model\Customer\AccountsProvider">
+        <arguments>
+            <argument name="collectionProcessor" xsi:type="object">Vipps\Login\Api\SearchCriteria\CustomerCollectionProcessor</argument>
+        </arguments>
+    </type>
 </config>
