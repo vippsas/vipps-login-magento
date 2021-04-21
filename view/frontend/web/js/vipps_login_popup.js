@@ -18,8 +18,10 @@ define([
    'Magento_Ui/js/modal/modal',
    'Magento_Customer/js/customer-data',
    'mage/storage',
-   'mage/translate'
-], function ($, modal, customerData, storage, $t) {
+   'mage/translate',
+   'mage/template',
+   'text!Vipps_Login/template/popup/address.html'
+], function ($, modal, customerData, storage, $t, mageTemplate, addressTpl) {
     'use strict';
 
     $.widget('mage.vippsLoginPopUp', {
@@ -94,21 +96,17 @@ define([
             var addresses = customerData.get(this.options.cacheKey)();
             if (addresses.newAddress || addresses.oldAddress) {
                 $(this.options.idModal).find('.vipps-address').append(
-                    '<ul>' +
-                    '<li><strong>' + $t('New address from Vipps') + '</strong></li>' +
-                    '<li>' + addresses.newAddress.customer_display_name + '</li>' +
-                    '<li>' + addresses.newAddress.street + '</li>' +
-                    '<li>' + addresses.newAddress.postalcode + ', ' + addresses.newAddress.city + '</li>'
-                    + '</h2>'
+                    mageTemplate(addressTpl, {
+                        title: $t('New address from Vipps'),
+                        address: addresses.newAddress
+                    })
                 );
 
                 $(this.options.idModal).find('.old-address').append(
-                    '<ul>' +
-                    '<li><strong>' + $t('Old address') + '</strong></li>' +
-                    '<li>' + addresses.oldAddress.customer_display_name + '</li>' +
-                    '<li>' + addresses.oldAddress.street + '</li>' +
-                    '<li>' + addresses.oldAddress.postalcode + ', ' + addresses.oldAddress.city + '</li>'
-                    + '</h2>'
+                    mageTemplate(addressTpl, {
+                        title: $t('Old address'),
+                        address: addresses.oldAddress
+                    })
                 );
 
                 $('.' + this.options.modalClass).find('.modal-footer').prepend(
