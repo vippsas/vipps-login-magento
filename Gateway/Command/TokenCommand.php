@@ -36,6 +36,11 @@ use phpseclib\Math\BigInteger;
 class TokenCommand
 {
     /**
+     * @var string
+     */
+    private const TOKEN_LEEWAY = 3;
+
+    /**
      * @var ClientFactory
      */
     private $httpClientFactory;
@@ -133,6 +138,7 @@ class TokenCommand
     public function getPayload($token)
     {
         if (array_key_exists('id_token', $token)) {
+            JWT::$leeway = self::TOKEN_LEEWAY;
             $payload = JWT::decode($token['id_token'], $this->getPublicKeys(), ['RS256']);
 
             //encode and decode again to convert strClass to array
