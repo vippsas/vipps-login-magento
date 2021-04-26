@@ -81,6 +81,7 @@ class TrustedAccountsLocator
     public function getList($phone)
     {
         $this->searchCriteriaBuilder->addFilter('telephone', $phone);
+        $this->searchCriteriaBuilder->addFilter('linked', true);
 
         if ($this->configShare->isWebsiteScope()) {
             $this->searchCriteriaBuilder->addFilter(

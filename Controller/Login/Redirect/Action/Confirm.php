@@ -80,7 +80,13 @@ class Confirm implements ActionInterface
     public function execute($token)
     {
         $userInfo = $this->userInfoCommand->execute($token['access_token']);
-        $customers = $this->accountsProvider->get($userInfo->getPhoneNumber(), $userInfo->getEmail());
+
+        $email = null;
+        if ($userInfo->getIsEmailVerified()) {
+            $email = $userInfo->getEmail();
+        }
+
+        $customers = $this->accountsProvider->get($userInfo->getPhoneNumber(), $email);
 
         if ($customers) {
             $redirect = $this->redirectFactory->create();

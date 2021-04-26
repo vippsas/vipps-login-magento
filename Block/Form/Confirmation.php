@@ -107,9 +107,14 @@ class Confirmation extends Template
         $accessToken = $this->accessTokenProvider->get();
         $userInfo = $this->userInfoCommand->execute($accessToken);
 
+        $email = null;
+        if ($userInfo->getIsEmailVerified()) {
+            $email = $userInfo->getEmail();
+        }
+
         $customers = $this->accountsProvider->get(
-            $userInfo->getEmail(),
-            $userInfo->getPhoneNumber()
+            $userInfo->getPhoneNumber(),
+            $email
         );
 
         $emails = [];

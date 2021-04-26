@@ -178,7 +178,7 @@ class Login implements ActionInterface
     {
         $userInfo = $this->userInfoCommand->execute($token['access_token']);
         $customer = $this->getCustomerForLogin($userInfo->getPhoneNumber());
-        if (!$customer && $userInfo->getIsEmailVerified() ) {
+        if (!$customer && $userInfo->getIsEmailVerified()) {
             $customer = $this->accountsProvider->getByEmailAndVerifyPhone(
                 $userInfo->getEmail(),
                 $userInfo->getPhoneNumber()

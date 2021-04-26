@@ -52,7 +52,7 @@ class UserInfoCommand
      * @var ApiEndpointsInterface
      */
     private $apiEndpoints;
-
+    
     /**
      * @var TokenProviderInterface
      */
