@@ -67,6 +67,11 @@ class VippsCustomerRepository implements VippsCustomerRepositoryInterface
     private $vippsCustomerResource;
 
     /**
+     * @var array
+     */
+    private $instances = [];
+
+    /**
      * VippsCustomerRepository constructor.
      *
      * @param CollectionProcessorInterface $collectionProcessor
