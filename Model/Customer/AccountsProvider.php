@@ -242,16 +242,10 @@ class AccountsProvider
 
         $length = strlen($phone);
         //remove norwegian country code
-        if ($length > 8 && strpos($phone, '47') === 0) {
+        if ($length === 10 && strpos($phone, '47') === 0) {
             $phone = substr($phone, 2, $length - 2);
         }
 
-        $tmpPhone = '%';
-        $length = strlen($phone);
-        for ($i = 0; $i < $length; $i++) {
-            $tmpPhone .= $phone[$i] . '%';
-        }
-
-        return $tmpPhone;
+        return '%' . $phone;
     }
 }
