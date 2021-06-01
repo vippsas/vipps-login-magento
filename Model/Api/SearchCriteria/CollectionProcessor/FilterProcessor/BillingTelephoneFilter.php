@@ -19,7 +19,7 @@ class BillingTelephoneFilter implements CustomFilterInterface
     {
         $collection->addFilterToMap(
             'main_table.billing_telephone_search',
-            new \Zend_Db_Expr("REGEXP_REPLACE(`billing_telephone`, '/[0-9]/','')")
+            new \Zend_Db_Expr("REGEXP_REPLACE(`billing_telephone`, '[^0-9]+','')")
         );
         $collection->addFieldToFilter(
             'billing_telephone_search',
