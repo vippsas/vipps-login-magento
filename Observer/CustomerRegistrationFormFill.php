@@ -112,7 +112,7 @@ class CustomerRegistrationFormFill implements ObserverInterface
     {
         $addresses = $userInfo->getAddress() ?? [];
         foreach ($addresses as $address) {
-            if ($address['address_type'] == $type) {
+            if (isset($address['address_type']) && $address['address_type'] == $type) {
                 return $address;
             }
         }
