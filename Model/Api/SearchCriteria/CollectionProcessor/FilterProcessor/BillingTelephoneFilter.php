@@ -17,14 +17,22 @@ class BillingTelephoneFilter implements CustomFilterInterface
      */
     public function apply(Filter $filter, AbstractDb $collection)
     {
+        $phone = preg_replace('/[^\d]/', '', $filter->getValue());
+
+        $value = '';
+        $length = strlen($phone);
+        for ($i = 0; $i < $length; $i++) {
+            $value .= $phone[$i] . '[^0-9]*';
+        }
+
         $collection->addFilterToMap(
             'main_table.billing_telephone_search',
-            new \Zend_Db_Expr("REGEXP_REPLACE(`billing_telephone`, '[^0-9]+','')")
+            new \Zend_Db_Expr("`billing_telephone` REGEXP '{$value}'")
         );
         $collection->addFieldToFilter(
             'billing_telephone_search',
             [
-                $filter->getConditionType() => $filter->getValue(),
+                'eq' => 1,
             ]
         );
 
