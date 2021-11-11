@@ -119,12 +119,12 @@ class UserInfoCommand
         if (400 <= $status && 500 > $status) {
             switch ($status) {
                 case 401:
-                    $message = $body['error_description']
+                    $message = isset($body['error_description'])
                         ? __($body['error_description'])
                         : __('%1 Unauthorized', $status);
                     throw new AuthorizationException($message, null, $status);
                 default:
-                    $message = $body['error_description']
+                    $message = isset($body['error_description'])
                         ? __($body['error_description'])
                         : __('%1 Bad Request', $status);
                     throw new LocalizedException($message, null, $status);
