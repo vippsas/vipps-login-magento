@@ -22,9 +22,10 @@ use Magento\Framework\Exception\AuthorizationException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\Serialize\SerializerInterface;
+use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Api\Data\UserInfoInterface;
 use Vipps\Login\Api\Data\UserInfoInterfaceFactory;
-use Vipps\Login\Api\ApiEndpointsInterface;
+use Vipps\Login\Api\ModuleMetadataInterface;
 use Vipps\Login\Model\TokenProviderInterface;
 
 /**
@@ -62,7 +63,11 @@ class UserInfoCommand
      * @var array
      */
     private $cache = [];
-
+    /**
+     * @var ModuleMetadataInterface
+     */
+    private $moduleMetadata;
+    
     /**
      * UserInfoCommand constructor.
      *
@@ -71,19 +76,22 @@ class UserInfoCommand
      * @param UserInfoInterfaceFactory $userInfoFactory
      * @param ApiEndpointsInterface $apiEndpoints
      * @param TokenProviderInterface $tokenPayloadProvider
+     * @param ModuleMetadataInterface $moduleMetadata
      */
     public function __construct(
         SerializerInterface $serializer,
         ClientFactory $httpClientFactory,
         UserInfoInterfaceFactory $userInfoFactory,
         ApiEndpointsInterface $apiEndpoints,
-        TokenProviderInterface $tokenPayloadProvider
+        TokenProviderInterface $tokenPayloadProvider,
+        ModuleMetadataInterface $moduleMetadata
     ) {
         $this->serializer = $serializer;
         $this->httpClientFactory = $httpClientFactory;
         $this->userInfoFactory = $userInfoFactory;
         $this->apiEndpoints = $apiEndpoints;
         $this->tokenPayloadProvider = $tokenPayloadProvider;
+        $this->moduleMetadata = $moduleMetadata;
     }
 
     /**
@@ -102,6 +110,12 @@ class UserInfoCommand
 
         $httpClient = $this->httpClientFactory->create();
         $httpClient->addHeader('Authorization', 'Bearer ' . $accessToken);
+        
+        $httpClient->addHeader('Vipps-System-Name', $this->moduleMetadata->getSystemName());
+        $httpClient->addHeader('Vipps-System-Version', $this->moduleMetadata->getSystemVersion());
+        $httpClient->addHeader('Vipps-System-Plugin-Name', $this->moduleMetadata->getModuleName());
+        $httpClient->addHeader('Vipps-System-Plugin-Version', $this->moduleMetadata->getModuleVersion());
+        
         $httpClient->get($this->apiEndpoints->getUserInfoEndpoint());
 
         $status = $httpClient->getStatus();
