@@ -14,6 +14,8 @@
   ~ IN THE SOFTWARE.
   -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Vipps\Login\Api\ModuleMetadataInterface" type="Vipps\Login\Model\ModuleMetadata"/>
+
     <preference for="Vipps\Login\Api\Data\UserInfoInterface" type="Vipps\Login\Model\Data\UserInfo"/>
 
     <preference for="Vipps\Login\Api\VippsCustomerRepositoryInterface" type="Vipps\Login\Model\ResourceModel\VippsCustomerRepository"/>
