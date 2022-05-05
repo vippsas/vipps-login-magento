@@ -8,11 +8,11 @@
         "magento/module-directory": "100.4.*",
         "monolog/monolog": "^2.0",
         "firebase/php-jwt": "^5.0",
-        "phpseclib/phpseclib": "2.0.*",
+        "phpseclib/phpseclib": "^3.0",
         "psr/log": "~1.0"
     },
     "type": "magento2-module",
-    "version": "2.4.5",
+    "version": "2.4.6",
     "license": [
         "OSL-3.0",
         "AFL-3.0"
