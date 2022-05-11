@@ -145,7 +145,7 @@ class Index implements ActionInterface
             $params = [
                 'client_id='. $clientId,
                 'response_type=code',
-                'scope=' . 'openid address name email phoneNumber api_version_2',
+                'scope=' . 'openid address name email phoneNumber',
                 'state=' . $this->getStateKey(),
                 'redirect_uri=' .  trim($this->url->getUrl('vipps/login/redirect'), '/')
             ];
