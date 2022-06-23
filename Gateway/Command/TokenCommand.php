@@ -165,13 +165,13 @@ class TokenCommand
                 array_key_exists('n', $key) &&
                 array_key_exists('kid', $key)
             ) {
-                $key = PublicKeyLoader::load(
+                $pkey = PublicKeyLoader::load(
                     [
                         'e' => new BigInteger(base64_decode($key['e']), 256),
                         'n' => new BigInteger(base64_decode(strtr($key['n'], '-_', '+/'), true), 256)
                     ]
                 );
-                $publicKeys[$key['kid']] = $key->toString('PKCS8');
+                $publicKeys[$key['kid']] = $pkey->toString('PKCS8');
             }
         }
 
