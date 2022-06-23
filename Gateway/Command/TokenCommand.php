@@ -26,8 +26,8 @@ use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
 use Psr\Log\LoggerInterface;
 use Firebase\JWT\JWT;
-use phpseclib\Crypt\RSA;
-use phpseclib\Math\BigInteger;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Math\BigInteger;
 
 /**
  * Class TokenCommand
@@ -165,14 +165,13 @@ class TokenCommand
                 array_key_exists('n', $key) &&
                 array_key_exists('kid', $key)
             ) {
-                $rsa = new RSA();
-                $rsa->loadKey(
+                $key = PublicKeyLoader::load(
                     [
                         'e' => new BigInteger(base64_decode($key['e']), 256),
                         'n' => new BigInteger(base64_decode(strtr($key['n'], '-_', '+/'), true), 256)
                     ]
                 );
-                $publicKeys[$key['kid']] = $rsa->getPublicKey();
+                $publicKeys[$key['kid']] = $key->toString('PKCS8');
             }
         }
 
