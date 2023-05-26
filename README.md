@@ -15,7 +15,7 @@ Vipps, and you are logged in.
 * Magento 2.2+
    * [Magento 2 System Requirements](http://devdocs.magento.com/magento-system-requirements.html)
 * SSL is installed on your site and active on the Checkout page
-* You must have a Vipps merchant account. See [Vipps logg inn](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang). In our [FAQ](https://github.com/vippsas/vipps-login-api/blob/master/vipps-login-api-faq.md) you will find information on where you can find required credentials and how to set up Vipps login.
+* You must have a Vipps merchant account. See [Vipps logg inn](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang). In our [FAQ](https://developer.vippsmobilepay.com/docs/APIs/login-api/vipps-login-api-faq/) you will find information on where you can find required credentials and how to set up Vipps login.
 
 ## Installation and Configuration
 
@@ -34,3 +34,4 @@ For Magento support, please see the [Magento Help Center](https://support.magent
 Please follow these [instructions](https://developer.vippsmobilepay.com/docs/vipps-developers/contact/) to contact Vipps.
 
 For more information, see the [Vipps Technical Documentation](https://developer.vippsmobilepay.com/).
+
