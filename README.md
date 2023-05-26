@@ -1,4 +1,4 @@
-# Vipps Login Module for Magento
+# Vipps Login Module for Magento 2
 
 This Magento v2 module is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).
 
