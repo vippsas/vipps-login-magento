@@ -4,8 +4,8 @@
 
 1. [Magento 2.2](https://devdocs.magento.com/guides/v2.2/release-notes/bk-release-notes.html) or later
 1. SSL must be installed on your site and active on your Checkout pages.
-1. You must have a Vipps merchant account. See [Vipps logg inn](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang). In our [FAQ](https://github.com/vippsas/vipps-login-api/blob/master/vipps-login-api-faq.md) you will find information on where you can find required credentials and how to set up Vipps login. For information on Magento configuration and the Redirect URIs to add to the VippsPortal see this [User guide](https://marketplace.magento.com/media/catalog/product/vipps-module-login-1-3-3-ce/user_guides.pdf).
-1. As with _all_ Magento extensions, it is highly recommended to backup your site before installation and to install and test on a staging environment prior to production deployments.
+1. You must have a Vipps merchant account. See [Vipps logg inn](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang). In our [FAQ](https://github.com/vippsas/vipps-login-api/blob/master/vipps-login-api-faq.md) you will find information on where you can find required credentials and how to set up Vipps login. For information on Magento configuration and the Redirect URIs to add to the Vipps Portal see this [User guide](https://marketplace.magento.com/media/catalog/product/vipps-module-login-1-3-3-ce/user_guides.pdf).
+1. As with _all_ Magento extensions, it is highly recommended to back up your site before installation and to install and test on a staging environment prior to production deployments.
 
 # Installation via Composer
 

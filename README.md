@@ -1,14 +1,17 @@
-# Vipps Login Module for Magento 2
+# Vipps Login Module for Magento
+
+This Magento v2 module is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).
 
 ## About Vipps Login for Magento 2
 
-Sign in with Vipps is the easiest way to sign in and create an account. 
+Sign in with Vipps is the easiest way to sign in and create an account.
 
-No need to worry about usernames and passwords. All you need to sign in is your phone number. 
+No need to worry about usernames and passwords. All you need to sign in is your phone number.
 
 Vipps, and you are logged in.
 
 ## Prerequisites
+
 * Magento 2.2+
    * [Magento 2 System Requirements](http://devdocs.magento.com/magento-system-requirements.html)
 * SSL is installed on your site and active on the Checkout page
@@ -16,18 +19,18 @@ Vipps, and you are logged in.
 
 ## Installation and Configuration
 
-Please follow the instructions in [INSTALL.md](INSTALL.md)
+See the [installation guide](INSTALL.md).
 
-# Magento
+## Magento
 
-Magento is an open-source e-commerce platform written in PHP: https://magento.com
+[Magento](https://magento.com) is an open-source ecommerce platform written in PHP.
 
-For Magento support, please see the Magento Help Center: https://support.magento.com/hc/en-us
+For Magento support, please see the [Magento Help Center](https://support.magento.com/hc/en-us).
 
-Magento Inc is an Adobe company: https://magento.com/about
+[Magento Inc](https://magento.com/about) is an Adobe company.
 
-# Vipps contact information
+## Vipps contact information
 
-Please follow this [instruction](https://github.com/vippsas/vipps-developers/blob/master/contact.md) to contact us.
+Please follow these [instructions](https://developer.vippsmobilepay.com/docs/vipps-developers/contact/) to contact Vipps.
 
-See the Vipps Developers repository for Vipps contact information, etc: https://github.com/vippsas/vipps-developers
+For more information, see the [Vipps Technical Documentation](https://developer.vippsmobilepay.com/).
