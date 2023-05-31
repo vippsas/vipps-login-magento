@@ -1,8 +1,8 @@
-# Vipps Login Module for Magento 2
+# Login for Magento
 
 This Magento v2 module is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).
 
-## About Vipps Login for Magento 2
+## About Vipps Login for Magento
 
 Sign in with Vipps is the easiest way to sign in and create an account.
 
@@ -15,7 +15,10 @@ Vipps, and you are logged in.
 * Magento 2.2+
    * [Magento 2 System Requirements](http://devdocs.magento.com/magento-system-requirements.html)
 * SSL is installed on your site and active on the Checkout page
-* You must have a Vipps merchant account. See [Vipps logg inn](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang). In our [FAQ](https://developer.vippsmobilepay.com/docs/APIs/login-api/vipps-login-api-faq/) you will find information on where you can find required credentials and how to set up Vipps login.
+* You must have a Vipps merchant account. See [Vipps log in](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang).
+
+For information about finding required credentials and how to set up Vipps login,
+see the [Login FAQ](https://developer.vippsmobilepay.com/docs/APIs/login-api/vipps-login-api-faq/).
 
 ## Installation and Configuration
 

@@ -1,13 +1,15 @@
-# Vipps Login Module for Magento 2: Installation
+# Installation guide
 
-# Prerequisites
+Install the Vipps Login Module for Magento v2.
+
+## Prerequisites
 
 1. [Magento 2.2](https://devdocs.magento.com/guides/v2.2/release-notes/bk-release-notes.html) or later
 1. SSL must be installed on your site and active on your Checkout pages.
 1. You must have a Vipps merchant account. See [Vipps logg inn](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang). In the [Login API FAQ](https://developer.vippsmobilepay.com/docs/APIs/login-api/vipps-login-api-faq/) you will find information on where you can find required credentials and how to set up Vipps login. For information on Magento configuration and the Redirect URIs to add to the VippsPortal see this [User guide](https://marketplace.magento.com/media/catalog/product/vipps-module-login-1-3-3-ce/user_guides.pdf).
 1. As with _all_ Magento extensions, it is highly recommended to backup your site before installation and to install and test on a staging environment prior to production deployments.
 
-# Installation via Composer
+## Installation via Composer
 
 1. Navigate to your [Magento root directory](https://devdocs.magento.com/guides/v2.2/extension-dev-guide/build/module-file-structure.html).
 1. Enter command: `composer require vipps/module-login`
@@ -15,7 +17,7 @@
 1. Enter command: `php bin/magento setup:upgrade`
 1. Put your Magento in production mode if it’s required.
 
-# Configuration
+## Configuration
 
 The Vipps Login module can be easily configured to meet business expectations of your web store. This section will show you how to configure the extension via `Magento Admin`.
 
@@ -25,7 +27,7 @@ In the [Login API FAQ](https://developer.vippsmobilepay.com/docs/APIs/login-api/
 
 Once you have finished with the configuration simply click `Save` button for your convenience. 
 
-# Support
+## Support
 
 Magento is an open source ecommerce solution: https://magento.com
 
