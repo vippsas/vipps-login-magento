@@ -1,5 +1,9 @@
 # Login for Magento
 
+<!-- START_COMMENT -->
+💥 Please use the plugin pages on [https://developer.vippsmobilepay.com](https://developer.vippsmobilepay.com/docs/vipps-plugins/). 💥
+<!-- END_COMMENT -->
+
 This Magento v2 module is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).
 
 ## About Vipps Login for Magento
