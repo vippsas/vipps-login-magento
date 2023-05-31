@@ -28,17 +28,15 @@ see the [Login FAQ](https://developer.vippsmobilepay.com/docs/APIs/login-api/vip
 
 See the [installation guide](INSTALL.md).
 
-## Magento
+## Technical user guide
+
+See the [Technical user guide](Technical-User-Guide.md).
+
+## About Magento
 
 [Magento](https://magento.com) is an open-source ecommerce platform written in PHP.
 
 For Magento support, please see the [Magento Help Center](https://support.magento.com/hc/en-us).
 
 [Magento Inc](https://magento.com/about) is an Adobe company.
-
-## Vipps contact information
-
-Please follow these [instructions](https://developer.vippsmobilepay.com/docs/vipps-developers/contact/) to contact Vipps.
-
-For more information, see the [Vipps Technical Documentation](https://developer.vippsmobilepay.com/).
 
