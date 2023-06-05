@@ -66,7 +66,7 @@ There are three ways to update the addresses and the customer is able to select 
 
 <!--![Logged-in with Vipps](account-logged-in-with-vipps.png)-->
 
-In the case when a behavior set to *ask first* and the Vipps adress(es) where changed, the customer will see a notification.
+In the case when a behavior set to *ask first* and the Vipps address(es) where changed, the customer will see a notification.
 
 
 ## Work with addresses
@@ -91,7 +91,7 @@ If the Vipps address was not converted to Magento, there will be a link *Use Add
 
 <!--![Vipps not applied addresses](account-vipps-addresses-not-applied.png)-->
 
-By selecting *Bruk addresse*, the customer will be able to edit the address and save it in a standard Magento way.
+By selecting *Bruk adresse* ("Use address"), the customer will be able to edit the address and save it in a standard Magento way.
 
 <!--![Edit Vipps address](account-edit-vipps-address.png)-->
 
