@@ -1,4 +1,15 @@
-# Technical user guide
+<!-- START_METADATA
+---
+title: Login for Magento user guide
+sidebar_label: User guide
+sidebar_position: 30
+hide_table_of_contents: true
+pagination_next: null
+pagination_prev: null
+---
+END_METADATA -->
+
+# User guide
 
 ## Introduction
 
