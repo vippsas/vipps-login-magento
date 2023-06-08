@@ -23,11 +23,7 @@ Using Vipps is the easiest way to sign in and create an account.
 
 No need to worry about usernames and passwords. All you need to sign in is your phone number.
 
-## Installation and Configuration
+## Documentation
 
-See the [installation guide](INSTALL.md).
-This Magento v2 module is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).
-
-## Technical user guide
-
-See the [user guide](Technical-User-Guide.md).
+* [Installation guide](INSTALL.md)
+* [User guide](Technical-User-Guide.md)
