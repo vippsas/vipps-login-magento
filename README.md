@@ -1,6 +1,6 @@
 <!-- START_METADATA
 ---
-title: Login for Magento plugin
+title: Vipps Login for Magento plugin
 sidebar_label: Introduction
 sidebar_position: 1
 hide_table_of_contents: true
@@ -9,7 +9,9 @@ pagination_prev: null
 ---
 END_METADATA -->
 
-# Login for Magento
+# Vipps Login for Magento
+
+*This plugin is built and maintained by [Vaimo](https://www.vaimo.com/) and is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).*
 
 <!-- START_COMMENT -->
 💥 Please use the plugin pages on [https://developer.vippsmobilepay.com](https://developer.vippsmobilepay.com/docs/vipps-plugins/). 💥
