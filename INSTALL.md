@@ -37,7 +37,7 @@ From *Magento Admin*, navigate to *Store* > *Configuration* > *Vipps* > *Login*.
 
 You will find information on where you can find required credentials and how to set up Vipps login in the [Login API FAQ](https://developer.vippsmobilepay.com/docs/APIs/login-api/vipps-login-api-faq/).
 
-For information on Magento configuration and the Redirect URIs to add to the [Vipps Portal](ttps://portal.vipps.no/), see the
-[Magento User guide](https://marketplace.magento.com/media/catalog/product/vipps-module-login-1-3-3-ce/user_guides.pdf).
+For information on Magento configuration and the Redirect URIs to add to the [Vipps Portal](https://portal.vipps.no/), see the
+[Magento User guide](https://commercemarketplace.adobe.com/media/catalog/product/vipps-module-login-2-4-12-ece/user_guides.pdf).
 
 Once you have finished with the configuration, click *Save* button.
