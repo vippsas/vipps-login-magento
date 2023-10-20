@@ -15,7 +15,7 @@ END_METADATA -->
 
 ![Vipps](./docs/images/vipps.png) *Available for Vipps.*
 
-![MobilePay](./docs/images/mp.png) *Will be available for MobilePay at some point, but the date hasn't been determined.*
+![MobilePay](./docs/images/mp.png) *Availability for MobilePay has not yet been determined.*
 
 *This plugin is built and maintained by [Vaimo](https://www.vaimo.com/) and is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).*
 
