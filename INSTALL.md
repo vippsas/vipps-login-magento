@@ -18,7 +18,7 @@ Install the Vipps Login Module for Magento v2.
     * [Magento 2 System Requirements](http://devdocs.magento.com/magento-system-requirements.html)
 1. SSL must be installed on your site and active on your Checkout pages.
 1. You must have a Vipps merchant account.
-    * See [Kom i gang med Vipps Logg inn](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang).
+    * See [Get going with Vipps Log in](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang).
 1. As with *all* Magento extensions, it is highly recommended backing up your site before installation and to install and test on a staging environment prior to production deployments.
 
 ## Installation via Composer
@@ -35,9 +35,107 @@ The Vipps Login module can be easily configured to meet business expectations of
 
 From *Magento Admin*, navigate to *Store* > *Configuration* > *Vipps* > *Login*.
 
-You will find information on where you can find required credentials and how to set up Vipps login in the [Login API FAQ](https://developer.vippsmobilepay.com/docs/APIs/login-api/vipps-login-api-faq/).
+Configuration details are described below:
 
-For information on Magento configuration and the Redirect URIs to add to the [Vipps Portal](https://portal.vipps.no/), see the
-[Magento User guide](https://commercemarketplace.adobe.com/media/catalog/product/vipps-module-login-2-4-12-ece/user_guides.pdf).
+* [Magento configuration](#magento-configuration-details)
+* [Vipps configuration](#vipps-login-configuration-details)
 
 Once you have finished with the configuration, click *Save* button.
+
+### Magento configuration details
+
+Configure your Magento account to work with Vipps Login.
+
+After installing the Vipps Login module, a new menu item should appear in your
+store's *Configuration Navigation*.
+From here, you can enter your Vipps `client_id` and `client_secret` that was referred to
+in the previous section.
+
+You can also switch between *Development* and *Production* mode.
+
+While debugging, you can enable *Debugging*. Note that this will log additional
+data to your Magento logs, so it is recommended that this is switched off.
+
+After setting up the module, it should appear in the frontend in a few locations
+automatically. For example, on the customer login page:
+
+![Customer login](./docs/images/3customer-login.jpg)
+
+The customer registration page allows your customers to quickly register a
+new account using their existing data in Vipps.
+
+![Create new account](./docs/images/4create-new-account.jpg)
+
+And, on the checkout page again allowing your customers to quickly log in not using
+a traditional username and password, and fill in their information with the data that is already
+stored in Vipps.
+
+![Shipping address 1](./docs/images/5shipping-address.jpg)
+
+Or even log in with an authentication popup, where the Vipps Login button is also present.
+
+![Shipping address 2](./docs/images/6shipping-address.jpg)
+
+Using the Vipps Login module, you can create a widget with *Sign In* button and put it in any
+website location.
+
+![Create widget](./docs/images/7create-widget.jpg)
+
+The frontend view may look like this:.
+
+![Frontend view](./docs/images/8frontend-view.jpg)
+
+When you have been registered, you will receive a confirmation email with
+an updated template. Inside this email, you can set a password to your account or always
+use Vipps Login functionality.
+
+![Registration](./docs/images/9register.jpg)
+
+### Vipps Login configuration details
+
+This section explains:
+
+* How to find required credentials
+* How to set up Vipps Login for your sales unit
+* What Redirect URIs to add to the [Vipps Portal](https://portal.vipps.no)
+
+1. Create your merchant account with Vipps
+
+    To start using Vipps Login, you must first have a Vipps merchant account with login
+    functionality. If you don't already have this, you can
+    [apply on vipps.no (site is in Norwegian)](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/).
+
+2. Retrieve your API Keys to send with your API requests
+
+    Once you have an account, log in to the merchant portal at [portal.vipps.no](https://portal.vipps.no) and get your API keys​.
+
+    You will find them by going to the *Utvikler* (*Developer*) section, you will find the *API Keys* tab.
+    There you can find a list of your sales units. Find the sales unit applicable to your store and press
+    *Show Keys*. This will open a new panel with your `client_id` and `client_secret`.
+
+    **Please note:** If you are already using your `client_secret` in another application, you should use the same in both applications.
+    Either reuse the secret or generate a new secret and update it in both places.
+
+    For more details, see:
+
+    * [How to find a sales unit](https://developer.vippsmobilepay.com/docs/developer-resources/portal/)
+    * [API keys](https://developer.vippsmobilepay.com/docs/common-topics/api-keys/)
+
+3. Activate Vipps Login for your sales unit
+
+    If you haven't already done so, activate *Login with Vipps* for your sales unit.
+    Find your sales unit as you did in the last step.
+    Once there, click the *Set up login* button.
+
+    When asked to set up the redirect URIs, enter your Magento store's base URL +
+    `/vipps/login/redirect`. For example,if your store is located at `​http://www.example.org/`,​ the URL would be: `http://www.example.org/vipps/login/redirect`.
+
+    Note that if you are using store codes in the URL, this must also be included. For example, if the store code is `no`: `http://www.example.org/no/vipps/login/redirect`.
+
+    For more details, see:
+
+    * [How to find a sales unit](https://developer.vippsmobilepay.com/docs/developer-resources/portal/)
+    * [How to set up Login for your sales unit](https://developer.vippsmobilepay.com/docs/developer-resources/portal/#how-to-set-up-login-for-your-sales-unit)
+
+**Please note:** To use the app in test mode, you must use the Vipps test app. For instructions on how to set up the vipps test app, please see
+[Vipps Knowledge base: Test apps](https://developer.vippsmobilepay.com/docs/test-environment/#test-apps).
