@@ -119,7 +119,7 @@ This section explains:
     For more details, see:
 
     * [How to find a sales unit](https://developer.vippsmobilepay.com/docs/developer-resources/portal/)
-    * [API keys](https://developer.vippsmobilepay.com/docs/common-topics/api-keys/)
+    * [API keys](https://developer.vippsmobilepay.com/docs/knowledge-base/api-keys/)
 
 3. Activate Vipps Login for your sales unit
 
