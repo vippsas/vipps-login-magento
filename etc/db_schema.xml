@@ -91,4 +91,20 @@
                     table="vipps_quote_addresses_relation" column="vipps_customer_address_id" referenceTable="vipps_customer_address"
                     referenceColumn="entity_id" onDelete="CASCADE"/>
     </table>
+
+    <table name="vipps_login_authorization" resource="default" engine="innodb" comment="Vipps Login Authorization Table">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true"
+                comment="Entity ID"/>
+        <column xsi:type="varchar" name="code" nullable="false" length="255" comment="code"/>
+        <column xsi:type="text" name="payload" nullable="true" comment="Payload"/>
+        <column xsi:type="datetime" name="created_at" nullable="true" comment="Creation Date"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+
+        <constraint xsi:type="unique" referenceId="VIPPS_LOGIN_AUTHORIZATION_CODE_UNIQUE">
+            <column name="code"/>
+        </constraint>
+    </table>
 </schema>

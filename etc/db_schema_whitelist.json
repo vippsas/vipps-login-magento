@@ -51,5 +51,17 @@
             "VIPPS_QUOTE_ADDRES_RELATION_QUOTE_ADDR_ID_QUOTE_ADDR_ADDR_ID": true,
             "FK_46E162119F9C6A5527FB629B614079C7": true
         }
+    },
+    "vipps_login_authorization": {
+        "column": {
+            "entity_id": true,
+            "code": true,
+            "payload": true,
+            "created_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "VIPPS_LOGIN_AUTHORIZATION_CODE": true
+        }
     }
 }
