@@ -97,7 +97,7 @@ This section explains:
 
 * How to find required credentials
 * How to set up Vipps Login for your sales unit
-* What Redirect URIs to add to the [Vipps Portal](https://portal.vipps.no)
+* What Redirect URIs to add to the Vipps MobilePay [Merchant Portal](https://portal.vippsmobilepay.com)
 
 1. Create your merchant account with Vipps
 
@@ -107,9 +107,9 @@ This section explains:
 
 2. Retrieve your API Keys to send with your API requests
 
-    Once you have an account, log in to the merchant portal at [portal.vipps.no](https://portal.vipps.no) and get your API keys​.
+    Once you have an account, log in to the merchant portal at [portal.vippsmobilepay.com](https://portal.vippsmobilepay.com) and get your API keys​.
 
-    You will find them by going to the *Utvikler* (*Developer*) section, you will find the *API Keys* tab.
+    You will find them by going to the *Developer* section, you will find the *API Keys* tab.
     There you can find a list of your sales units. Find the sales unit applicable to your store and press
     *Show Keys*. This will open a new panel with your `client_id` and `client_secret`.
 
