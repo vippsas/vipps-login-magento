@@ -18,7 +18,7 @@ Install the Vipps Login Module for Magento v2.
     * [Magento 2 System Requirements](http://devdocs.magento.com/magento-system-requirements.html)
 1. SSL must be installed on your site and active on your Checkout pages.
 1. You must have a Vipps merchant account.
-    * See [Get going with Vipps Log in](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang).
+    * See [*Login*](https://vippsmobilepay.com/online/login).
 1. As with *all* Magento extensions, it is highly recommended backing up your site before installation and to install and test on a staging environment prior to production deployments.
 
 ## Installation via Composer
@@ -103,7 +103,7 @@ This section explains:
 
     To start using Vipps Login, you must first have a Vipps merchant account with login
     functionality. If you don't already have this, you can
-    [apply on vipps.no (site is in Norwegian)](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/).
+    [*Login*](https://vippsmobilepay.com/online/login).
 
 2. Retrieve your API Keys to send with your API requests
 
