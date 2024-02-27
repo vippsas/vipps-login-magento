@@ -3,6 +3,7 @@
 title: Vipps Login for Magento 2
 sidebar_label: Introduction
 sidebar_position: 1
+description: Allow customers to log in to Magento websites using the Vipps app.
 hide_table_of_contents: true
 pagination_next: null
 pagination_prev: null
