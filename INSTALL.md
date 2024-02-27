@@ -3,6 +3,7 @@
 title: Login for Magento Plugin installation guide
 sidebar_label: Installation guide
 sidebar_position: 20
+description: Install the Vipps Login Module for Magento v2.
 pagination_next: null
 pagination_prev: null
 ---
