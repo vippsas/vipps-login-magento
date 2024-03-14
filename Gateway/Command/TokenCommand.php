@@ -242,7 +242,7 @@ class TokenCommand
                         'n' => new BigInteger(base64_decode(strtr($key['n'], '-_', '+/'), true), 256)
                     ]
                 );
-                $publicKeys[$key['kid']] = $pkey->toString('PKCS8');
+                $publicKeys[$key['kid']] = new \Firebase\JWT\Key($pkey->toString('PKCS8'), 'RS256');
             }
         }
 
