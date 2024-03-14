@@ -208,7 +208,9 @@ class TokenCommand
     {
         if (array_key_exists('id_token', $token)) {
             JWT::$leeway = self::TOKEN_LEEWAY;
-            $payload = JWT::decode($token['id_token'], $this->getPublicKeys(), ['RS256']);
+
+            $headers = (object)['alg' => 'RS256'];
+            $payload = JWT::decode($token['id_token'], $this->getPublicKeys(), $headers);
 
             //encode and decode again to convert strClass to array
             return $this->serializer->unserialize($this->serializer->serialize($payload));
