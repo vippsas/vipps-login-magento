@@ -18,6 +18,7 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Gateway\Command;
 
+use Firebase\JWT\Key;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Exception\LocalizedException;
@@ -36,6 +37,8 @@ use phpseclib3\Math\BigInteger;
  */
 class TokenCommand
 {
+    private const ALGO = 'RS256';
+
     /**
      * @var string
      */
@@ -208,7 +211,9 @@ class TokenCommand
     {
         if (array_key_exists('id_token', $token)) {
             JWT::$leeway = self::TOKEN_LEEWAY;
-            $payload = JWT::decode($token['id_token'], $this->getPublicKeys(), ['RS256']);
+
+            $headers = (object)['alg' => self::ALGO];
+            $payload = JWT::decode($token['id_token'], $this->getPublicKeys(), $headers);
 
             //encode and decode again to convert strClass to array
             return $this->serializer->unserialize($this->serializer->serialize($payload));
@@ -240,7 +245,7 @@ class TokenCommand
                         'n' => new BigInteger(base64_decode(strtr($key['n'], '-_', '+/'), true), 256)
                     ]
                 );
-                $publicKeys[$key['kid']] = $pkey->toString('PKCS8');
+                $publicKeys[$key['kid']] = new Key($pkey->toString('PKCS8'), self::ALGO);
             }
         }
 
