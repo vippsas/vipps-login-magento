@@ -16,13 +16,16 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="vipps" translate="label" sortOrder="205">
-            <label>Vipps</label>
+            <label>Vipps MobilePay</label>
         </tab>
         <section id="vipps" translate="label" type="text" sortOrder="305" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Login</label>
             <tab>vipps</tab>
             <resource>Vipps_Login::login</resource>
             <group id="vipps_login" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="5">
+                <fieldset_css>complex vipps-section active</fieldset_css>
+                <frontend_model>Vipps\Login\Model\Adminhtml\System\Config\LoginHeaderFieldSet</frontend_model>
+                <comment><![CDATA[With the Login API, Users can log...(needs update)]]></comment>
                 <field id="environment" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Environment</label>
                     <source_model>Vipps\Login\Model\Adminhtml\Source\Environment</source_model>
