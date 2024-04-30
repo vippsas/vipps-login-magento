@@ -9,7 +9,7 @@
         "monolog/monolog": "^1.17||^2.0",
         "firebase/php-jwt": "^6.0",
         "phpseclib/phpseclib": "2.0.*||^3.0",
-        "psr/log": "^2.0||^3.0"
+        "psr/log": "^1.0||^2.0||^3.0"
     },
     "type": "magento2-module",
     "version": "2.4.13",
