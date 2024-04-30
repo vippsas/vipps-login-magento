@@ -19,10 +19,10 @@ declare(strict_types=1);
 namespace Vipps\Login\Block\Checkout;
 
 use Magento\Checkout\Block\Checkout\LayoutProcessorInterface;
-use Magento\Customer\Model\Session;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
+use Vipps\Login\Api\Block\ClassPoolInterface;
 use Vipps\Login\Api\VippsAccountManagementInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
@@ -34,60 +34,24 @@ use Vipps\Login\Model\ConfigInterface;
  */
 class LayoutProcessor implements LayoutProcessorInterface
 {
-    /**
-     * @var StoreManagerInterface
-     */
-    private $storeManager;
+    private StoreManagerInterface $storeManager;
+    private SessionManagerInterface $customerSession;
+    private VippsAccountManagementInterface $vippsAccountManagement;
+    private VippsCustomerRepositoryInterface $vippsCustomerRepository;
+    private VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository;
+    private LoggerInterface $logger;
+    private ConfigInterface $config;
+    private ClassPoolInterface $classPool;
 
-    /**
-     * @var SessionManagerInterface|Session
-     */
-    private $customerSession;
-
-    /**
-     * @var VippsAccountManagementInterface
-     */
-    private $vippsAccountManagement;
-
-    /**
-     * @var VippsCustomerRepositoryInterface
-     */
-    private $vippsCustomerRepository;
-
-    /**
-     * @var VippsCustomerAddressRepositoryInterface
-     */
-    private $vippsCustomerAddressRepository;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
-
-    /**
-     * LayoutProcessor constructor.
-     *
-     * @param StoreManagerInterface $storeManager
-     * @param SessionManagerInterface $customerSession
-     * @param VippsAccountManagementInterface $vippsAccountManagement
-     * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
-     * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
-     * @param ConfigInterface $config
-     * @param LoggerInterface $logger
-     */
     public function __construct(
-        StoreManagerInterface $storeManager,
-        SessionManagerInterface $customerSession,
-        VippsAccountManagementInterface $vippsAccountManagement,
-        VippsCustomerRepositoryInterface $vippsCustomerRepository,
+        StoreManagerInterface                   $storeManager,
+        SessionManagerInterface                 $customerSession,
+        VippsAccountManagementInterface         $vippsAccountManagement,
+        VippsCustomerRepositoryInterface        $vippsCustomerRepository,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
-        ConfigInterface $config,
-        LoggerInterface $logger
+        ClassPoolInterface                      $classPool,
+        ConfigInterface                         $config,
+        LoggerInterface                         $logger
     ) {
         $this->storeManager = $storeManager;
         $this->customerSession = $customerSession;
@@ -96,6 +60,7 @@ class LayoutProcessor implements LayoutProcessorInterface
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
         $this->logger = $logger;
         $this->config = $config;
+        $this->classPool = $classPool;
     }
 
     /**
@@ -134,14 +99,14 @@ class LayoutProcessor implements LayoutProcessorInterface
                 $addressOptions[] = ['value' => '', 'label' => __('Select address')];
                 foreach ($addresses as $address) {
                     $addressOptions[] = [
-                        'value' => $address->getEntityId(),
-                        'label' => $address->getFormatted(),
+                        'value'   => $address->getEntityId(),
+                        'label'   => $address->getFormatted(),
                         'address' => [
                             'country_id' => $address->getCountry(),
-                            'postcode' => $address->getPostalCode(),
-                            'city' => $address->getRegion(),
-                            'telephone' => $vippsCustomer->getTelephone(),
-                            'street' => $address->getStreetAddress()
+                            'postcode'   => $address->getPostalCode(),
+                            'city'       => $address->getRegion(),
+                            'telephone'  => $vippsCustomer->getTelephone(),
+                            'street'     => $address->getStreetAddress()
                         ]
                     ];
                 }
@@ -181,8 +146,8 @@ class LayoutProcessor implements LayoutProcessorInterface
     private function processBillingAddress($jsLayout)
     {
         $paymentMethods = $jsLayout['components']['checkout']['children']['steps']['children']
-                        ['billing-step']['children']['payment']['children']
-                        ['payments-list']['children'] ?? [];
+                          ['billing-step']['children']['payment']['children']
+                          ['payments-list']['children'] ?? [];
         foreach ($paymentMethods as $paymentCode => $value) {
             $paymentCode = str_replace('-form', '', $paymentCode);
 
@@ -213,26 +178,26 @@ class LayoutProcessor implements LayoutProcessorInterface
     private function getVippsAddressComponent($scope)
     {
         return [
-            'component' => 'Vipps_Login/js/model/vipps-addresses',
-            'config' => [
+            'component'   => 'Vipps_Login/js/model/vipps-addresses',
+            'config'      => [
                 'customScope' => $scope,
                 'customEntry' => null,
-                'template' => 'ui/form/field',
+                'template'    => 'ui/form/field',
                 'elementTmpl' => 'ui/form/element/select',
             ],
-            'dataScope' => $scope,
-            'label' => __('Use address from Vipps'),
-            'provider' => 'checkoutProvider',
-            'sortOrder' => 0,
-            'validation' => [
+            'dataScope'   => $scope,
+            'label'       => __('Use address from Vipps'),
+            'provider'    => 'checkoutProvider',
+            'sortOrder'   => 0,
+            'validation'  => [
                 'required-entry' => false
             ],
-            'options' => [],
-            'filterBy' => null,
+            'options'     => [],
+            'filterBy'    => null,
             'customEntry' => null,
-            'visible' => true,
-            'deps' => ['checkoutProvider'],
-            'imports' => [
+            'visible'     => true,
+            'deps'        => ['checkoutProvider'],
+            'imports'     => [
                 'setOptions' => "index = checkoutProvider:dictionaries.vipps_addresses_list"
             ]
         ];
@@ -245,10 +210,13 @@ class LayoutProcessor implements LayoutProcessorInterface
     {
         return [
             'component' => 'Vipps_Login/js/view/checkout/vipps_checkout_login',
-            'config' => [
+            'config'    => [
                 'template' => 'Vipps_Login/vipps-checkout-login/login-btn',
-                'title' => __('Vipps login form'),
+                'title'    => __('Vipps login form'),
             ],
+            'options'   => [
+                'className' => $this->classPool->get()
+            ]
         ];
     }
 }

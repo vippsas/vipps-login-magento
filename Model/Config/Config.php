@@ -68,6 +68,16 @@ class Config implements ConfigInterface
         return $this->getValue(self::VIPPS_LOGIN_ENVIRONMENT, $storeId);
     }
 
+    public function getVersion(): string
+    {
+        return (string)$this->getValue(self::VIPPS_LOGIN_VERSION);
+    }
+
+    public function getTitle(): string
+    {
+        return (string)$this->getValue('vipps/login/title_' . $this->getVersion());
+    }
+
     /**
      * @param null $storeId
      *

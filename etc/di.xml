@@ -38,6 +38,8 @@
 
     <preference for="Vipps\Login\Model\ConfigInterface" type="Vipps\Login\Model\Config\Config"/>
 
+    <preference for="Vipps\Login\Api\Block\ClassPoolInterface" type="Vipps\Login\Model\Block\ClassPool" />
+
     <!-- Defining Vipps_Login logger object to process logs into vipps_login files -->
     <virtualType name="Vipps\Login\Model\Logger" type="Monolog\Logger">
         <arguments>
@@ -94,6 +96,20 @@
     <type name="Vipps\Login\Model\Customer\AccountsProvider">
         <arguments>
             <argument name="collectionProcessor" xsi:type="object">Vipps\Login\Api\SearchCriteria\CustomerCollectionProcessor</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="blockClassProviderPool" type="Vipps\Login\Model\Config\Version\Pool">
+        <arguments>
+            <argument xsi:type="array" name="pool">
+                <item name="vipps_payment" xsi:type="string">vipps</item>
+                <item name="mobile_epayment" xsi:type="string">mobilepay</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <type name="Vipps\Login\Model\Block\ClassPool">
+        <arguments>
+            <argument xsi:type="object" name="pool">blockClassProviderPool</argument>
         </arguments>
     </type>
 </config>
