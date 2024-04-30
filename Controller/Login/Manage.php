@@ -24,6 +24,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\View\Result\Page;
 use Psr\Log\LoggerInterface;
+use Vipps\Login\Model\ConfigInterface;
 
 /**
  * Class Manage
@@ -35,6 +36,7 @@ class Manage extends AccountBase
      * @var ResultFactory
      */
     private $resultFactory;
+    private ConfigInterface $config;
 
     /**
      * Manage constructor.
@@ -46,12 +48,14 @@ class Manage extends AccountBase
      */
     public function __construct(
         SessionManagerInterface $customerSession,
-        RequestInterface $request,
-        LoggerInterface $logger,
-        ResultFactory $resultFactory
+        ConfigInterface         $config,
+        RequestInterface        $request,
+        LoggerInterface         $logger,
+        ResultFactory           $resultFactory
     ) {
         parent::__construct($customerSession, $request, $logger);
         $this->resultFactory = $resultFactory;
+        $this->config = $config;
     }
 
     /**
@@ -61,7 +65,7 @@ class Manage extends AccountBase
     {
         /** @var Page $resultPage */
         $resultPage = $this->resultFactory->create(ResultFactory::TYPE_PAGE);
-        $resultPage->getConfig()->getTitle()->set(__('Sign in with Vipps'));
+        $resultPage->getConfig()->getTitle()->set(__('Log in with %1', __($this->config->getTitle())));
 
         return $resultPage;
     }

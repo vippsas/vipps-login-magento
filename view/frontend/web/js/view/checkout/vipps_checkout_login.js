@@ -15,26 +15,29 @@
 
 
 define([
-   'jquery',
-   'uiComponent',
-   'Magento_Customer/js/model/customer',
-   'mage/url'
+    'jquery',
+    'uiComponent',
+    'Magento_Customer/js/model/customer',
+    'mage/url'
 ], function ($, Component, customer, url) {
-   'use strict';
+    'use strict';
 
-   return Component.extend({
-       options: {
-           isCustomerLoggedIn: customer.isLoggedIn
-       },
-       initialize: function () {
-        this._super();
-
-       },
-       checkLoginUser: function () {
-           return this.options.isCustomerLoggedIn()
-       },
-       getBaseUrl: function() {
-           return url.build('vipps/login/index');
-       }
-   });
+    return Component.extend({
+        options: {
+            isCustomerLoggedIn: customer.isLoggedIn,
+            className: ''
+        },
+        initialize: function () {
+            this._super();
+        },
+        checkLoginUser: function () {
+            return this.options.isCustomerLoggedIn
+        },
+        getBaseUrl: function () {
+            return url.build('vipps/login/index');
+        },
+        getClassName: function () {
+            return this.options.className;
+        }
+    });
 });

@@ -18,12 +18,12 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Model\Adminhtml\Source;
 
-use Magento\Framework\Option\ArrayInterface;
+use \Magento\Framework\Data\OptionSourceInterface;
 
 /**
  * Class Environment
  */
-class Environment implements ArrayInterface
+class Environment implements OptionSourceInterface
 {
     /**
      * @var string

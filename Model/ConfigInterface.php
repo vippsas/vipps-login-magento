@@ -32,6 +32,8 @@ interface ConfigInterface
 
     const VIPPS_LOGIN_DEBUG = 'vipps/login/debug';
 
+    const VIPPS_LOGIN_VERSION = 'vipps/login/version';
+
     /**
      * @param null $storeId
      *
@@ -70,4 +72,8 @@ interface ConfigInterface
      * @return bool
      */
     public function isEnabled($storeId = null);
+
+    public function getVersion(): string;
+
+    public function getTitle(): string;
 }

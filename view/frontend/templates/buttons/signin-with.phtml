@@ -13,14 +13,13 @@
  * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-
 declare(strict_types=1);
-/** @var $block \Magento\Framework\View\Element\Template */
+/** @var $block \Vipps\Login\Block\Account\Template */
 ?>
-<div class="login-vipps">
+<div class="login-vipps <?= $block->getClassName() ?>">
     <form action="<?= $block->escapeUrl($block->getUrl('vipps/login/index')); ?>" method="post">
         <button type="submit" class="action create primary vipps-btn">
-            <?= $block->escapeHtml(__('Sign in with')) ?>
+            <?= $block->escapeHtml(__('Log in with')) ?>
             <span class="icon-vipps"></span>
         </button>
     </form>

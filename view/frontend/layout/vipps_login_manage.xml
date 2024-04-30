@@ -18,7 +18,7 @@
     <body>
         <referenceContainer name="content">
             <block class="Vipps\Login\Block\Account\VippsConfiguration" name="vipps_configuration" template="Vipps_Login::account/vipps_login_configuration.phtml" ifconfig="vipps/login/enabled" cacheable="false">
-                <block class="Magento\Framework\View\Element\Template"
+                <block class="Vipps\Login\Block\Account\Template"
                        name="vipps_form_login_button"
                        template="Vipps_Login::buttons/signin-with.phtml"
                        before="-"/>
