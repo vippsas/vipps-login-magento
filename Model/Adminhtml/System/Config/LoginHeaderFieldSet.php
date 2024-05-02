@@ -137,4 +137,9 @@ class LoginHeaderFieldSet extends Fieldset
     {
         return false;
     }
+
+    protected function _getExtraJs($element)
+    {
+        return '';
+    }
 }
