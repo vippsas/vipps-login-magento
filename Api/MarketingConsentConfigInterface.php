@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Vipps\ModuleLogin\Api;
+namespace Vipps\Login\Api;
 
 interface MarketingConsentConfigInterface
 {

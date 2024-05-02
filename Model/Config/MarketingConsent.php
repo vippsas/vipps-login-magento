@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+namespace Vipps\Login\Model\Config;
+
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
-use Vipps\ModuleLogin\Api\MarketingConsentConfigInterface;
+use Vipps\Login\Api\MarketingConsentConfigInterface;
 
 class MarketingConsent implements MarketingConsentConfigInterface
 {

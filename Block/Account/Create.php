@@ -18,7 +18,6 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Block\Account;
 
-use Magento\Framework\Locale\Resolver;
 use Vipps\Login\Block\Account\Template as AccountTemplate;
 use Magento\Framework\View\Element\Template;
 use Vipps\Login\Api\Block\ClassPoolInterface;
@@ -43,13 +42,12 @@ class Create extends AccountTemplate
      * @param array $data
      */
     public function __construct(
-        Template\Context $context,
-        VippsSession     $vippsSession,
-        Resolver         $resolver,
+        Template\Context   $context,
+        VippsSession       $vippsSession,
         ClassPoolInterface $classPool,
-        array            $data = []
+        array              $data = []
     ) {
-        parent::__construct($classPool, $resolver, $context, $data);
+        parent::__construct($classPool, $context, $data);
         $this->vippsSession = $vippsSession;
     }
 

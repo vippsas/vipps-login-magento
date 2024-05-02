@@ -40,6 +40,8 @@
 
     <preference for="Vipps\Login\Api\Block\ClassPoolInterface" type="Vipps\Login\Model\Block\ClassPool" />
 
+    <preference for="Vipps\Login\Api\MarketingConsentConfigInterface" type="Vipps\Login\Model\Config\MarketingConsent" />
+
     <!-- Defining Vipps_Login logger object to process logs into vipps_login files -->
     <virtualType name="Vipps\Login\Model\Logger" type="Monolog\Logger">
         <arguments>
