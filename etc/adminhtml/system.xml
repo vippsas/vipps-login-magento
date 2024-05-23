@@ -65,46 +65,6 @@
                         <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
                     </field>
                 </group>
-                <group id="advanced_settings" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="100">
-                    <label>Advanced Settings</label>
-                    <field id="marketing_consent_active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Activate marketing consent</label>
-                        <config_path>vipps/login/marketing_consent_active</config_path>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    </field>
-                    <field id="marketing_consent_email" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Receive offers via email</label>
-                        <config_path>vipps/login/marketing_consent_email</config_path>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <depends>
-                            <field id="vipps/vipps_login/advanced_settings_marketing_consent_active">1</field>
-                        </depends>
-                    </field>
-                    <field id="marketing_consent_sms" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Receive offers via SMS</label>
-                        <config_path>vipps/login/marketing_consent_sms</config_path>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <depends>
-                            <field id="vipps/vipps_login/advanced_settings_marketing_consent_active">1</field>
-                        </depends>
-                    </field>
-                    <field id="marketing_consent_digital" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>I would like to receive digital marketing</label>
-                        <config_path>vipps/login/marketing_consent_digital</config_path>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <depends>
-                            <field id="vipps/vipps_login/advanced_settings_marketing_consent_active">1</field>
-                        </depends>
-                    </field>
-                    <field id="marketing_consent_personal" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-                        <label>Get customized offers</label>
-                        <config_path>vipps/login/marketing_consent_personal</config_path>
-                        <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                        <depends>
-                            <field id="vipps/vipps_login/advanced_settings_marketing_consent_active">1</field>
-                        </depends>
-                    </field>
-                </group>
             </group>
         </section>
     </system>
