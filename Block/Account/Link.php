@@ -22,6 +22,7 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\View\Element\Template;
 use Magento\Customer\Model\Session;
 use Vipps\Login\Api\VippsAccountManagementInterface;
+use Vipps\Login\Model\ConfigInterface;
 
 /**
  * Class Link
@@ -38,6 +39,7 @@ class Link extends Template
      * @var SessionManagerInterface|Session
      */
     private $customerSession;
+    private ConfigInterface $config;
 
     /**
      * Link constructor.
@@ -49,13 +51,15 @@ class Link extends Template
      */
     public function __construct(
         VippsAccountManagementInterface $vippsAccountManagement,
-        SessionManagerInterface $customerSession,
-        Template\Context $context,
-        array $data = []
+        SessionManagerInterface         $customerSession,
+        ConfigInterface                 $config,
+        Template\Context                $context,
+        array                           $data = []
     ) {
         parent::__construct($context, $data);
         $this->vippsAccountManagement = $vippsAccountManagement;
         $this->customerSession = $customerSession;
+        $this->config = $config;
     }
 
     /**
@@ -65,5 +69,10 @@ class Link extends Template
     {
         $customer = $this->customerSession->getCustomer();
         return $this->vippsAccountManagement->isLinked($customer->getDataModel());
+    }
+
+    public function getTitle(): string
+    {
+        return $this->config->getTitle();
     }
 }
