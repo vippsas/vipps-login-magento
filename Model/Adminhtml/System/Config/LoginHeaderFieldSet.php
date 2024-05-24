@@ -87,20 +87,7 @@ class LoginHeaderFieldSet extends Fieldset
     {
         $html = '<div class="config-heading" >';
 
-        $groupConfig = $element->getGroup();
-
         $html .= '<div class="button-container">';
-
-        if (!empty($groupConfig['more_url'])) {
-            $html .= '<a class="link-more" href="' . $groupConfig['more_url'] . '" target="_blank">' . __(
-                    'Learn More'
-                ) . '</a>';
-        }
-        if (!empty($groupConfig['demo_url'])) {
-            $html .= '<a class="link-demo" href="' . $groupConfig['demo_url'] . '" target="_blank">' . __(
-                    'View Demo'
-                ) . '</a>';
-        }
 
         $html .= '</div>';
         $html .= '<div class="heading"><strong>' . $element->getLegend() . '</strong>';
