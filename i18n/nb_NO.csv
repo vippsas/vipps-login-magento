@@ -29,7 +29,7 @@ error_description,error_description
 "Vipps Login Configuration","Vipps Logg Inn Konfigurasjon"
 "Create Account with Vipps","Opprett ny konto med Vipps"
 "register with email","registrer deg med e-post"
-"Unlink my account from Vipps","Fjern tilknytning fra Vipps"
+"Unlink my account from %1","Fjern tilknytning fra %1"
 "Addresses from Vipps","Adresser fra Vipps"
 "Apply address","Bruk adresse"
 "Applied","I bruk"
