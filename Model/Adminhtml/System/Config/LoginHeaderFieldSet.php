@@ -86,10 +86,7 @@ class LoginHeaderFieldSet extends Fieldset
     protected function _getHeaderTitleHtml($element)
     {
         $html = '<div class="config-heading" >';
-
-        $html .= '<div class="button-container">';
-
-        $html .= '</div>';
+        $html .= '<div class="button-container"></div>';
         $html .= '<div class="heading"><strong>' . $element->getLegend() . '</strong>';
 
         if ($element->getComment()) {
