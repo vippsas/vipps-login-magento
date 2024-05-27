@@ -26,7 +26,12 @@
                 <fieldset_css>complex vipps-section active</fieldset_css>
                 <frontend_model>Vipps\Login\Model\Adminhtml\System\Config\LoginHeaderFieldSet</frontend_model>
                 <comment><![CDATA[With the Login API, users can log in to your service by using their Vipps or MobilePay account. This simplifies the process for users, as they don't need to fill out a form or remember a password to access your services. This also provides you with pre-verified user data.
-For information product order go to: <a target="_blank" href="https://portal.vippsmobilepay.com/login">Product order</a>]]></comment>
+                <br />
+                <br />
+                <a target="_blank" href="https://portal.vippsmobilepay.com/login">Product order</a>
+                <br />
+                <a target="_blank" href="https://developer.vippsmobilepay.com/docs/plugins-ext/login-magento/">Plugin documentation</a>
+]]></comment>
                 <field id="environment" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Environment</label>
                     <source_model>Vipps\Login\Model\Adminhtml\Source\Environment</source_model>
