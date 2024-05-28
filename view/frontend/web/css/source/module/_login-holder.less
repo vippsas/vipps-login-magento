@@ -125,8 +125,14 @@
         color: @cipps__text-color;
     }
 
-    &.mobilepay {
-        .vipps-btn::before {
+    .login-vipps {
+        .vipps-btn {
+            .vipps-btn;
+        }
+    }
+
+    .vipps-btn {
+        &.mobilepay::before {
             content: '';
             background: url("@{baseDir}images/mobilepay-continue-icon.svg") left center no-repeat;
             width: 16px;
@@ -174,8 +180,8 @@
     }
 }
 
-.mobilepay {
-    .vipps-btn {
+.vipps-btn {
+    &.mobilepay {
         align-items: center;
         background: @vipps__mobilepay-color;
         font-size: 18.5px;
@@ -206,8 +212,8 @@
 }
 
 html:lang(fi) {
-    .mobilepay {
-        .vipps-btn {
+    .vipps-btn {
+        &.mobilepay {
             .icon-vipps {
                 background: url("@{baseDir}images/mobilepay-logo-fi.svg") left center no-repeat;
                 padding-left: 118px;
@@ -248,6 +254,8 @@ html:lang(fi) {
 
 .login-vipps-account {
     .vipps-btn {
+        .vipps-btn;
+
         border-radius: 5px;
     }
 }
@@ -272,6 +280,10 @@ html:lang(fi) {
 
     form.form-login {
         margin-bottom: 15px;
+    }
+
+    .vipps-btn {
+        .vipps-btn;
     }
 
     .fieldset:after {
