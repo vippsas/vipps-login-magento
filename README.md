@@ -1,6 +1,6 @@
 <!-- START_METADATA
 ---
-title: Vipps Login for Magento 2
+title: Vipps/MobilePay Login for Adobe Commerce
 sidebar_label: Introduction
 sidebar_position: 1
 description: Allow customers to log in to Magento websites using the Vipps app.
@@ -10,7 +10,7 @@ pagination_prev: null
 ---
 END_METADATA -->
 
-# Vipps Login for Magento 2
+# Vipps/MobilePay Login for Adobe Commerce /Magento
 
 ![Support and development by Vaimo ](./docs/images/vaimo.svg#gh-light-mode-only)![Support and development by Vaimo](./docs/images/vaimo_dark.svg#gh-dark-mode-only)
 

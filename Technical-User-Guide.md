@@ -1,6 +1,6 @@
 <!-- START_METADATA
 ---
-title: Login for Magento user guide
+title: Vipps/MobilePay Login for Adobe Commerce user guide
 sidebar_label: User guide
 sidebar_position: 30
 hide_table_of_contents: true
@@ -13,9 +13,9 @@ END_METADATA -->
 
 ## Introduction
 
-The Vipps Login module offers functionality for authenticating end users and authorizing clients.
-Vipps Login is founded on the OAuth2 and OpenID Connect specifications.
-It supports using web browsers on websites and in native apps for iOS and Android using app switching.
+The Vipps MobilePay Login module offers functionality for authenticating end users and authorizing clients.
+It is founded on the OAuth2 and OpenID Connect specifications
+and supports using web browsers on websites and in native apps for iOS and Android using app switching.
 
 ## Basic Flow
 
@@ -29,7 +29,7 @@ The sequence of operations is as follows:
 1. If access was granted to the webshop, the plugin has access to customer data such as: name, email, phone number, and addresses.
 1. Magento performs the log-in or creates a new account for the customer.
 
-    If the customer has granted consent for Magento to use their phone number, Magento can then use the Vipps Login module to check if the account exists.
+    If the customer has granted consent for Magento to use their phone number, Magento can then use the Vipps MobilePay Login module to check if the account exists.
     Magento checks if the system already contains an account that is linked with the Vipps account. If yes, the customer is already verified and the log-in can be completed.
     If no, it can mean one of the following:
 
@@ -65,9 +65,9 @@ To do this, customer should:
 
 <!--![Log in with Vipps](account-login-with-vipps.png)-->
 
-### Sync addresses between Vipps and Magento
+### Sync addresses between Vipps MobilePay and Magento
 
-Each time a customer signs in to the system, the Vipps Login module checks if the customer's addresses have changed.
+Each time a customer signs in to the system, the Vipps MobilePay Login module checks if the customer's addresses have changed.
 
 There are three ways to update the addresses and the customer is able to select from these:
 
@@ -94,40 +94,40 @@ The Vipps addresses are automatically converted to the Magento default billing a
 
 The Vipps address that was converted to Magento address is marked as *Applied/Used*.
 
-<!--![Vipps applied addresses](account-vipps-addresses-applied.png)-->
+<!--![applied addresses](account-vipps-addresses-applied.png)-->
 
 ### Use Vipps Address
 
 If the Vipps address was not converted to Magento, there will be a link *Use Address*.
 
-<!--![Vipps not applied addresses](account-vipps-addresses-not-applied.png)-->
+<!--![not applied addresses](account-vipps-addresses-not-applied.png)-->
 
 By selecting *Bruk adresse* ("Use address"), the customer will be able to edit the address and save it in a standard Magento way.
 
-<!--![Edit Vipps address](account-edit-vipps-address.png)-->
+<!--![Edit address](account-edit-vipps-address.png)-->
 
 ### Adding new Magento address
 
 If customer is adding an address in a standard Magento way and there is at least one Vipps address that was not converted to Magento (was not applied | not using), then customer will be able to use their Vipps address data for new address by choosing it in a dropdown menu at the top.
 
-<!--![Choose Vipps address](account-choose-vipps-address.png)-->
+<!--![Choose address](account-choose-vipps-address.png)-->
 
 NB! If customer changed any data so that newly created address and Vipps address are different such addresses will not be linked between each other.
 
 ## Cart page
 
-The Vipps module injects a Vipps Login button on the cart page. This allows the customer to log in to the system and proceed to checkout.
+The Vipps MobilePay module injects a Vipps or MobilePay Login button on the cart page. This allows the customer to log in to the system and proceed to checkout.
 This provides a better user experience, since they don't need to specify their shipping or billing address manually.
 
-**Please note:** If the cart page contains a *Vipps Express Checkout* button from the Vipps Payment module, only the *Vipps Login* button will be shown. *Vipps Login* has higher priority.
+**Please note:** If the cart page contains an *Express Checkout* button from the Vipps MobilePay Payment module, only the *Login* button will be shown. *Login* has higher priority.
 
 ## Checkout page
 
 ### Sign-in
 
-It is also possible to sign-in using Vipps from a checkout page.
+It is also possible to sign-in using Vipps or MobilePay from a checkout page.
 
-<!--![Checkout Vipps Login](checkout-vipps-login.png)-->
+<!--![Checkout Login](checkout-vipps-login.png)-->
 
 ### Adding new address
 

@@ -3,7 +3,7 @@
 title: Login for Magento Plugin installation guide
 sidebar_label: Installation guide
 sidebar_position: 20
-description: Install the Vipps Login Module for Magento v2.
+description: Install the Vipps/MobilePay Login for Adobe Commerce.
 pagination_next: null
 pagination_prev: null
 ---
@@ -11,7 +11,7 @@ END_METADATA -->
 
 # Installation guide
 
-Install the Vipps Login Module for Magento v2.
+Install the *Vipps/MobilePay Login for Adobe Commerce* plugin.
 
 ## Prerequisites
 
@@ -32,24 +32,24 @@ Install the Vipps Login Module for Magento v2.
 
 ## Configuration
 
-The Vipps Login module can be easily configured to meet business expectations of your web store. This section will show you how to configure the extension via *Magento Admin*.
+The Vipps MobilePay Login module can be easily configured to meet business expectations of your web store. This section will show you how to configure the extension via *Magento Admin*.
 
 From *Magento Admin*, navigate to *Store* > *Configuration* > *Vipps* > *Login*.
 
 Configuration details are described below:
 
 * [Magento configuration](#magento-configuration-details)
-* [Vipps configuration](#vipps-login-configuration-details)
+* [Vipps MobilePay configuration](#vipps-mobilepay-login-configuration-details)
 
 Once you have finished with the configuration, click *Save* button.
 
 ### Magento configuration details
 
-Configure your Magento account to work with Vipps Login.
+Configure your Magento account to work with Vipps MobilePay Login.
 
-After installing the Vipps Login module, a new menu item should appear in your
+After installing the Login module, a new menu item should appear in your
 store's *Configuration Navigation*.
-From here, you can enter your Vipps `client_id` and `client_secret` that was referred to
+From here, you can enter your `client_id` and `client_secret` that was referred to
 in the previous section.
 
 You can also switch between *Development* and *Production* mode.
@@ -63,7 +63,7 @@ automatically. For example, on the customer login page:
 ![Customer login](./docs/images/3customer-login.jpg)
 
 The customer registration page allows your customers to quickly register a
-new account using their existing data in Vipps.
+new account using their existing data in Vipps or MobilePay.
 
 ![Create new account](./docs/images/4create-new-account.jpg)
 
@@ -73,11 +73,11 @@ stored in Vipps.
 
 ![Shipping address 1](./docs/images/5shipping-address.jpg)
 
-Or even log in with an authentication popup, where the Vipps Login button is also present.
+Or log in with an authentication popup, where the Login button is also present.
 
 ![Shipping address 2](./docs/images/6shipping-address.jpg)
 
-Using the Vipps Login module, you can create a widget with *Sign In* button and put it in any
+Using the Login module, you can create a widget with *Sign In* button and put it in any
 website location.
 
 ![Create widget](./docs/images/7create-widget.jpg)
@@ -88,21 +88,21 @@ The frontend view may look like this:.
 
 When you have been registered, you will receive a confirmation email with
 an updated template. Inside this email, you can set a password to your account or always
-use Vipps Login functionality.
+use Vipps MobilePay Login functionality.
 
 ![Registration](./docs/images/9register.jpg)
 
-### Vipps Login configuration details
+### Vipps MobilePay Login configuration details
 
 This section explains:
 
 * How to find required credentials
-* How to set up Vipps Login for your sales unit
+* How to set up Vipps MobilePay Login for your sales unit
 * What Redirect URIs to add to the Vipps MobilePay [Merchant Portal](https://portal.vippsmobilepay.com)
 
 1. Create your merchant account with Vipps
 
-    To start using Vipps Login, you must first have a Vipps merchant account with login
+    To start using Login, you must first have a Vipps MobilePay merchant account with login
     functionality. If you don't already have this, you can
     [*Login*](https://vippsmobilepay.com/online/login).
 
@@ -122,9 +122,9 @@ This section explains:
     * [How to find a sales unit](https://developer.vippsmobilepay.com/docs/developer-resources/portal/)
     * [API keys](https://developer.vippsmobilepay.com/docs/knowledge-base/api-keys/)
 
-3. Activate Vipps Login for your sales unit
+3. Activate Vipps MobilePay Login for your sales unit
 
-    If you haven't already done so, activate *Login with Vipps* for your sales unit.
+    If you haven't already done so, activate *Vipps MobilePay Login* for your sales unit.
     Find your sales unit as you did in the last step.
     Once there, click the *Set up login* button.
 
