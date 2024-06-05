@@ -18,6 +18,8 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Gateway\Command;
 
+use Firebase\JWT\Key;
+use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
@@ -26,8 +28,8 @@ use Vipps\Login\Api\ApiEndpointsInterface;
 use Vipps\Login\Model\ConfigInterface;
 use Psr\Log\LoggerInterface;
 use Firebase\JWT\JWT;
-use phpseclib\Crypt\RSA;
-use phpseclib\Math\BigInteger;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Math\BigInteger;
 
 /**
  * Class TokenCommand
@@ -35,6 +37,8 @@ use phpseclib\Math\BigInteger;
  */
 class TokenCommand
 {
+    private const ALGO = 'RS256';
+
     /**
      * @var string
      */
@@ -70,14 +74,18 @@ class TokenCommand
     private $logger;
 
     /**
-     * TokenCommand constructor.
-     *
+     * @var ResourceConnection
+     */
+    private $resourceConnection;
+
+    /**
      * @param ConfigInterface $config
      * @param SerializerInterface $serializer
      * @param ApiEndpointsInterface $apiEndpoints
      * @param ClientFactory $httpClientFactory
      * @param UrlInterface $url
      * @param LoggerInterface $logger
+     * @param ResourceConnection $resourceConnection
      */
     public function __construct(
         ConfigInterface $config,
@@ -85,7 +93,8 @@ class TokenCommand
         ApiEndpointsInterface $apiEndpoints,
         ClientFactory $httpClientFactory,
         UrlInterface $url,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        ResourceConnection $resourceConnection
     ) {
         $this->config = $config;
         $this->httpClientFactory = $httpClientFactory;
@@ -93,6 +102,7 @@ class TokenCommand
         $this->serializer = $serializer;
         $this->url = $url;
         $this->logger = $logger;
+        $this->resourceConnection = $resourceConnection;
     }
 
     /**
@@ -105,6 +115,15 @@ class TokenCommand
      */
     public function execute($code)
     {
+        $authRecord = $this->fetchAuthorizationRecord($code);
+        if (!$authRecord) {
+            return null;
+        }
+
+        if (isset($authRecord['payload'])) {
+            return $this->prepareResponse($authRecord['payload']);
+        }
+
         $clientId = $this->config->getLoginClientId();
         $clientSecret = $this->config->getLoginClientSecret();
 
@@ -119,15 +138,68 @@ class TokenCommand
                 'redirect_uri' => trim($this->url->getUrl('vipps/login/redirect'), '/')
             ]);
 
-            $token = $this->serializer->unserialize($httpClient->getBody());
-            $payload = $this->getPayload($token);
+            $this->storeAuthorizationRecord($code, $httpClient->getBody());
 
-            $token['id_token_payload'] = $payload;
-            return $token;
+            return $this->prepareResponse($httpClient->getBody());
         } catch (\Exception $e) {
             $this->logger->critical($e);
             throw new LocalizedException(__('An error occurred trying to get token'), $e);
         }
+    }
+
+    private function fetchAuthorizationRecord($code): ?array
+    {
+        $connection = $this->resourceConnection->getConnection('write');
+        $connection->delete(
+            $connection->getTableName('vipps_login_authorization'),
+            \sprintf('created_at < %s', $connection->quote((new \DateTime())->modify('-5 min')->format('Y-m-d H:i-s')))
+        );
+
+        $select = $connection->select()
+            ->from($connection->getTableName('vipps_login_authorization'))
+            ->where('code = ?', $code);
+
+        $row = $connection->fetchRow($select);
+        if (!$row) {
+            try {
+                $connection->insert(
+                    $connection->getTableName('vipps_login_authorization'),
+                    [
+                        'code' => $code,
+                        'created_at' => (new \DateTime())->format('Y-m-d H:i:s'),
+                    ]
+                );
+
+                $row = $connection->fetchRow($select);
+            } catch (\Throwable $t) {
+                return null;
+            }
+        }
+
+        return $row;
+    }
+
+    private function storeAuthorizationRecord($code, $payload)
+    {
+        $connection = $this->resourceConnection->getConnection('write');
+
+        return $connection->update(
+            $connection->getTableName('vipps_login_authorization'),
+            [
+                'payload' => $payload
+            ],
+            'code = ' . $connection->quote($code)
+        );
+    }
+
+    private function prepareResponse($body): array
+    {
+        $token = $this->serializer->unserialize($body);
+        $payload = $this->getPayload($token);
+
+        $token['id_token_payload'] = $payload;
+
+        return $token;
     }
 
     /**
@@ -139,7 +211,9 @@ class TokenCommand
     {
         if (array_key_exists('id_token', $token)) {
             JWT::$leeway = self::TOKEN_LEEWAY;
-            $payload = JWT::decode($token['id_token'], $this->getPublicKeys(), ['RS256']);
+
+            $headers = (object)['alg' => self::ALGO];
+            $payload = JWT::decode($token['id_token'], $this->getPublicKeys(), $headers);
 
             //encode and decode again to convert strClass to array
             return $this->serializer->unserialize($this->serializer->serialize($payload));
@@ -165,14 +239,13 @@ class TokenCommand
                 array_key_exists('n', $key) &&
                 array_key_exists('kid', $key)
             ) {
-                $rsa = new RSA();
-                $rsa->loadKey(
+                $pkey = PublicKeyLoader::load(
                     [
                         'e' => new BigInteger(base64_decode($key['e']), 256),
                         'n' => new BigInteger(base64_decode(strtr($key['n'], '-_', '+/'), true), 256)
                     ]
                 );
-                $publicKeys[$key['kid']] = $rsa->getPublicKey();
+                $publicKeys[$key['kid']] = new Key($pkey->toString('PKCS8'), self::ALGO);
             }
         }
 

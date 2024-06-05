@@ -41,6 +41,8 @@ use Vipps\Login\Model\StateKey;
  */
 class Redirect implements ActionInterface
 {
+    private const RETRY_OBTAIN_TOKEN_COUNTER = 3;
+
     /**
      * @var SessionManagerInterface|Session
      */
@@ -122,6 +124,9 @@ class Redirect implements ActionInterface
     {
         $code = $this->request->getParam('code');
         $state = $this->request->getParam('state');
+
+        $this->customerSession->setData(StateKey::DATA_KEY_STATE, $state);
+
         $resultRedirect = $this->resultRedirectFactory->create();
 
         try {
@@ -141,6 +146,14 @@ class Redirect implements ActionInterface
             // get token
             $token = $this->tokenCommand->execute($code);
 
+            if (!$this->checkAttempts($token)) {
+                throw new LocalizedException(__('Can not obtain access token.'));
+            }
+
+            if (!$token) {
+                return $resultRedirect->setPath('vipps/login/redirect', ['code' => $code, 'state' => $state]);
+            }
+
             // remember token
             $this->storeToken($token);
 
@@ -157,6 +170,27 @@ class Redirect implements ActionInterface
         }
 
         return $resultRedirect->setPath('vipps/login/error');
+    }
+
+    /**
+     * @param string $token
+     *
+     * @return bool
+     */
+    private function checkAttempts($token)
+    {
+        if ($token) {
+            $this->customerSession->setData('retry_obtain_token_counter', null);
+
+            return true;
+        }
+
+        $value = (int) ($this->customerSession->getData('retry_obtain_token_counter') ?? 0);
+        $value = $value > self::RETRY_OBTAIN_TOKEN_COUNTER ? 0 : $value;
+
+        $this->customerSession->setData('retry_obtain_token_counter', ++$value);
+
+        return !($value > self::RETRY_OBTAIN_TOKEN_COUNTER);
     }
 
     /**

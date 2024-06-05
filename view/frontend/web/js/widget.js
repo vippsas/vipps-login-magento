@@ -33,7 +33,7 @@ define([
                                '    <div class="login-vipps">' +
                                '        <form action="' + url.build("vipps/login/index") + '" method="post">' +
                                '            <button type="submit" class="action create primary vipps-btn">' +
-                               '                <span>' + $t("Sign in with") + '</span>' +
+                               '                <span>' + $t("Log in with") + '</span>' +
                                '                <span class="icon-vipps"></span>' +
                                '            </button>' +
                                '        </form>' +

@@ -1,0 +1,67 @@
+{
+    "vipps_customer": {
+        "column": {
+            "entity_id": true,
+            "customer_entity_id": true,
+            "website_id": true,
+            "email": true,
+            "telephone": true,
+            "linked": true,
+            "sync_address_mode": true,
+            "confirmation_key": true,
+            "confirmation_exp": true
+        },
+        "index": {
+            "VIPPS_CUSTOMER_TELEPHONE_LINKED_WEBSITE_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "VIPPS_CUSTOMER_CUSTOMER_ENTITY_ID": true,
+            "VIPPS_CUSTOMER_CUSTOMER_ENTITY_ID_CUSTOMER_ENTITY_ENTITY_ID": true
+        }
+    },
+    "vipps_customer_address": {
+        "column": {
+            "entity_id": true,
+            "vipps_customer_id": true,
+            "customer_address_id": true,
+            "country": true,
+            "street_address": true,
+            "address_type": true,
+            "formatted": true,
+            "postal_code": true,
+            "region": true,
+            "is_default": true,
+            "was_changed": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "VIPPS_CSTR_ADDR_VIPPS_CSTR_ID_VIPPS_CSTR_ENTT_ID": true,
+            "VIPPS_CSTR_ADDR_CSTR_ADDR_ID_CSTR_ADDR_ENTT_ENTT_ID": true
+        }
+    },
+    "vipps_quote_addresses_relation": {
+        "column": {
+            "id": true,
+            "quote_address_id": true,
+            "vipps_customer_address_id": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "VIPPS_QUOTE_ADDRES_RELATION_QUOTE_ADDR_ID_QUOTE_ADDR_ADDR_ID": true,
+            "FK_46E162119F9C6A5527FB629B614079C7": true
+        }
+    },
+    "vipps_login_authorization": {
+        "column": {
+            "entity_id": true,
+            "code": true,
+            "payload": true,
+            "created_at": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "VIPPS_LOGIN_AUTHORIZATION_CODE": true
+        }
+    }
+}

@@ -19,41 +19,24 @@ declare(strict_types=1);
 namespace Vipps\Login\Block\Cart;
 
 use Magento\Framework\View\Element\Template;
+use Vipps\Login\Block\Account\Template as VippsTemplate;
 use Magento\Framework\Session\SessionManagerInterface;
-use Magento\Customer\Model\Session;
 use Vipps\Login\Model\ConfigInterface;
+use Vipps\Login\Api\Block\ClassPoolInterface;
 
-/**
- * Class Button
- * @package Vipps\Login\Block\Cart
- */
-class Button extends Template
+class Button extends VippsTemplate
 {
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
+    private ConfigInterface $config;
+    private SessionManagerInterface $customerSession;
 
-    /**
-     * @var SessionManagerInterface|Session
-     */
-    private $customerSession;
-
-    /**
-     * Link constructor.
-     *
-     * @param ConfigInterface $config
-     * @param SessionManagerInterface $customerSession
-     * @param Template\Context $context
-     * @param array $data
-     */
     public function __construct(
         ConfigInterface $config,
+        ClassPoolInterface $classPool,
         SessionManagerInterface $customerSession,
         Template\Context $context,
         array $data = []
     ) {
-        parent::__construct($context, $data);
+        parent::__construct($classPool, $context, $data);
         $this->config = $config;
         $this->customerSession = $customerSession;
     }

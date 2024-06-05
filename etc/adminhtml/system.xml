@@ -16,13 +16,22 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="vipps" translate="label" sortOrder="205">
-            <label>Vipps</label>
+            <label>Vipps MobilePay</label>
         </tab>
         <section id="vipps" translate="label" type="text" sortOrder="305" showInDefault="1" showInWebsite="1" showInStore="1">
             <label>Login</label>
             <tab>vipps</tab>
             <resource>Vipps_Login::login</resource>
             <group id="vipps_login" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="5">
+                <fieldset_css>complex vipps-section active</fieldset_css>
+                <frontend_model>Vipps\Login\Model\Adminhtml\System\Config\LoginHeaderFieldSet</frontend_model>
+                <comment><![CDATA[With the Login API, users can log in to your service by using their Vipps or MobilePay account. This simplifies the process for users, as they don't need to fill out a form or remember a password to access your services. This also provides you with pre-verified user data.
+                <br />
+                <br />
+                <a target="_blank" href="https://portal.vippsmobilepay.com/login">Product order</a>
+                <br />
+                <a target="_blank" href="https://developer.vippsmobilepay.com/docs/plugins-ext/login-magento/">Plugin documentation</a>
+]]></comment>
                 <field id="environment" translate="label" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Environment</label>
                     <source_model>Vipps\Login\Model\Adminhtml\Source\Environment</source_model>
@@ -41,7 +50,16 @@
                         <group id="vipps_required"/>
                     </requires>
                 </field>
+                <field id="version" translate="label" type="select" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Choose Brand</label>
+                    <source_model>Vipps\Login\Model\Config\Source\Version</source_model>
+                    <config_path>vipps/login/version</config_path>
+                    <requires>
+                        <group id="vipps_required"/>
+                    </requires>
+                </field>
                 <group id="vipps_required" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="5">
+                    <label>Basic Settings</label>
                     <field id="client_id" translate="label" type="obscure" sortOrder="81" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Client ID</label>
                         <config_path>vipps/login/client_id</config_path>
