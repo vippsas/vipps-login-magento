@@ -10,13 +10,11 @@ pagination_prev: null
 ---
 END_METADATA -->
 
-# Vipps/MobilePay Login for Adobe Commerce /Magento
+# Login module for Adobe Commerce / Magento
 
 ![Support and development by Vaimo ](./docs/images/vaimo.svg#gh-light-mode-only)![Support and development by Vaimo](./docs/images/vaimo_dark.svg#gh-dark-mode-only)
 
-![Vipps](./docs/images/vipps.png) *Available for Vipps.*
-
-![MobilePay](./docs/images/mp.png) *Available for MobilePay in Finland and Denmark.*
+![Vipps](./docs/images/vipps.png) ![MobilePay](./docs/images/mp.png) *Available for Vipps and MobilePay.*
 
 *This plugin is built and maintained by [Vaimo](https://www.vaimo.com/) and is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).*
 
@@ -28,6 +26,11 @@ END_METADATA -->
 Using Vipps/MobilePay is the easiest way to sign in and create an account.
 
 No need to worry about usernames and passwords. All you need to sign in is your phone number.
+
+About [Adobe Commerce](https://experienceleague.adobe.com/en/browse/commerce).
+
+This plugin is available for download at
+[https://github.com/vippsas/vipps-login-magento/releases](https://github.com/vippsas/vipps-login-magento/releases).
 
 ## Documentation
 
