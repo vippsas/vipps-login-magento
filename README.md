@@ -1,9 +1,9 @@
 <!-- START_METADATA
 ---
-title: Vipps/MobilePay Login for Adobe Commerce
+title: Vipps/MobilePay Login for Adobe Commerce / Magento
 sidebar_label: Introduction
 sidebar_position: 1
-description: Allow customers to log in to Magento websites using the Vipps app.
+description: Allow customers to log in to Adobe Commerce websites using the Vipps or MobilePay app.
 hide_table_of_contents: true
 pagination_next: null
 pagination_prev: null
@@ -24,7 +24,6 @@ END_METADATA -->
 💥 Please use the plugin pages on [https://developer.vippsmobilepay.com](https://developer.vippsmobilepay.com/docs/plugins/). 💥
 <!-- END_COMMENT -->
 
-## About Login for Magento
 
 Using Vipps/MobilePay is the easiest way to sign in and create an account.
 

@@ -1,6 +1,6 @@
 <!-- START_METADATA
 ---
-title: Login for Magento Plugin installation guide
+title: Vipps/MobilePay Login for Adobe Commerce / Magento Plugin installation guide
 sidebar_label: Installation guide
 sidebar_position: 20
 description: Install the Vipps/MobilePay Login for Adobe Commerce.
@@ -15,47 +15,46 @@ Install the *Vipps/MobilePay Login for Adobe Commerce* plugin.
 
 ## Prerequisites
 
-1. [Magento 2.2](https://devdocs.magento.com/guides/v2.2/release-notes/bk-release-notes.html) or later.
-    * [Magento 2 System Requirements](http://devdocs.magento.com/magento-system-requirements.html)
+1. [Adobe Commerce 2.4.*](https://experienceleague.adobe.com/en/docs/commerce-operations/release/notes/overview) or later.
+    * [Adobe Commerce System Requirements](https://developer.adobe.com/commerce/docs/)
 1. SSL must be installed on your site and active on your Checkout pages.
 1. You must have a Vipps merchant account.
     * See [*Login*](https://vippsmobilepay.com/online/login).
-1. As with *all* Magento extensions, it is highly recommended backing up your site before installation and to install and test on a staging environment prior to production deployments.
+1. As with *all* Adobe Commerce extensions, it is highly recommended backing up your site before installation and to install and test on a staging environment prior to production deployments.
 
 ## Installation via Composer
 
-1. Navigate to your [Magento root directory](https://devdocs.magento.com/guides/v2.2/extension-dev-guide/build/module-file-structure.html).
+1. Navigate to your [Adobe Commerce root directory](https://developer.adobe.com/commerce/php/development/build/component-file-structure/).
 1. Enter command: `composer require vipps/module-login`
 1. Enter command: `php bin/magento module:enable Vipps_Login`
 1. Enter command: `php bin/magento setup:upgrade`
-1. Put your Magento in production mode if it's required.
+1. Put your Adobe Commerce in production mode, if required.
 
 ## Configuration
 
-The Vipps MobilePay Login module can be easily configured to meet business expectations of your web store. This section will show you how to configure the extension via *Magento Admin*.
+The *Vipps/MobilePay Login* module can be easily configured to meet business expectations of your web store. This section will show you how to configure the extension via Adobe Commerce.
 
-From *Magento Admin*, navigate to *Store* > *Configuration* > *Vipps* > *Login*.
+From Adobe Commerce, navigate to *Store* > *Configuration* > *Vipps MobilePay* > *Login*.
 
 Configuration details are described below:
 
-* [Magento configuration](#magento-configuration-details)
+* [Adobe Commerce configuration](#adobe-commerce-configuration-details)
 * [Vipps MobilePay configuration](#vipps-mobilepay-login-configuration-details)
 
 Once you have finished with the configuration, click *Save* button.
 
-### Magento configuration details
+### Adobe Commerce configuration details
 
-Configure your Magento account to work with Vipps MobilePay Login.
+Configure your Adobe Commerce account to work with Vipps MobilePay Login.
 
 After installing the Login module, a new menu item should appear in your
 store's *Configuration Navigation*.
-From here, you can enter your `client_id` and `client_secret` that was referred to
-in the previous section.
+From here, you can enter your `client_id` and `client_secret`.
 
 You can also switch between *Development* and *Production* mode.
 
 While debugging, you can enable *Debugging*. Note that this will log additional
-data to your Magento logs, so it is recommended that this is switched off.
+data to your Adobe Commerce logs, so it is recommended that this is switched off.
 
 After setting up the module, it should appear in the frontend in a few locations
 automatically. For example, on the customer login page:
@@ -128,7 +127,7 @@ This section explains:
     Find your sales unit as you did in the last step.
     Once there, click the *Set up login* button.
 
-    When asked to set up the redirect URIs, enter your Magento store's base URL +
+    When asked to set up the redirect URIs, enter your Adobe Commerce store's base URL +
     `/vipps/login/redirect`. For example,if your store is located at `​http://www.example.org/`,​ the URL would be: `http://www.example.org/vipps/login/redirect`.
 
     Note that if you are using store codes in the URL, this must also be included. For example, if the store code is `no`: `http://www.example.org/no/vipps/login/redirect`.
