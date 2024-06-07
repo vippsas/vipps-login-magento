@@ -18,7 +18,7 @@ Install the *Vipps/MobilePay Login for Adobe Commerce* plugin.
 1. [Adobe Commerce 2.4.*](https://experienceleague.adobe.com/en/docs/commerce-operations/release/notes/overview) or later.
     * [Adobe Commerce System Requirements](https://developer.adobe.com/commerce/docs/)
 1. SSL must be installed on your site and active on your Checkout pages.
-1. You must have a Vipps merchant account.
+1. You must have a Vipps MobilePay merchant account.
     * See [*Login*](https://vippsmobilepay.com/online/login).
 1. As with *all* Adobe Commerce extensions, it is highly recommended backing up your site before installation and to install and test on a staging environment prior to production deployments.
 
@@ -68,7 +68,7 @@ new account using their existing data in Vipps or MobilePay.
 
 And, on the checkout page again allowing your customers to quickly log in not using
 a traditional username and password, and fill in their information with the data that is already
-stored in Vipps.
+stored in Vipps MobilePay.
 
 ![Shipping address 1](./docs/images/5shipping-address.jpg)
 
@@ -99,7 +99,7 @@ This section explains:
 * How to set up Vipps MobilePay Login for your sales unit
 * What Redirect URIs to add to the Vipps MobilePay [Merchant Portal](https://portal.vippsmobilepay.com)
 
-1. Create your merchant account with Vipps
+1. Create your merchant account with Vipps MobilePay
 
     To start using Login, you must first have a Vipps MobilePay merchant account with login
     functionality. If you don't already have this, you can
@@ -137,5 +137,5 @@ This section explains:
     * [How to find a sales unit](https://developer.vippsmobilepay.com/docs/developer-resources/portal/)
     * [How to set up Login for your sales unit](https://developer.vippsmobilepay.com/docs/developer-resources/portal/#how-to-set-up-login-for-your-sales-unit)
 
-**Please note:** To use the app in test mode, you must use the Vipps test app. For instructions on how to set up the vipps test app, please see
-[Vipps Knowledge base: Test apps](https://developer.vippsmobilepay.com/docs/test-environment/#test-apps).
+**Please note:** To use the app in test mode, you must use the Vipps MobilePay test app. For instructions on how to set up the test app, please see
+[Knowledge base: Test apps](https://developer.vippsmobilepay.com/docs/test-environment/#test-apps).
