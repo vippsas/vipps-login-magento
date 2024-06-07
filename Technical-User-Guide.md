@@ -9,17 +9,19 @@ pagination_prev: null
 ---
 END_METADATA -->
 
-# User guide
+# Login module user guide
+
+This is the user guide for *Vipps/MobilePay Login for Adobe Commerce* (the *Login module*).
 
 ## Introduction
 
-The Vipps MobilePay Login module offers functionality for authenticating end users and authorizing clients.
+The Login module offers functionality for authenticating end users and authorizing clients.
 It is founded on the OAuth2 and OpenID Connect specifications
 and supports using web browsers on websites and in native apps for iOS and Android using app switching.
 
 ## Basic Flow
 
-### Sign-In or register using Vipps / MobilePay
+### Sign-in or register using Vipps or MobilePay
 
 The sequence of operations is as follows:
 
@@ -119,7 +121,7 @@ NB! If customer changed any data so that newly created address and Vipps MobileP
 The Vipps MobilePay module injects a Vipps or MobilePay Login button on the cart page. This allows the customer to log in to the system and proceed to checkout.
 This provides a better user experience, since they don't need to specify their shipping or billing address manually.
 
-**Please note:** If the cart page contains an *Express Checkout* button from the Vipps MobilePay Payment module, only the *Login* button will be shown. *Login* has higher priority.
+**Please note:** If the cart page contains an *Express Checkout* button from the *Vipps/MobilePay Payment module for Adobe Commerce*, only the *Login* button will be shown. *Login* has higher priority.
 
 ## Checkout page
 
