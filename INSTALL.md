@@ -18,8 +18,8 @@ Install the *Vipps/MobilePay Login for Adobe Commerce* plugin.
 1. [Adobe Commerce 2.4.*](https://experienceleague.adobe.com/en/docs/commerce-operations/release/notes/overview) or later.
     * [Adobe Commerce System Requirements](https://developer.adobe.com/commerce/docs/)
 1. SSL must be installed on your site and active on your Checkout pages.
-1. You must have a Vipps MobilePay merchant account.
-    * See [*Login*](https://vippsmobilepay.com/online/login).
+1. You must have a Vipps MobilePay merchant account and be configured for use of Login.
+    * See [Vipps MobilePay configuration](#vipps-mobilepay-login-configuration-details)
 1. As with *all* Adobe Commerce extensions, it is highly recommended backing up your site before installation and to install and test on a staging environment prior to production deployments.
 
 ## Installation via Composer
@@ -34,7 +34,7 @@ Install the *Vipps/MobilePay Login for Adobe Commerce* plugin.
 
 The *Vipps/MobilePay Login* module can be easily configured to meet business expectations of your web store. This section will show you how to configure the extension via Adobe Commerce.
 
-From Adobe Commerce, navigate to *Store* > *Configuration* > *Vipps MobilePay* > *Login*.
+From Adobe Commerce, navigate to *Stores* > *Configuration* > *Vipps MobilePay* > *Login*.
 
 Configuration details are described below:
 
@@ -43,15 +43,21 @@ Configuration details are described below:
 
 Once you have finished with the configuration, click *Save* button.
 
+
 ### Adobe Commerce configuration details
 
 Configure your Adobe Commerce account to work with Vipps MobilePay Login.
 
 After installing the Login module, a new menu item should appear in your
-store's *Configuration Navigation*.
-From here, you can enter your `client_id` and `client_secret`.
+store's *Configuration Navigation* under *Stores* > *Configuration* > *Vipps MobilePay* > *Login*.
 
-You can also switch between *Development* and *Production* mode.
+![Customer login](./docs/images/login-config.png)
+
+Enter your `client_id` and `client_secret` (see
+[How to find the API keys](https://developer.vippsmobilepay.com/docs/developer-resources/portal/#how-to-find-the-api-keys)).
+
+You can also switch between *Development* and *Production* mode. Note, to use the app in test mode, you must use the
+[Vipps MobilePay test app](https://developer.vippsmobilepay.com/docs/test-environment/#test-apps).
 
 While debugging, you can enable *Debugging*. Note that this will log additional
 data to your Adobe Commerce logs, so it is recommended that this is switched off.
@@ -81,7 +87,7 @@ website location.
 
 ![Create widget](./docs/images/7create-widget.jpg)
 
-The frontend view may look like this:.
+The frontend view may look like this:
 
 ![Frontend view](./docs/images/8frontend-view.jpg)
 
@@ -93,49 +99,16 @@ use Vipps MobilePay Login functionality.
 
 ### Vipps MobilePay Login configuration details
 
-This section explains:
-
-* How to find required credentials
-* How to set up Vipps MobilePay Login for your sales unit
-* What Redirect URIs to add to the Vipps MobilePay [Merchant Portal](https://portal.vippsmobilepay.com)
-
 1. Create your merchant account with Vipps MobilePay
 
     To start using Login, you must first have a Vipps MobilePay merchant account with login
     functionality. If you don't already have this, you can
     [*Login*](https://vippsmobilepay.com/online/login).
 
-2. Retrieve your API Keys to send with your API requests
+2. Retrieve your [API keys](https://developer.vippsmobilepay.com/docs/knowledge-base/api-keys/) to send with your API requests.
 
-    Once you have an account, log in to the merchant portal at [portal.vippsmobilepay.com](https://portal.vippsmobilepay.com) and get your API keys​.
+3. [Activate Vipps MobilePay Login](https://developer.vippsmobilepay.com/docs/developer-resources/portal/#how-to-set-up-login-for-your-sales-unit) for your sales unit.
 
-    You will find them by going to the *Developer* section, you will find the *API Keys* tab.
-    There you can find a list of your sales units. Find the sales unit applicable to your store and press
-    *Show Keys*. This will open a new panel with your `client_id` and `client_secret`.
-
-    **Please note:** If you are already using your `client_secret` in another application, you should use the same in both applications.
-    Either reuse the secret or generate a new secret and update it in both places.
-
-    For more details, see:
-
-    * [How to find a sales unit](https://developer.vippsmobilepay.com/docs/developer-resources/portal/)
-    * [API keys](https://developer.vippsmobilepay.com/docs/knowledge-base/api-keys/)
-
-3. Activate Vipps MobilePay Login for your sales unit
-
-    If you haven't already done so, activate *Vipps MobilePay Login* for your sales unit.
-    Find your sales unit as you did in the last step.
-    Once there, click the *Set up login* button.
-
-    When asked to set up the redirect URIs, enter your Adobe Commerce store's base URL +
-    `/vipps/login/redirect`. For example,if your store is located at `​http://www.example.org/`,​ the URL would be: `http://www.example.org/vipps/login/redirect`.
-
-    Note that if you are using store codes in the URL, this must also be included. For example, if the store code is `no`: `http://www.example.org/no/vipps/login/redirect`.
-
-    For more details, see:
-
-    * [How to find a sales unit](https://developer.vippsmobilepay.com/docs/developer-resources/portal/)
-    * [How to set up Login for your sales unit](https://developer.vippsmobilepay.com/docs/developer-resources/portal/#how-to-set-up-login-for-your-sales-unit)
-
-**Please note:** To use the app in test mode, you must use the Vipps MobilePay test app. For instructions on how to set up the test app, please see
-[Knowledge base: Test apps](https://developer.vippsmobilepay.com/docs/test-environment/#test-apps).
+To use the app in test mode, you must use the
+[Vipps MobilePay test app](https://developer.vippsmobilepay.com/docs/test-environment/#test-apps).
+:::
