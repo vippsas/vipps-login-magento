@@ -54,10 +54,10 @@ store's *Configuration Navigation* under *Stores* > *Configuration* > *Vipps Mob
 ![Customer login](./docs/images/login-config.png)
 
 Enter your `client_id` and `client_secret` (see
-[How to find the API keys](https://developer.vippsmobilepay.com/docs/developer-resources/portal/#how-to-find-the-api-keys)).
+[How to find the API keys](https://developer.vippsmobilepay.com/docs/knowledge-base/portal/#how-to-find-the-api-keys)).
 
 You can also switch between *Development* and *Production* mode. Note, to use the app in test mode, you must use the
-[Vipps MobilePay test app](https://developer.vippsmobilepay.com/docs/test-environment/#test-apps).
+[Vipps MobilePay test app](https://developer.vippsmobilepay.com/docs/knowledge-base/test-environment/#test-apps).
 
 While debugging, you can enable *Debugging*. Note that this will log additional
 data to your Adobe Commerce logs, so it is recommended that this is switched off.
@@ -107,8 +107,8 @@ use Vipps MobilePay Login functionality.
 
 2. Retrieve your [API keys](https://developer.vippsmobilepay.com/docs/knowledge-base/api-keys/) to send with your API requests.
 
-3. [Activate Vipps MobilePay Login](https://developer.vippsmobilepay.com/docs/developer-resources/portal/#how-to-set-up-login-for-your-sales-unit) for your sales unit.
+3. [Activate Vipps MobilePay Login](https://developer.vippsmobilepay.com/docs/knowledge-base/portal/#how-to-set-up-login-for-your-sales-unit) for your sales unit.
 
 To use the app in test mode, you must use the
-[Vipps MobilePay test app](https://developer.vippsmobilepay.com/docs/test-environment/#test-apps).
+[Vipps MobilePay test app](https://developer.vippsmobilepay.com/docs/knowledge-base/test-environment/#test-apps).
 :::
