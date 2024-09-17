@@ -27,6 +27,7 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
+use Vipps\Login\Model\ConfigInterface;
 use Vipps\Login\Model\VippsAccountManagement;
 
 /**
@@ -59,6 +60,7 @@ class ApplyAddress extends AccountBase
      * @var RedirectFactory
      */
     private $resultRedirectFactory;
+    private ConfigInterface $config;
 
     /**
      * ApplyAddress constructor.
@@ -73,14 +75,15 @@ class ApplyAddress extends AccountBase
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
      */
     public function __construct(
-        RedirectFactory $resultRedirectFactory,
-        RequestInterface $request,
-        LoggerInterface $logger,
-        SessionManagerInterface $customerSession,
-        VippsAccountManagement $vippsAccountManagement,
-        ManagerInterface $messageManager,
+        RedirectFactory                         $resultRedirectFactory,
+        RequestInterface                        $request,
+        LoggerInterface                         $logger,
+        SessionManagerInterface                 $customerSession,
+        VippsAccountManagement                  $vippsAccountManagement,
+        ManagerInterface                        $messageManager,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
-        VippsCustomerRepositoryInterface $vippsCustomerRepository
+        VippsCustomerRepositoryInterface        $vippsCustomerRepository,
+        ConfigInterface      $config
     ) {
         parent::__construct($customerSession, $request, $logger);
         $this->resultRedirectFactory = $resultRedirectFactory;
@@ -88,6 +91,8 @@ class ApplyAddress extends AccountBase
         $this->messageManager = $messageManager;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
+        $this->request = $request;
+        $this->config = $config;
     }
 
     /**
@@ -110,12 +115,15 @@ class ApplyAddress extends AccountBase
                     $this->messageManager->addErrorMessage(__('We can\'t delete the address right now.'));
                 }
                 $this->customerSession->setAddressFormData([
-                    'telephone' => $vippsCustomer->getTelephone(),
-                    'postcode' => $vippsAddress->getPostalCode(),
-                    'city' => $vippsAddress->getRegion(),
+                    'telephone'  => $vippsCustomer->getTelephone(),
+                    'postcode'   => $vippsAddress->getPostalCode(),
+                    'city'       => $vippsAddress->getRegion(),
                     'country_id' => $vippsAddress->getCountry(),
-                    'street' => explode(PHP_EOL, $vippsAddress->getStreetAddress()),
-                    'region' => $vippsAddress->getRegion()
+                    'street'     => explode(PHP_EOL,
+                        $vippsAddress->getStreetAddress(),
+                        $this->config->getCustomerStreetLinesNumber()
+                    ),
+                    'region'     => $vippsAddress->getRegion()
                 ]);
                 $params = ['vipps_address_id' => $addressId];
             } catch (NoSuchEntityException $e) {

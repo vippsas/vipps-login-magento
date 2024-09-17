@@ -34,6 +34,8 @@ interface ConfigInterface
 
     const VIPPS_LOGIN_VERSION = 'vipps/login/version';
 
+    const XML_CUSTOMER_STREET_NUMBER_LINES = 'customer/address/street_lines';
+
     /**
      * @param null $storeId
      *
@@ -76,4 +78,6 @@ interface ConfigInterface
     public function getVersion(): string;
 
     public function getTitle(): string;
+
+    public function getCustomerStreetLinesNumber(): int;
 }

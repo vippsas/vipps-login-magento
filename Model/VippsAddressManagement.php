@@ -76,6 +76,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      * @var FormFactory
      */
     private $formFactory;
+    private ConfigInterface $config;
 
     /**
      * VippsAddressManagement constructor.
@@ -89,13 +90,14 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      * @param Random $mathRand
      */
     public function __construct(
-        VippsCustomerAddressInterfaceFactory $vippsCustomerAddressFactory,
+        VippsCustomerAddressInterfaceFactory    $vippsCustomerAddressFactory,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
-        SearchCriteriaBuilder $searchCriteriaBuilder,
-        AddressRepositoryInterface $addressRepository,
-        AddressInterfaceFactory $addressDataFactory,
-        FormFactory $formFactory,
-        Random $mathRand
+        SearchCriteriaBuilder                   $searchCriteriaBuilder,
+        AddressRepositoryInterface              $addressRepository,
+        AddressInterfaceFactory                 $addressDataFactory,
+        FormFactory                             $formFactory,
+        Random                                  $mathRand,
+        ConfigInterface                         $config
     ) {
         $this->vippsCustomerAddressFactory = $vippsCustomerAddressFactory;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
@@ -104,6 +106,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $this->addressRepository = $addressRepository;
         $this->addressDataFactory = $addressDataFactory;
         $this->formFactory = $formFactory;
+        $this->config = $config;
     }
 
     /**
@@ -114,9 +117,9 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      * @throws LocalizedException
      */
     public function apply(
-        UserInfoInterface $userInfo,
+        UserInfoInterface      $userInfo,
         VippsCustomerInterface $vippsCustomer,
-        CustomerInterface $customer
+        CustomerInterface      $customer
     ) {
         $vippsAddresses = $this->fetchAddresses($userInfo, $vippsCustomer);
 
@@ -139,7 +142,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      * @return array|VippsCustomerAddressInterface[]
      */
     public function fetchAddresses(
-        UserInfoInterface $userInfo,
+        UserInfoInterface      $userInfo,
         VippsCustomerInterface $vippsCustomer
     ) {
         $vippsAddressResult = $this->vippsCustomerAddressRepository->getByVippsCustomer($vippsCustomer);
@@ -194,11 +197,11 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      * @throws LocalizedException
      */
     public function convert(
-        CustomerInterface $customer,
-        VippsCustomerInterface $vippsCustomer,
+        CustomerInterface             $customer,
+        VippsCustomerInterface        $vippsCustomer,
         VippsCustomerAddressInterface $vippsAddress,
-        bool $hasDefault,
-        bool $forceConvert
+        bool                          $hasDefault,
+        bool                          $forceConvert
     ) {
         if (!$this->isConvertAllowed($vippsCustomer, $vippsAddress, $forceConvert)) {
             return false;
@@ -218,7 +221,11 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $magentoAddress->setLastname($customer->getLastname());
         $magentoAddress->setPostcode($vippsAddress->getPostalCode());
 
-        $street = explode(PHP_EOL, $vippsAddress->getStreetAddress());
+        $street = explode(
+            PHP_EOL,
+            $vippsAddress->getStreetAddress(),
+            $this->config->getCustomerStreetLinesNumber()
+        );
 
         $magentoAddress->setStreet($street);
         $magentoAddress->setTelephone($vippsCustomer->getTelephone());
@@ -252,8 +259,8 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      */
     public function assign(
         VippsCustomerAddressInterface $vippsAddress,
-        VippsCustomerInterface $vippsCustomer,
-        array $magentoAddresses
+        VippsCustomerInterface        $vippsCustomer,
+        array                         $magentoAddresses
     ) {
         if ($vippsAddress->getCustomerAddressId()) {
             return true;
@@ -293,8 +300,8 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      */
     public function areTheSame(
         VippsCustomerAddressInterface $vippsAddress,
-        VippsCustomerInterface $vippsCustomer,
-        AddressInterface $magentoAddress
+        VippsCustomerInterface        $vippsCustomer,
+        AddressInterface              $magentoAddress
     ) {
         $street = $magentoAddress->getStreet();
         if (is_array($street)) {
@@ -413,9 +420,9 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      * @return bool
      */
     private function isConvertAllowed(
-        VippsCustomerInterface $vippsCustomer,
+        VippsCustomerInterface        $vippsCustomer,
         VippsCustomerAddressInterface $vippsAddress,
-        bool $forceConvert
+        bool                          $forceConvert
     ) {
         if ($forceConvert) {
             return true;
