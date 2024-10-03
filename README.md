@@ -16,7 +16,8 @@ END_METADATA -->
 
 ![Vipps](./docs/images/vipps.png) ![MobilePay](./docs/images/mp.png) *Available for Vipps and MobilePay.*
 
-*This plugin is built and maintained by [Vaimo](https://www.vaimo.com/) and is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).*
+*This plugin is built and maintained by [Vaimo](https://www.vaimo.com/) and is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).
+For support, [submit an issue](https://github.com/vippsas/vipps-login-magento/issues) on GitHub.*
 
 <!-- START_COMMENT -->
 💥 Please use the plugin pages on [https://developer.vippsmobilepay.com](https://developer.vippsmobilepay.com/docs/plugins/). 💥
@@ -36,3 +37,8 @@ This plugin is available for download at
 
 * [Installation guide](INSTALL.md)
 * [User guide](Technical-User-Guide.md)
+
+## Support
+
+For problems with the plugin,
+[submit an issue](https://github.com/vippsas/vipps-login-magento/issues) on GitHub.
