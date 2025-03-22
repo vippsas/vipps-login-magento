@@ -176,7 +176,7 @@ class VippsCustomerAddress extends AbstractExtensibleObject implements VippsCust
      */
     public function getRegion()
     {
-        return $this->_get('region');
+        return (string) $this->_get('region');
     }
 
     /**
