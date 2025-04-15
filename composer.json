@@ -6,7 +6,7 @@
         "magento/module-customer": "103.0.*",
         "magento/module-store": "101.1.*",
         "magento/module-directory": "100.4.*",
-        "monolog/monolog": "^1.17||^2.0",
+        "monolog/monolog": "^1.17||^2.0||^3.0",
         "firebase/php-jwt": "^6.0",
         "phpseclib/phpseclib": "2.0.*||^3.0",
         "psr/log": "^1.0||^2.0||^3.0"
