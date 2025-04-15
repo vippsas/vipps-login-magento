@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Vipps
  *
@@ -21,12 +22,9 @@ namespace Vipps\Login\Model\Logger\Handler;
 use Magento\Framework\Filesystem\DriverInterface;
 use Magento\Framework\Logger\Handler\Base;
 use Monolog\Logger;
+use Monolog\LogRecord;
 use Vipps\Login\Model\ConfigInterface;
 
-/**
- * Class Debug
- * @package Vipps\Login\Model\Logger\Handler
- */
 class Debug extends Base
 {
     /**
@@ -45,8 +43,6 @@ class Debug extends Base
     private $config;
 
     /**
-     * Debug constructor.
-     *
      * @param DriverInterface $filesystem
      * @param ConfigInterface|null $config
      * @param string|null $filePath
@@ -61,15 +57,11 @@ class Debug extends Base
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @param array $record
-     *
-     * @return bool
+     * @inheritDoc
      */
-    public function isHandling(array $record): bool
+    public function isHandling(LogRecord $record): bool
     {
-        if ($this->config && (bool)$this->config->isDebug()) {
+        if ($this->config && (bool) $this->config->isDebug()) {
             return parent::isHandling($record);
         }
 
