@@ -13,8 +13,8 @@ class Pool
     private Config $config;
 
     public function __construct(
-        Config $config,
-        array $pool = [],
+        array  $pool,
+        Config $config
     ) {
         $this->pool = $pool;
         $this->config = $config;

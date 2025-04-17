@@ -98,4 +98,19 @@
             <argument name="collectionProcessor" xsi:type="object">Vipps\Login\Api\SearchCriteria\CustomerCollectionProcessor</argument>
         </arguments>
     </type>
+
+    <virtualType name="versionedClassPool" type="Vipps\Login\Model\Config\Version\Pool">
+        <arguments>
+            <argument name="pool" xsi:type="array">
+                <item name="vipps_payment" xsi:type="string">brand-vipps</item>
+                <item name="mobile_epayment" xsi:type="string">brand-mobile</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Vipps\Login\Model\Block\ClassPool">
+        <arguments>
+            <argument name="pool" xsi:type="object">versionedClassPool</argument>
+        </arguments>
+    </type>
 </config>

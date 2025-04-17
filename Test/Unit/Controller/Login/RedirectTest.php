@@ -92,7 +92,7 @@ class RedirectTest extends TestCase
      * Sets up the fixtures
      * This method is called before a test is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $context = $this->getMockBuilder(Context::class)
             ->setMethods(['getResultRedirectFactory', 'getRequest', 'getRedirect', 'getMessageManager'])
