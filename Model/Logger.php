@@ -15,22 +15,31 @@
  * IN THE SOFTWARE.
  */
 
-declare(strict_types=1);
+namespace Vipps\Login\Model;
 
-namespace Vipps\Login\Model\Logger\Handler;
+use DateTimeZone;
+use Monolog\Handler\HandlerInterface;
 
-use Magento\Framework\Logger\Handler\Base;
-use Monolog\Logger;
-
-class Debug extends Base
+class Logger extends \Monolog\Logger
 {
     /**
-     * @var string
+     * @param string $name
+     * @param ConfigInterface $config
+     * @param list<HandlerInterface> $handlers
+     * @param callable[] $processors
+     * @param DateTimeZone|null $timezone
      */
-    protected $fileName = '/var/log/vipps_login_debug.log';
+    public function __construct(
+        string $name,
+        ConfigInterface $config,
+        array $handlers = [],
+        array $processors = [],
+        ?DateTimeZone $timezone = null
+    ) {
+        if (!$config->isDebug()) {
+            unset($handlers['debug']);
+        }
 
-    /**
-     * @var int
-     */
-    protected $loggerType = Logger::DEBUG;
+        parent::__construct($name, $handlers, $processors, $timezone);
+    }
 }

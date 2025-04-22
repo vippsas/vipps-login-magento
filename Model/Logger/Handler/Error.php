@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2020 Vipps
  *
@@ -21,19 +22,15 @@ namespace Vipps\Login\Model\Logger\Handler;
 use Magento\Framework\Logger\Handler\Base;
 use Monolog\Logger;
 
-/**
- * Class Error
- * @package Vipps\Login\Model\Logger\Handler
- */
 class Error extends Base
 {
     /**
      * @var string
      */
-    protected $fileName = '/var/log/vipps_login_exception.log'; //@codingStandardsIgnoreLine
+    protected $fileName = '/var/log/vipps_login_exception.log';
 
     /**
      * @var int
      */
-    protected $loggerType = Logger::INFO; //@codingStandardsIgnoreLine
+    protected $loggerType = Logger::INFO;
 }

@@ -41,7 +41,7 @@
     <preference for="Vipps\Login\Api\Block\ClassPoolInterface" type="Vipps\Login\Model\Block\ClassPool" />
 
     <!-- Defining Vipps_Login logger object to process logs into vipps_login files -->
-    <virtualType name="Vipps\Login\Model\Logger" type="Monolog\Logger">
+    <type name="Vipps\Login\Model\Logger">
         <arguments>
             <argument name="name" xsi:type="string">vipps</argument>
             <argument name="handlers"  xsi:type="array">
@@ -49,7 +49,7 @@
                 <item name="debug" xsi:type="object">Vipps\Login\Model\Logger\Handler\Debug</item>
             </argument>
         </arguments>
-    </virtualType>
+    </type>
 
     <type name="Magento\Customer\Api\AddressRepositoryInterface">
         <plugin name="Vipps\Login\Plugin\AddressSave" type="Vipps\Login\Plugin\AddressSave"/>
