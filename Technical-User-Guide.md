@@ -19,7 +19,7 @@ The Login module offers functionality for authenticating end users and authorizi
 It is founded on the OAuth2 and OpenID Connect specifications
 and supports using web browsers on websites and in native apps for iOS and Android using app switching.
 
-## Basic Flow
+## Basic flow
 
 ### Sign-in or register using Vipps or MobilePay
 
@@ -58,7 +58,7 @@ This could happen, for example if Adobe Commerce required additional data for ac
 
 ### Link Adobe Commerce and Vipps MobilePay accounts
 
-It is possible to link the customer account and Vipps MobilePay account that is being signed-in into the system.
+It is possible to link the customer account and Vipps MobilePay account that is being signed in into the system.
 To do this, customer should:
 
 * Go to *My Account* page
@@ -81,7 +81,6 @@ There are three ways to update the addresses and the customer is able to select 
 
 In the case when a behavior set to *ask first* and the Vipps MobilePay address(es) where changed, the customer will see a notification.
 
-
 ## Work with addresses
 
 ### Get addresses from Vipps MobilePay account
@@ -98,7 +97,7 @@ The Vipps MobilePay address that was converted to Adobe Commerce address is mark
 
 <!--![applied addresses](account-vipps-addresses-applied.png)-->
 
-### Use Vipps MobilePay Address
+### Use Vipps MobilePay address
 
 If the Vipps MobilePay address was not converted to Adobe Commerce, there will be a link *Use Address*.
 
@@ -127,7 +126,7 @@ This provides a better user experience, since they don't need to specify their s
 
 ### Sign-in
 
-It is also possible to sign-in using Vipps or MobilePay from a checkout page.
+It is also possible to sign in using Vipps or MobilePay from a checkout page.
 
 <!--![Checkout Login](checkout-vipps-login.png)-->
 
