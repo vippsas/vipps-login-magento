@@ -1,41 +1,33 @@
-<!-- START_METADATA
----
-title: Vipps/MobilePay Login for Adobe Commerce / Magento
-sidebar_label: Introduction
-sidebar_position: 1
-description: Allow customers to log in to Adobe Commerce websites using the Vipps or MobilePay app.
-hide_table_of_contents: true
-pagination_next: null
-pagination_prev: null
----
-END_METADATA -->
+# Vipps Login Module for Magento 2
 
-# Login module for Adobe Commerce / Magento
+## About Vipps Login for Magento 2
 
-![Support and development by Vaimo ](./docs/images/vaimo.svg#gh-light-mode-only)![Support and development by Vaimo](./docs/images/vaimo_dark.svg#gh-dark-mode-only)
+Sign in with Vipps is the easiest way to sign in and create an account. 
 
-*This plugin is built and maintained by [Vaimo](https://www.vaimo.com/) and is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).
-For support, [submit an issue](https://github.com/vippsas/vipps-login-magento/issues) on GitHub.*
+No need to worry about usernames and passwords. All you need to sign in is your phone number. 
 
-<!-- START_COMMENT -->
-💥 Please use the plugin pages on [https://developer.vippsmobilepay.com](https://developer.vippsmobilepay.com/docs/plugins/). 💥
-<!-- END_COMMENT -->
+Vipps, and you are logged in.
 
-Using Vipps/MobilePay is the easiest way to sign in and create an account.
+## Prerequisites
+* Magento 2.2+
+   * [Magento 2 System Requirements](http://devdocs.magento.com/magento-system-requirements.html)
+* SSL is installed on your site and active on the Checkout page
+* You must have a Vipps merchant account. See [Vipps logg inn](https://vipps.no/produkter-og-tjenester/bedrift/logg-inn-med-vipps/logg-inn-med-vipps/#kom-i-gang). In our [FAQ](https://github.com/vippsas/vipps-login-api/blob/master/vipps-login-api-faq.md) you will find information on where you can find required credentials and how to set up Vipps login.
 
-No need to worry about usernames and passwords. All you need to sign in is your phone number.
+## Installation and Configuration
 
-About [Adobe Commerce](https://experienceleague.adobe.com/en/browse/commerce).
+Please follow the instructions in [INSTALL.md](INSTALL.md)
 
-This plugin is available for download at
-[https://github.com/vippsas/vipps-login-magento/releases](https://github.com/vippsas/vipps-login-magento/releases).
+# Magento
 
-## Documentation
+Magento is an open-source e-commerce platform written in PHP: https://magento.com
 
-* [Installation guide](INSTALL.md)
-* [User guide](Technical-User-Guide.md)
+For Magento support, please see the Magento Help Center: https://support.magento.com/hc/en-us
 
-## Support
+Magento Inc is an Adobe company: https://magento.com/about
 
-For problems with the plugin,
-[submit an issue](https://github.com/vippsas/vipps-login-magento/issues) on GitHub.
+# Vipps contact information
+
+Please follow this [instruction](https://github.com/vippsas/vipps-developers/blob/master/contact.md) to contact us.
+
+See the Vipps Developers repository for Vipps contact information, etc: https://github.com/vippsas/vipps-developers
