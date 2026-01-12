@@ -6,6 +6,7 @@ sidebar_position: 20
 description: Install the Vipps/MobilePay Login for Adobe Commerce.
 pagination_next: null
 pagination_prev: null
+section: Plugins
 ---
 END_METADATA -->
 
