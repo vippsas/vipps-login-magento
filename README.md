@@ -13,10 +13,10 @@ END_METADATA -->
 
 # Login module for Adobe Commerce / Magento
 
-![Support and development by Vaimo ](./docs/images/vaimo.svg#gh-light-mode-only)![Support and development by Vaimo](./docs/images/vaimo_dark.svg#gh-dark-mode-only)
+![Support and development by bluemint](./docs/images/bluemint.svg)
 
-*This plugin is built and maintained by [Vaimo](https://www.vaimo.com/) and is hosted on [GitHub](https://github.com/vippsas/vipps-login-magento).
-For support, email us at [vipps@bluemint.dev](mailto:vipps@bluemint.dev).*
+*This plugin is built and maintained by [bluemint](https://www.bluemint.no/) and is hosted on [GitHub](https://github.com/vippsas/vipps-magento).
+For support, email us at [vipps@bluemint.dev](mailto:vipps@bluemint.dev)*
 
 <!-- START_COMMENT -->
 💥 Please use the plugin pages on [https://developer.vippsmobilepay.com](https://developer.vippsmobilepay.com/docs/plugins/). 💥
