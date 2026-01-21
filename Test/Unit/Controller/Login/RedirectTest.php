@@ -33,7 +33,6 @@ use Vipps\Login\Model\RedirectUrlResolver;
 
 /**
  * Class IndexTest
- * @package Vaimo\OpenIDConnect\Test\Unit\Controller\Authorize
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class RedirectTest extends TestCase
