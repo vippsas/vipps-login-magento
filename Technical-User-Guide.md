@@ -5,7 +5,7 @@ sidebar_label: User guide
 sidebar_position: 30
 hide_table_of_contents: true
 pagination_next: null
-pagination_prev: null
+pagination_prev: plugins-ext/login-magento/INSTALL
 section: Plugins
 ---
 END_METADATA -->
