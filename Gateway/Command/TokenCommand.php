@@ -18,16 +18,17 @@ declare(strict_types=1);
 
 namespace Vipps\Login\Gateway\Command;
 
+use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Magento\Framework\App\ResourceConnection;
-use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
+use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\UrlInterface;
-use Vipps\Login\Api\ApiEndpointsInterface;
-use Vipps\Login\Model\ConfigInterface;
 use Psr\Log\LoggerInterface;
-use Firebase\JWT\JWT;
+use Vipps\Login\Api\ApiEndpointsInterface;
+use Vipps\Login\Api\ModuleMetadataInterface;
+use Vipps\Login\Model\ConfigInterface;
 use phpseclib3\Crypt\PublicKeyLoader;
 use phpseclib3\Math\BigInteger;
 
@@ -77,6 +78,10 @@ class TokenCommand
      * @var ResourceConnection
      */
     private $resourceConnection;
+    /**
+     * @var ModuleMetadataInterface
+     */
+    private $moduleMetadata;
 
     /**
      * @param ConfigInterface $config
@@ -86,6 +91,7 @@ class TokenCommand
      * @param UrlInterface $url
      * @param LoggerInterface $logger
      * @param ResourceConnection $resourceConnection
+     * @param ModuleMetadataInterface $moduleMetadata
      */
     public function __construct(
         ConfigInterface $config,
@@ -94,7 +100,8 @@ class TokenCommand
         ClientFactory $httpClientFactory,
         UrlInterface $url,
         LoggerInterface $logger,
-        ResourceConnection $resourceConnection
+        ResourceConnection $resourceConnection,
+        ModuleMetadataInterface $moduleMetadata
     ) {
         $this->config = $config;
         $this->httpClientFactory = $httpClientFactory;
@@ -103,6 +110,7 @@ class TokenCommand
         $this->url = $url;
         $this->logger = $logger;
         $this->resourceConnection = $resourceConnection;
+        $this->moduleMetadata = $moduleMetadata;
     }
 
     /**
@@ -131,6 +139,11 @@ class TokenCommand
             $httpClient = $this->httpClientFactory->create();
             $httpClient->addHeader('Content-Type', 'application/x-www-form-urlencoded');
             $httpClient->setCredentials($clientId, $clientSecret);
+
+            $httpClient->addHeader('Vipps-System-Name', $this->moduleMetadata->getSystemName());
+            $httpClient->addHeader('Vipps-System-Version', $this->moduleMetadata->getSystemVersion());
+            $httpClient->addHeader('Vipps-System-Plugin-Name', $this->moduleMetadata->getModuleName());
+            $httpClient->addHeader('Vipps-System-Plugin-Version', $this->moduleMetadata->getModuleVersion());
 
             $httpClient->post($this->apiEndpoints->getTokenEndpoint(), [
                 'grant_type' => 'authorization_code',
