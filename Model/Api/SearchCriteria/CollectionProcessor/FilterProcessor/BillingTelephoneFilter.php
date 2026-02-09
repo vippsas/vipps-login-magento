@@ -25,6 +25,8 @@ class BillingTelephoneFilter implements CustomFilterInterface
             $value .= $phone[$i] . '[^0-9]*';
         }
 
+        $value .= '$';
+
         $collection->addFilterToMap(
             'main_table.billing_telephone_search',
             new \Zend_Db_Expr("`billing_telephone` REGEXP '{$value}'")
