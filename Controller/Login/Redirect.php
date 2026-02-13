@@ -125,8 +125,6 @@ class Redirect implements ActionInterface
         $code = $this->request->getParam('code');
         $state = $this->request->getParam('state');
 
-        $this->customerSession->setData(StateKey::DATA_KEY_STATE, $state);
-
         $resultRedirect = $this->resultRedirectFactory->create();
 
         try {
@@ -142,6 +140,8 @@ class Redirect implements ActionInterface
             if (!$this->isStateKeyValid($state)) {
                 throw new LocalizedException(__('Invalid state key.'));
             }
+
+            $this->customerSession->unsetData(StateKey::DATA_KEY_STATE);
 
             // get token
             $token = $this->tokenCommand->execute($code);
@@ -218,6 +218,6 @@ class Redirect implements ActionInterface
             return false;
         }
 
-        return $state == $sessionStateKey;
+        return $state === $sessionStateKey;
     }
 }
