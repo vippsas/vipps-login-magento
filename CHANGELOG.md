@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [2.6.1] - 2026-04-14
+### Fixed
+- Fixed invalid state handling, PR #65 by @jonkjenn
+- Fixed an issue where applying Vipps address in Magento would allow to apply address not assigned to the vipps customer.
+
 ## [2.6.0] - 2025-12-03
 
 ### Added
