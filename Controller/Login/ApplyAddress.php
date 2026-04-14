@@ -106,9 +106,12 @@ class ApplyAddress extends AccountBase
                 $vippsCustomer = $this->vippsCustomerRepository->getByCustomer($customer->getDataModel());
                 $vippsAddress = $this->vippsCustomerAddressRepository->getById($addressId);
 
-                if (!$vippsAddress->getVippsCustomerId() == $vippsCustomer->getEntityId()) {
-                    $this->messageManager->addErrorMessage(__('We can\'t delete the address right now.'));
+                if ((int)$vippsAddress->getVippsCustomerId() !== (int)$vippsCustomer->getEntityId()) {
+                    $this->messageManager->addErrorMessage(__('Address was not found for the current customer.'));
+                    $resultRedirect->setPath('customer/address/index');
+                    return $resultRedirect;
                 }
+
                 $this->customerSession->setAddressFormData([
                     'telephone' => $vippsCustomer->getTelephone(),
                     'postcode' => $vippsAddress->getPostalCode(),
