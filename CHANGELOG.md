@@ -4,10 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
-## [2.6.1] - 2026-04-14
+## [2.6.2] - 2026-04-14
 ### Fixed
 - Fixed invalid state handling, PR #65 by @jonkjenn
 - Fixed an issue where applying Vipps address in Magento would allow to apply address not assigned to the vipps customer.
+
+### Changed
+- Updated Logging to support both Monolog 2 and 3
+
+## [2.6.1] - 2026-02-09
+### Fixed
+- Improved phone matching regex, PR #5 by @ed007m
 
 ## [2.6.0] - 2025-12-03
 
