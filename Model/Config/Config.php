@@ -112,4 +112,12 @@ class Config implements ConfigInterface
 
         return $this->scopeConfig->getValue($path, ScopeInterface::SCOPE_STORE, $storeId);
     }
+
+    /**
+     * @return int
+     */
+    public function getCustomerStreetLinesNumber(): int
+    {
+        return (int)$this->scopeConfig->getValue(self::XML_CUSTOMER_STREET_NUMBER_LINES);
+    }
 }

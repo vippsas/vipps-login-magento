@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
+## [2.6.3] - 2026-06-10
+### Fixed
+- `getRegion()` now returns a string, fixing a `strcasecmp()` type error — thanks @pikulsky.
+
+### Changed
+- Street address can now be collapsed to a single line: when Magento is configured to use one
+  street line, the multi-line Vipps address is combined into one line (configurable via the
+  `customer/address/street_lines` store setting).
+
 ## [2.6.2] - 2026-06-08
 ### Security
 - Encrypted the cached OAuth token payload in `vipps_login_authorization` at rest and fixed the
