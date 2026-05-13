@@ -52,7 +52,7 @@ Configure your Adobe Commerce account to work with Vipps MobilePay Login.
 After installing the Login module, a new menu item should appear in your
 store's *Configuration Navigation* under *Stores* > *Configuration* > *Vipps MobilePay* > *Login*.
 
-![Customer login](./docs/images/login-config.png)
+![Adobe Commerce admin config panel for Vipps MobilePay Login showing Client ID, Secret, and env fields](./docs/images/login-config.png)
 
 Enter your `client_id` and `client_secret` (see
 [How to find the API keys](https://developer.vippsmobilepay.com/docs/knowledge-base/portal/#how-to-find-the-api-keys)).
@@ -66,37 +66,37 @@ data to your Adobe Commerce logs, so it is recommended that this is switched off
 After setting up the module, it should appear in the frontend in a few locations
 automatically. For example, on the customer login page:
 
-![Customer login](./docs/images/3customer-login.jpg)
+![Customer login page with a "Log-in with Vipps" button above the standard email/password form](./docs/images/3customer-login.jpg)
 
 The customer registration page allows your customers to quickly register a
 new account using their existing data in Vipps or MobilePay.
 
-![Create new account](./docs/images/4create-new-account.jpg)
+![Create New Customer Account page with "Continue with Vipps" button and email registration link](./docs/images/4create-new-account.jpg)
 
 And, on the checkout page again allowing your customers to quickly log in not using
 a traditional username and password, and fill in their information with the data that is already
 stored in Vipps MobilePay.
 
-![Shipping address 1](./docs/images/5shipping-address.jpg)
+![Checkout shipping address page with "Sign in with Vipps" button above the address entry fields](./docs/images/5shipping-address.jpg)
 
 Or log in with an authentication popup, where the Login button is also present.
 
-![Shipping address 2](./docs/images/6shipping-address.jpg)
+![Checkout shipping address page with a Vipps sign-in popup overlay showing email and password fields](./docs/images/6shipping-address.jpg)
 
 Using the Login module, you can create a widget with *Sign In* button and put it in any
 website location.
 
-![Create widget](./docs/images/7create-widget.jpg)
+![Magento admin Widgets panel configuring a Vipps sign-in widget with store view assignment options](./docs/images/7create-widget.jpg)
 
 The frontend view may look like this:
 
-![Frontend view](./docs/images/8frontend-view.jpg)
+![Product page on storefront showing a "Sign in with Vipps" button below the Add to Cart button](./docs/images/8frontend-view.jpg)
 
 When you have been registered, you will receive a confirmation email with
 an updated template. Inside this email, you can set a password to your account or always
 use Vipps MobilePay Login functionality.
 
-![Registration](./docs/images/9register.jpg)
+![Welcome registration email with a "Log-in with Vipps" button and a link to set an account password](./docs/images/9register.jpg)
 
 ### Vipps MobilePay Login configuration details
 
