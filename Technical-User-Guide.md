@@ -121,7 +121,7 @@ NB! If customer changed any data so that newly created address and Vipps MobileP
 The Vipps MobilePay module injects a Vipps or MobilePay Login button on the cart page. This allows the customer to log in to the system and proceed to checkout.
 This provides a better user experience, since they don't need to specify their shipping or billing address manually.
 
-**Please note:** If the cart page contains an *Express Checkout* button from the *Vipps/MobilePay Payment module for Adobe Commerce*, only the *Login* button will be shown. *Login* has higher priority.
+**Please note:** If the cart page contains an *Express* button from the *Vipps/MobilePay Payment module for Adobe Commerce*, only the *Login* button will be shown. *Login* has higher priority.
 
 ## Checkout page
 
