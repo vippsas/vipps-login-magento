@@ -52,7 +52,7 @@ When the account is confirmed, it will be linked with Vipps MobilePay account. T
 
 ### Create a new account
 
-If there is no account defined for customer then Adobe Commerce will try automatically create a new account using Vipps MobilePay account data.
+If there is no account defined for customer then Adobe Commerce will try to automatically create a new account using Vipps MobilePay account data.
 
 In the case when Adobe Commerce can't create an account automatically, the customer will be redirected to a standard Adobe Commerce registration form to complete it manually.
 This could happen, for example if Adobe Commerce required additional data for account creation that is missing in Vipps MobilePay account.
@@ -80,7 +80,7 @@ There are three ways to update the addresses and the customer is able to select 
 
 <!--![Logged-in with Vipps](account-logged-in-with-vipps.png)-->
 
-In the case when a behavior set to *ask first* and the Vipps MobilePay address(es) where changed, the customer will see a notification.
+In the case when a behavior is set to *ask first* and the Vipps MobilePay address(es) where changed, the customer will see a notification.
 
 ## Work with addresses
 

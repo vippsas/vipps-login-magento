@@ -73,7 +73,7 @@ new account using their existing data in Vipps or MobilePay.
 
 ![Create New Customer Account page with "Continue with Vipps" button and email registration link](./docs/images/4create-new-account.jpg)
 
-And, on the checkout page again allowing your customers to quickly log in not using
+And, on the checkout page again allowing your customers to quickly log in without using
 a traditional username and password, and fill in their information with the data that is already
 stored in Vipps MobilePay.
 
@@ -112,4 +112,3 @@ use Vipps MobilePay Login functionality.
 
 To use the app in test mode, you must use the
 [Vipps MobilePay test app](https://developer.vippsmobilepay.com/docs/knowledge-base/test-environment/#test-apps).
-:::
