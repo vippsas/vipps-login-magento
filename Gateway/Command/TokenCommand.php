@@ -21,6 +21,7 @@ namespace Vipps\Login\Gateway\Command;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\Encryption\EncryptorInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\HTTP\ClientFactory;
 use Magento\Framework\Serialize\SerializerInterface;
@@ -84,6 +85,11 @@ class TokenCommand
     private $moduleMetadata;
 
     /**
+     * @var EncryptorInterface
+     */
+    private $encryptor;
+
+    /**
      * @param ConfigInterface $config
      * @param SerializerInterface $serializer
      * @param ApiEndpointsInterface $apiEndpoints
@@ -92,6 +98,7 @@ class TokenCommand
      * @param LoggerInterface $logger
      * @param ResourceConnection $resourceConnection
      * @param ModuleMetadataInterface $moduleMetadata
+     * @param EncryptorInterface $encryptor
      */
     public function __construct(
         ConfigInterface $config,
@@ -101,7 +108,8 @@ class TokenCommand
         UrlInterface $url,
         LoggerInterface $logger,
         ResourceConnection $resourceConnection,
-        ModuleMetadataInterface $moduleMetadata
+        ModuleMetadataInterface $moduleMetadata,
+        EncryptorInterface $encryptor
     ) {
         $this->config = $config;
         $this->httpClientFactory = $httpClientFactory;
@@ -111,6 +119,7 @@ class TokenCommand
         $this->logger = $logger;
         $this->resourceConnection = $resourceConnection;
         $this->moduleMetadata = $moduleMetadata;
+        $this->encryptor = $encryptor;
     }
 
     /**
@@ -129,7 +138,7 @@ class TokenCommand
         }
 
         if (isset($authRecord['payload'])) {
-            return $this->prepareResponse($authRecord['payload']);
+            return $this->prepareResponse($this->encryptor->decrypt($authRecord['payload']));
         }
 
         $clientId = $this->config->getLoginClientId();
@@ -165,7 +174,7 @@ class TokenCommand
         $connection = $this->resourceConnection->getConnection('write');
         $connection->delete(
             $connection->getTableName('vipps_login_authorization'),
-            \sprintf('created_at < %s', $connection->quote((new \DateTime())->modify('-5 min')->format('Y-m-d H:i-s')))
+            \sprintf('created_at < %s', $connection->quote((new \DateTime())->modify('-5 min')->format('Y-m-d H:i:s')))
         );
 
         $select = $connection->select()
@@ -199,7 +208,7 @@ class TokenCommand
         return $connection->update(
             $connection->getTableName('vipps_login_authorization'),
             [
-                'payload' => $payload
+                'payload' => $this->encryptor->encrypt($payload)
             ],
             'code = ' . $connection->quote($code)
         );
