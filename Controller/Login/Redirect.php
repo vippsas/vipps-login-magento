@@ -151,6 +151,11 @@ class Redirect implements ActionInterface
             }
 
             if (!$token) {
+                // No token yet: a concurrent duplicate callback is still fetching it, so we retry
+                // until its payload is cached (bounded by checkAttempts above). The retry redirects
+                // back into this same controller, which validates the state again - but we already
+                // consumed it above, so put the validated value back for that next pass.
+                $this->customerSession->setData(StateKey::DATA_KEY_STATE, $state);
                 return $resultRedirect->setPath('vipps/login/redirect', ['code' => $code, 'state' => $state]);
             }
 
