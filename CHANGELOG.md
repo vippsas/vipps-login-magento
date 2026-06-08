@@ -4,9 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog and this project adheres to Semantic Versioning.
 
-## [2.6.2] - 2026-04-14
+## [2.6.2] - 2026-06-08
+### Security
+- Encrypted the cached OAuth token payload in `vipps_login_authorization` at rest and fixed the
+  expiry-cleanup cutoff so stale token rows are pruned after 5 minutes.
+
 ### Fixed
 - Fixed invalid state handling, PR #65 by @jonkjenn
+- Restored the validated OAuth state on the token-retry redirect so concurrent/duplicate login
+  callbacks revalidate correctly after the state is consumed.
 - Fixed an issue where applying Vipps address in Magento would allow to apply address not assigned to the vipps customer.
 
 ### Changed
