@@ -17,6 +17,8 @@ The format is based on Keep a Changelog and this project adheres to Semantic Ver
 
 ### Changed
 - Updated Logging to support both Monolog 2 and 3
+- Widened the `firebase/php-jwt` constraint to `^6.0 || ^7.0` (matching Magento) so installs can use
+  the patched 7.x release that addresses the weak-encryption advisory GHSA-2x45-7fc3-mxwq.
 
 ## [2.6.1] - 2026-02-09
 ### Fixed
