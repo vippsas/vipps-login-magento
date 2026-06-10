@@ -34,7 +34,6 @@ use Vipps\Login\Api\Data\VippsCustomerAddressInterfaceFactory;
 use Vipps\Login\Api\Data\VippsCustomerInterface;
 use Vipps\Login\Api\VippsAddressManagementInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
-use Vipps\Login\Model\ConfigInterface;
 
 /**
  * Class VippsCustomer
@@ -79,9 +78,9 @@ class VippsAddressManagement implements VippsAddressManagementInterface
     private $formFactory;
 
     /**
-     * @var ConfigInterface
+     * @var AddressStreetFormatter
      */
-    private ConfigInterface $config;
+    private AddressStreetFormatter $streetFormatter;
 
     /**
      * VippsAddressManagement constructor.
@@ -93,7 +92,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
      * @param AddressInterfaceFactory $addressDataFactory
      * @param FormFactory $formFactory
      * @param Random $mathRand
-     * @param ConfigInterface $config
+     * @param AddressStreetFormatter $streetFormatter
      */
     public function __construct(
         VippsCustomerAddressInterfaceFactory $vippsCustomerAddressFactory,
@@ -103,7 +102,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         AddressInterfaceFactory $addressDataFactory,
         FormFactory $formFactory,
         Random $mathRand,
-        ConfigInterface $config
+        AddressStreetFormatter $streetFormatter
     ) {
         $this->vippsCustomerAddressFactory = $vippsCustomerAddressFactory;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
@@ -112,7 +111,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $this->addressRepository = $addressRepository;
         $this->addressDataFactory = $addressDataFactory;
         $this->formFactory = $formFactory;
-        $this->config = $config;
+        $this->streetFormatter = $streetFormatter;
     }
 
     /**
@@ -227,18 +226,7 @@ class VippsAddressManagement implements VippsAddressManagementInterface
         $magentoAddress->setLastname($customer->getLastname());
         $magentoAddress->setPostcode($vippsAddress->getPostalCode());
 
-        $street = explode(
-            PHP_EOL,
-            $vippsAddress->getStreetAddress(),
-            $this->config->getCustomerStreetLinesNumber()
-        );
-
-        // Change PHP EOL to space if only one line
-        if ($this->config->getCustomerStreetLinesNumber() === 1) {
-            $street[0] = str_replace(PHP_EOL, ' ', $street[0]);
-        }
-
-        $magentoAddress->setStreet($street);
+        $magentoAddress->setStreet($this->streetFormatter->format((string)$vippsAddress->getStreetAddress()));
         $magentoAddress->setTelephone($vippsCustomer->getTelephone());
 
         if (!$hasDefault &&

@@ -28,7 +28,7 @@ use Psr\Log\LoggerInterface;
 use Vipps\Login\Api\VippsCustomerAddressRepositoryInterface;
 use Vipps\Login\Api\VippsCustomerRepositoryInterface;
 use Vipps\Login\Model\VippsAccountManagement;
-use Vipps\Login\Model\ConfigInterface;
+use Vipps\Login\Model\AddressStreetFormatter;
 
 /**
  * Class ApplyAddress
@@ -62,9 +62,9 @@ class ApplyAddress extends AccountBase
     private $resultRedirectFactory;
 
     /**
-     * @var ConfigInterface
+     * @var AddressStreetFormatter
      */
-    private ConfigInterface $config;
+    private AddressStreetFormatter $streetFormatter;
 
     /**
      * ApplyAddress constructor.
@@ -77,7 +77,7 @@ class ApplyAddress extends AccountBase
      * @param ManagerInterface $messageManager
      * @param VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository
      * @param VippsCustomerRepositoryInterface $vippsCustomerRepository
-     * @param ConfigInterface $config
+     * @param AddressStreetFormatter $streetFormatter
      */
     public function __construct(
         RedirectFactory $resultRedirectFactory,
@@ -88,7 +88,7 @@ class ApplyAddress extends AccountBase
         ManagerInterface $messageManager,
         VippsCustomerAddressRepositoryInterface $vippsCustomerAddressRepository,
         VippsCustomerRepositoryInterface $vippsCustomerRepository,
-        ConfigInterface $config
+        AddressStreetFormatter $streetFormatter
     ) {
         parent::__construct($customerSession, $request, $logger);
         $this->resultRedirectFactory = $resultRedirectFactory;
@@ -96,7 +96,7 @@ class ApplyAddress extends AccountBase
         $this->messageManager = $messageManager;
         $this->vippsCustomerAddressRepository = $vippsCustomerAddressRepository;
         $this->vippsCustomerRepository = $vippsCustomerRepository;
-        $this->config = $config;
+        $this->streetFormatter = $streetFormatter;
     }
 
     /**
@@ -121,23 +121,12 @@ class ApplyAddress extends AccountBase
                     return $resultRedirect;
                 }
 
-                $street = explode(
-                    PHP_EOL,
-                    $vippsAddress->getStreetAddress(),
-                    $this->config->getCustomerStreetLinesNumber()
-                );
-
-                // Change PHP EOL to space if only one line
-                if ($this->config->getCustomerStreetLinesNumber() === 1) {
-                    $street[0] = str_replace(PHP_EOL, ' ', $street[0]);
-                }
-
                 $this->customerSession->setAddressFormData([
                     'telephone' => $vippsCustomer->getTelephone(),
                     'postcode' => $vippsAddress->getPostalCode(),
                     'city' => $vippsAddress->getRegion(),
                     'country_id' => $vippsAddress->getCountry(),
-                    'street' => $street,
+                    'street' => $this->streetFormatter->format((string)$vippsAddress->getStreetAddress()),
                     'region' => $vippsAddress->getRegion()
                 ]);
                 $params = ['vipps_address_id' => $addressId];
