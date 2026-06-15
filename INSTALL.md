@@ -25,7 +25,7 @@ This is the guide for installing *Vipps/MobilePay Login for Adobe Commerce* (the
 
 ## Installation via Composer
 
-1. Navigate to your [Adobe Commerce root directory](https://developer.adobe.com/commerce/php/development/build/component-file-structure/).
+1. Navigate to your [Adobe Commerce root directory](https://developer.adobe.com/commerce/php/development/build/component-file-structure).
 1. Enter command: `composer require vipps/module-login`
 1. Enter command: `php bin/magento module:enable Vipps_Login`
 1. Enter command: `php bin/magento setup:upgrade`
