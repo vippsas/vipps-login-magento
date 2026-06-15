@@ -1,9 +1,11 @@
+<!-- START_METADATA
 ---
 title: Changelog
 sidebar_position: 200
 pagination_next: null
 section: Plugins
 ---
+END_METADATA -->
 
 # Changelog
 
