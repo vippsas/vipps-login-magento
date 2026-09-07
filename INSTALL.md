@@ -21,7 +21,7 @@ This is the guide for installing *Vipps/MobilePay Login for Adobe Commerce* (the
 1. SSL must be installed on your site and active on your Checkout pages.
 1. You must have a Vipps MobilePay merchant account and be configured for use of Login.
     * See [Vipps MobilePay configuration](#vipps-mobilepay-login-configuration-details)
-1. As with *all* Adobe Commerce extensions, it is highly recommended backing up your site before installation and to install and test on a staging environment prior to production deployments.
+1. As with *all* Adobe Commerce extensions, it is highly recommended to back up your site before installation, and to install and test on a staging environment prior to production deployments.
 
 ## Installation via Composer
 
