@@ -28,7 +28,7 @@ The sequence of operations is as follows:
 
 1. The customer presses a button to sign-in or register with Vipps or MobilePay and is redirected to a Vipps MobilePay web page.
 1. The customer interacts with the Vipps MobilePay web page and mobile app to permit access to account data for the webshop.
-1. The customer is redirected back to Adobe Commerce webshop.
+1. The customer is redirected back to the Adobe Commerce webshop.
 1. If access was granted to the webshop, the plugin has access to customer data such as: name, email, phone number, and addresses.
 1. Adobe Commerce performs the log-in or creates a new account for the customer.
 
@@ -42,27 +42,27 @@ The sequence of operations is as follows:
 ### Confirm existing account
 
 In the case when a customer doesn't have an Adobe Commerce account which has been previously linked with Vipps MobilePay,
-Adobe Commerce will try to find existing Adobe Commerce account by using the email and phone number obtained from Vipps MobilePay.
-If the account exists, it will redirect customer to *Confirmation* page.
+Adobe Commerce will try to find an existing Adobe Commerce account by using the email and phone number obtained from Vipps MobilePay.
+If the account exists, it will redirect the customer to the *Confirmation* page.
 
 The customer can finish the process by using password or email confirmation.
-When the account is confirmed, it will be linked with Vipps MobilePay account. Thus, no extra steps are needed for a later sign-in.
+When the account is confirmed, it will be linked with the Vipps MobilePay account. Thus, no extra steps are needed for a later sign-in.
 
 <!--![Confirmation page](docs/images/confirmation.png)-->
 
 ### Create a new account
 
-If there is no account defined for customer then Adobe Commerce will try to automatically create a new account using Vipps MobilePay account data.
+If there is no account defined for the customer, then Adobe Commerce will try to automatically create a new account using Vipps MobilePay account data.
 
 In the case when Adobe Commerce can't create an account automatically, the customer will be redirected to a standard Adobe Commerce registration form to complete it manually.
-This could happen, for example if Adobe Commerce required additional data for account creation that is missing in Vipps MobilePay account.
+This could happen, for example if Adobe Commerce required additional data for account creation that is missing in the Vipps MobilePay account.
 
 ### Link Adobe Commerce and Vipps MobilePay accounts
 
-It is possible to link the customer account and Vipps MobilePay account that is being signed in into the system.
-To do this, customer should:
+It is possible to link the customer account and the Vipps MobilePay account that is being signed in into the system.
+To do this, the customer should:
 
-* Go to *My Account* page
+* Go to the *My Account* page
 * Choose *Login with Vipps* on the left menu
 * Press *Login with Vipps* and finalize the process
 
@@ -80,7 +80,7 @@ There are three ways to update the addresses and the customer is able to select 
 
 <!--![Logged-in with Vipps](account-logged-in-with-vipps.png)-->
 
-In the case when a behavior is set to *ask first* and the Vipps MobilePay address(es) where changed, the customer will see a notification.
+In the case when a behavior is set to *ask first* and the Vipps MobilePay address(es) were changed, the customer will see a notification.
 
 ## Work with addresses
 
@@ -94,7 +94,7 @@ The addresses are automatically converted to the Adobe Commerce default billing 
 
 ### Default billing and shipping address
 
-The Vipps MobilePay address that was converted to Adobe Commerce address is marked as *Applied/Used*.
+The Vipps MobilePay address that was converted to an Adobe Commerce address is marked as *Applied/Used*.
 
 <!--![applied addresses](account-vipps-addresses-applied.png)-->
 
@@ -110,11 +110,11 @@ By selecting *Use address*, the customer will be able to edit the address and sa
 
 ### Adding new Adobe Commerce address
 
-If customer is adding an address in a standard Adobe Commerce way and there is at least one Vipps MobilePay address that was not converted to Adobe Commerce (was not applied | not using), then the customer will be able to use their Vipps MobilePay address data for new address by choosing it in a dropdown menu at the top.
+If the customer is adding an address in a standard Adobe Commerce way and there is at least one Vipps MobilePay address that was not converted to Adobe Commerce (was not applied | not using), then the customer will be able to use their Vipps MobilePay address data for the new address by choosing it in a dropdown menu at the top.
 
 <!--![Choose address](account-choose-vipps-address.png)-->
 
-NB! If customer changed any data so that newly created address and Vipps MobilePay address are different such addresses will not be linked between each other.
+NB! If the customer changed any data so that the newly created address and the Vipps MobilePay address are different, such addresses will not be linked to each other.
 
 ## Cart page
 
@@ -127,13 +127,13 @@ This provides a better user experience, since they don't need to specify their s
 
 ### Sign-in
 
-It is also possible to sign in using Vipps or MobilePay from a checkout page.
+It is also possible to sign in using Vipps or MobilePay from the checkout page.
 
 <!--![Checkout Login](checkout-vipps-login.png)-->
 
 ### Adding new address
 
 If the customer wants to add an address directly from the checkout page, you can populate the form based on the unused Vipps MobilePay addresses.
-This is done in the same manner as for *My account* / *Address book* page.
+This is done in the same manner as for the *My account* / *Address book* page.
 
 <!--![Checkout new address](checkout-new-address.png)-->
