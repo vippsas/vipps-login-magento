@@ -4,8 +4,6 @@ title: Vipps/MobilePay Login for Adobe Commerce / Magento Plugin installation gu
 sidebar_label: Installation guide
 sidebar_position: 20
 description: Install the Vipps/MobilePay Login for Adobe Commerce.
-pagination_next: plugins-ext/login-magento/Technical-User-Guide
-pagination_prev: plugins-ext/login-magento/README
 section: Plugins
 ---
 END_METADATA -->
