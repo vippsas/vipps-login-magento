@@ -5,7 +5,6 @@ sidebar_label: Introduction
 sidebar_position: 1
 description: Allow customers to log in to Adobe Commerce websites using the Vipps or MobilePay app.
 hide_table_of_contents: true
-pagination_next: plugins-ext/login-magento/INSTALL
 pagination_prev: null
 section: Plugins
 ---
